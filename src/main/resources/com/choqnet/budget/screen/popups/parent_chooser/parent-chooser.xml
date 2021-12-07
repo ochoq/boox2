@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://parentChooser.caption">
+    <layout
+            spacing="true"
+            expand="spacer">
+        <label stylename="h1"
+               value="Choose the new Target"
+               width="100%"/>
+        <comboBox id="cmbParent"
+                  width="100%"/>
+        <label id="spacer"/>
+        <buttonsPanel>
+            <button id="btnCancel" caption="Cancel" />
+            <button id="btnConnect" caption="Connect" />
+        </buttonsPanel>
+    </layout>
+</window>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://teamSelector.caption">
+    <data>
+        <collection id="teamsDc" class="com.choqnet.budget.entity.Team">
+            <fetchPlan extends="_base"/>
+            <loader id="teamsDl">
+                <query>
+                    <![CDATA[select e from Team e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="teamsTable">
+        <dataGrid id="teamsTable"
+                  selectionMode="MULTI_CHECK"
+                  width="100%"
+                  dataContainer="teamsDc">
+            <columns>
+                <column id="gbl" property="gbl"/>
+                <column id="gbd" property="gbd"/>
+                <column id="domain" property="domain"/>
+                <column id="fullName" property="fullName"/>
+            </columns>
+        </dataGrid>
+        <buttonsPanel width="100%">
+            <button id="btnCancel" caption="Cancel" align="BOTTOM_LEFT"/>
+            <button id="btnAdd" caption="Add selected" align="BOTTOM_RIGHT"/>
+        </buttonsPanel>
+    </layout>
+</window>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="budget">
+        <createTable tableName="BUDGET">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_BUDGET"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="YEAR_" type="VARCHAR(255)"/>
+            <column name="CLOSE_Q1" type="BOOLEAN"/>
+            <column name="CLOSE_Q2" type="BOOLEAN"/>
+            <column name="CLOSE_Q3" type="BOOLEAN"/>
+            <column name="CLOSE_Q4" type="BOOLEAN"/>
+            <column name="FROZEN" type="BOOLEAN"/>
+            <column name="PRIO_THRESHOLD" type="VARCHAR(255)"/>
+            <column name="PREFERRED" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="budget">
+        <createTable tableName="CAPACITY">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CAPACITY"/>
+            </column>
+            <column name="TEAM_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FTE_Q1" type="DOUBLE"/>
+            <column name="FTE_Q2" type="DOUBLE"/>
+            <column name="FTE_Q3" type="DOUBLE"/>
+            <column name="FTE_Q4" type="DOUBLE"/>
+            <column name="RATE_Q1" type="DOUBLE"/>
+            <column name="RATE_Q2" type="DOUBLE"/>
+            <column name="RATE_Q3" type="DOUBLE"/>
+            <column name="RATE_Q4" type="DOUBLE"/>
+            <column name="NB_WORKING_DAYS" type="INT"/>
+            <column name="BUDGET_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="budget">
+        <createTable tableName="DEMAND">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_DEMAND"/>
+            </column>
+            <column name="IPRB_ID" type="UUID"/>
+            <column name="MD_Y" type="DOUBLE"/>
+            <column name="MD_Q1" type="DOUBLE"/>
+            <column name="MD_Q2" type="DOUBLE"/>
+            <column name="MD_Q3" type="DOUBLE"/>
+            <column name="MD_Q4" type="DOUBLE"/>
+            <column name="EURO_AMOUNT" type="DOUBLE"/>
+            <column name="UNICITY" type="VARCHAR(255)"/>
+            <column name="BUDGET_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="budget">
+        <createTable tableName="DETAIL">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_DETAIL"/>
+            </column>
+            <column name="TEAM_ID" type="UUID"/>
+            <column name="TOPIC" type="VARCHAR(255)"/>
+            <column name="ROADMAP" type="VARCHAR(255)"/>
+            <column name="DETAIL" type="VARCHAR(255)"/>
+            <column name="T_SHIRT" type="INT"/>
+            <column name="MD_Y" type="DOUBLE"/>
+            <column name="MD_Q1" type="DOUBLE"/>
+            <column name="MD_Q2" type="DOUBLE"/>
+            <column name="MD_Q3" type="DOUBLE"/>
+            <column name="MD_Q4" type="DOUBLE"/>
+            <column name="ONE_PAGER_ID" type="UUID"/>
+            <column name="CATEGORY" type="VARCHAR(255)"/>
+            <column name="PRIORITY" type="VARCHAR(255)"/>
+            <column name="DEMAND_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="budget">
+        <createTable tableName="EXPENSE">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_EXPENSE"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="AMOUNT" type="DOUBLE"/>
+            <column name="CAPEX" type="BOOLEAN"/>
+            <column name="ACCEPTED" type="BOOLEAN"/>
+            <column name="DEMAND_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="budget">
+        <createTable tableName="IPRB">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_IPRB"/>
+            </column>
+            <column name="REFERENCE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PORTFOLIO_CLASSIFICATION" type="VARCHAR(255)"/>
+            <column name="LEGAL_ENTITY" type="VARCHAR(255)"/>
+            <column name="STRATEGIC_PROGRAM" type="VARCHAR(255)"/>
+            <column name="ACTIVITY_TYPE" type="VARCHAR(255)"/>
+            <column name="NEW_PRODUCT_INDICATOR" type="VARCHAR(255)"/>
+            <column name="GROUP_OFFERING" type="VARCHAR(255)"/>
+            <column name="OWNER" type="VARCHAR(255)"/>
+            <column name="EST_CAPI" type="VARCHAR(255)"/>
+            <column name="EST_OOI" type="VARCHAR(255)"/>
+            <column name="START_DATE" type="DATE"/>
+            <column name="END_DATE" type="DATE"/>
+            <column name="COMMENT_" type="CLOB"/>
+            <column name="UPDATED" type="DATETIME"/>
+            <column name="PROJECT_TYPE" type="VARCHAR(255)"/>
+            <column name="FIRST_MONTH_OFF" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="7" author="budget">
+        <createTable tableName="ONE_PAGER">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_ONE_PAGER"/>
+            </column>
+            <column name="GTM" type="VARCHAR(255)"/>
+            <column name="VALUE_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="8" author="budget">
+        <createTable tableName="TEAM">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TEAM"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PARENT_ID" type="UUID"/>
+            <column name="SOURCE" type="VARCHAR(255)"/>
+            <column name="SOURCE_NAME" type="VARCHAR(255)"/>
+            <column name="SOURCE_ID" type="VARCHAR(255)"/>
+            <column name="MAIN_GTM" type="VARCHAR(255)"/>
+            <column name="IC_TARGET" type="VARCHAR(255)"/>
+            <column name="ENABLED" type="BOOLEAN"/>
+            <column name="SELECTABLE" type="BOOLEAN"/>
+            <column name="UPDATED" type="DATETIME"/>
+            <column name="FULL_NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="9" author="budget">
+        <createTable tableName="USER_AUTHENTICATION_LOG">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_USER_AUTHENTICATION_LOG"/>
+            </column>
+            <column name="USERNAME" type="VARCHAR(255)"/>
+            <column name="LOGGED_IN" type="DATETIME"/>
+            <column name="LOGGED_OUT" type="DATETIME"/>
+            <column name="SESSION_ID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="10" author="budget">
+        <addUniqueConstraint columnNames="NAME" constraintName="UC_BUDGET_NAME" tableName="BUDGET"/>
+    </changeSet>
+    <changeSet id="11" author="budget">
+        <addUniqueConstraint columnNames="UNICITY" constraintName="UC_DEMAND_UNICITY" tableName="DEMAND"/>
+    </changeSet>
+    <changeSet id="12" author="budget">
+        <addUniqueConstraint columnNames="NAME" constraintName="UC_IPRB_NAME" tableName="IPRB"/>
+    </changeSet>
+    <changeSet id="13" author="budget">
+        <addUniqueConstraint columnNames="REFERENCE" constraintName="UC_IPRB_REFERENCE" tableName="IPRB"/>
+    </changeSet>
+    <changeSet id="14" author="budget">
+        <addForeignKeyConstraint baseColumnNames="BUDGET_ID" baseTableName="CAPACITY"
+                                 constraintName="FK_CAPACITY_ON_BUDGET" onDelete="CASCADE" referencedColumnNames="ID"
+                                 referencedTableName="BUDGET"/>
+    </changeSet>
+    <changeSet id="15" author="budget">
+        <addForeignKeyConstraint baseColumnNames="TEAM_ID" baseTableName="CAPACITY" constraintName="FK_CAPACITY_ON_TEAM"
+                                 referencedColumnNames="ID" referencedTableName="TEAM"/>
+    </changeSet>
+    <changeSet id="16" author="budget">
+        <addForeignKeyConstraint baseColumnNames="BUDGET_ID" baseTableName="DEMAND" constraintName="FK_DEMAND_ON_BUDGET"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="BUDGET"/>
+    </changeSet>
+    <changeSet id="17" author="budget">
+        <addForeignKeyConstraint baseColumnNames="IPRB_ID" baseTableName="DEMAND" constraintName="FK_DEMAND_ON_IPRB"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="IPRB"/>
+    </changeSet>
+    <changeSet id="18" author="budget">
+        <addForeignKeyConstraint baseColumnNames="DEMAND_ID" baseTableName="DETAIL" constraintName="FK_DETAIL_ON_DEMAND"
+                                 referencedColumnNames="ID" referencedTableName="DEMAND"/>
+    </changeSet>
+    <changeSet id="19" author="budget">
+        <addForeignKeyConstraint baseColumnNames="ONE_PAGER_ID" baseTableName="DETAIL"
+                                 constraintName="FK_DETAIL_ON_ONE_PAGER" referencedColumnNames="ID"
+                                 referencedTableName="ONE_PAGER"/>
+    </changeSet>
+    <changeSet id="20" author="budget">
+        <addForeignKeyConstraint baseColumnNames="TEAM_ID" baseTableName="DETAIL" constraintName="FK_DETAIL_ON_TEAM"
+                                 referencedColumnNames="ID" referencedTableName="TEAM"/>
+    </changeSet>
+    <changeSet id="21" author="budget">
+        <addForeignKeyConstraint baseColumnNames="DEMAND_ID" baseTableName="EXPENSE"
+                                 constraintName="FK_EXPENSE_ON_DEMAND" referencedColumnNames="ID"
+                                 referencedTableName="DEMAND"/>
+    </changeSet>
+    <changeSet id="22" author="budget">
+        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="TEAM" constraintName="FK_TEAM_ON_PARENT"
+                                 onDelete="SET NULL" referencedColumnNames="ID" referencedTableName="TEAM"/>
+    </changeSet>
+</databaseChangeLog>

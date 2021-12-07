@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://budgetScreen.caption">
+    <data>
+        <collection id="budgetsDc" class="com.choqnet.budget.entity.Budget">
+            <fetchPlan extends="_base"/>
+            <loader id="budgetsDl">
+                <query>
+                    <![CDATA[select e from Budget e order by e.year desc, e.name asc]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="budgetsTable">
+        <label stylename="h1" value="Available Budgets"/>
+        <filter id="filter" columnsCount="3" dataLoader="budgetsDl">
+            <properties include=".*"/>
+        </filter>
+        <pagination itemsPerPageOptions="10,20,50"
+                    align="MIDDLE_RIGHT"
+                    itemsPerPageDefaultValue="10"
+                    itemsPerPageUnlimitedOptionVisible="true"
+                    itemsPerPageVisible="true">
+            <loaderProvider loaderId="budgetsDl"/>
+        </pagination>
+        <buttonsPanel spacing="true">
+            <button id="btnCreate" caption="Create Budget" icon="CREATE_ACTION"/>
+            <button id="btnClone" caption="Clone Budget" icon="CLONE"/>
+            <button id="btnRemove" caption="Delete Budget" icon="REMOVE"/>
+        </buttonsPanel>
+        <dataGrid id="budgetsTable"
+                  width="100%"
+                  editorEnabled="true"
+                  editorBuffered="true"
+                  dataContainer="budgetsDc">
+            <columns>
+                <column id="name" property="name"/>
+                <column id="year" property="year"/>
+                <column id="preferred" property="preferred"/>
+                <column id="closeQ1" property="closeQ1"/>
+                <column id="closeQ2" property="closeQ2"/>
+                <column id="closeQ3" property="closeQ3"/>
+                <column id="closeQ4" property="closeQ4"/>
+                <column id="frozen" property="frozen"/>
+                <column id="prioThreshold" property="prioThreshold"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

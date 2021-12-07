@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://controlTower.caption">
+    <layout
+            spacing="true"
+            expand="spacer">
+        <label stylename="h1" value="Control Tower"/>
+        <label stylename="h2" value="Send message to connected users"/>
+        <label value="Type your message here ..."/>
+
+        <textArea id="txtMessage"/>
+        <button id="btnSendMessage" caption="Send"/>
+        <label stylename="h2" value="Test Enumerations"/>
+        <label id="spacer"/>
+
+        <label stylename="h2" value="Priority comparison"/>
+    </layout>
+</window>

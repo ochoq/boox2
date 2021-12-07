@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://createBudget.caption">
+    <layout spacing="true">
+        <textField id="txtName" caption="Budget name"/>
+        <textField id="txtYear" caption="Budget year">
+            <validators>
+                <!--                <regexp regexp="^(2021|2022|2023|2024|2025)$"/>-->
+                <regexp regexp="^(202)[1-9]{1}$" message="Must be a year in the range 2020-2029" />
+            </validators>
+        </textField>
+        <label/>
+        <checkBox caption="Create capacity" id="chkCapacity"/>
+        <label value="Create capacity lines for all existing active teams."/>
+        <checkBox caption="Create demand" id="chkDemand"/>
+        <label value="Create empty demand lines for all IPRB not closed for the given year."/>
+        <label/>
+        <buttonsPanel align="BOTTOM_RIGHT">
+            <button id="btnCreate" caption="Create"/>
+            <button id="btnCancel" caption="Cancel"/>
+        </buttonsPanel>
+    </layout>
+</window>

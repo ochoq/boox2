@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://teams.caption">
+    <data>
+        <collection id="teamsDc" class="com.choqnet.budget.entity.Team">
+            <fetchPlan extends="_base">
+                <property name="parent" fetchPlan="_base">
+                    <property name="level"/>
+                    <property name="gbl"/>
+                    <property name="gbd"/>
+                    <property name="domain"/>
+                </property>
+                <property name="level"/>
+                <property name="gbl"/>
+                <property name="gbd"/>
+                <property name="domain"/>
+            </fetchPlan>
+            <loader id="teamsDl">
+                <query>
+                    <![CDATA[select e from Team e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" responsive="true" expand="table">
+        <label stylename="h1" value="Teams Management"/>
+
+        <filter id="filter" columnsCount="3" dataLoader="teamsDl">
+            <properties include=".*"/>
+        </filter>
+        <treeDataGrid id="table"
+                      height="100%" width="100%"
+                      selectionMode="MULTI"
+                      editorEnabled="true"
+                      editorBuffered="true"
+                      responsive="true"
+                      hierarchyProperty="parent"
+                      dataContainer="teamsDc">
+            <actions>
+                <action id="bulkEdit" type="bulkEdit">
+                    <properties>
+                        <property name="includeProperties" value="selectable,mainGTM,enabled,source"/>
+                    </properties>
+                </action>
+                <action id="refresh" type="refresh"/>
+            </actions>
+            <buttonsPanel
+                    alwaysVisible="true"
+                    responsive="true"
+                    spacing="true">
+                <button id="btnAdd" caption="Add Child" icon="ADD_ACTION"/>
+                <button id="btnRemove" caption="Remove" icon="TRASH"/>
+                <button id="teamsTableBulkEditBtn" action="table.bulkEdit"/>
+                <button id="teamsTableRefreshBtn" action="table.refresh"/>
+                <button id="btnMove" caption="Bulk Move" icon="ARROWS"/>
+                <button id="btnUpload" caption="Upload Data" icon="UPLOAD"/>
+            </buttonsPanel>
+            <columns>
+                <column id="name" property="name"/>
+                <column id="parent" property="parent"/>
+                <column id="source" property="source"/>
+                <column id="sourceName" property="sourceName"/>
+                <column id="sourceID" property="sourceID"/>
+                <column id="mainGTM" property="mainGTM"/>
+                <column id="icTarget" property="icTarget"/>
+                <column id="enabled" property="enabled"/>
+                <column id="selectable" property="selectable"/>
+                <column id="updated" property="updated" editable="false"/>
+                <column id="fullName" property="fullName" editable="false"/>
+
+                <!--
+                <column id="fullName" property="fullName" editable="false"/>
+                <column id="level" property="level" editable="false"/>
+                <column id="gbl" property="gbl" editable="false"/>
+                <column id="gbd" property="gbd" editable="false"/>
+                <column id="domain" property="domain" editable="false"/>
+                -->
+            </columns>
+        </treeDataGrid>
+
+    </layout>
+</window>

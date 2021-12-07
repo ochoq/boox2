@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://capacityScreen.caption">
+    <data>
+        <collection id="capacitiesDc" class="com.choqnet.budget.entity.Capacity">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="team">
+                    <property name="gbl"/>
+                    <property name="gbd"/>
+                    <property name="domain"/>
+                    <property fetchPlan="_base" name="parent">
+                        <property name="parent" fetchPlan="_base"/>
+                    </property>
+                </property>
+                <property fetchPlan="_base" name="budget"/>
+            </fetchPlan>
+            <loader id="capacitiesDl">
+                <query>
+                    <![CDATA[select e from Capacity e where e.name IS NULL]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="capacitiesTable">
+        <hbox spacing="true" width="100%">
+            <label stylename="h1" value="Capacity Management" align="MIDDLE_LEFT"/>
+            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+        </hbox>
+        <filter id="filter" columnsCount="3" dataLoader="capacitiesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="fltOnTeam" name="Filter teams" default="true">
+                    <propertyFilter property="team.fullName" operation="CONTAINS" operationEditable="true"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <buttonsPanel>
+            <button id="btnAdd" caption="Add Teams" icon="USER_PLUS"/>
+            <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
+        </buttonsPanel>
+        <dataGrid id="capacitiesTable" width="100%"
+                  editorEnabled="true"
+                  editorBuffered="true"
+                  dataContainer="capacitiesDc">
+            <columns>
+                <column id="team" property="team.fullName" editable="false"/>
+                <column id="nbWorkingDays" property="nbWorkingDays"/>
+                <column id="fteQ1" property="fteQ1"/>
+                <column id="fteQ2" property="fteQ2"/>
+                <column id="fteQ3" property="fteQ3"/>
+                <column id="fteQ4" property="fteQ4"/>
+                <column id="mdY" property="mdY" editable="false"/>
+                <column id="mdQ1" property="mdQ1" editable="false"/>
+                <column id="mdQ2" property="mdQ2" editable="false"/>
+                <column id="mdQ3" property="mdQ3" editable="false"/>
+                <column id="mdQ4" property="mdQ4" editable="false"/>
+                <column id="rateQ1" property="rateQ1"/>
+                <column id="rateQ2" property="rateQ2"/>
+                <column id="rateQ3" property="rateQ3"/>
+                <column id="rateQ4" property="rateQ4"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

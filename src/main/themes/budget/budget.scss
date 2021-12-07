@@ -1,0 +1,61 @@
+@import "../helium/helium";
+
+@mixin budget {
+  @include helium;
+   .grayArea {
+        background-color: #D2CCEC;
+        border-color: #637497;
+        border-radius: 10px;
+    }
+
+    .sensitive {
+        background-color: lightyellow;
+        color: red;
+    }
+
+    .errorCapture {
+      border-color: red;
+    }
+
+  .v-grid {
+  .v-grid-cell.basicCell {
+          color: #555555;
+          text-align: right;
+      }
+
+      .v-grid-cell.boldCell {
+          background-color: #637497;
+          color: #ffffff;
+          font-weight: bold;
+          text-align: right;
+      }
+
+      .v-grid-cell.rightCell {
+              text-align: right;
+          }
+
+      .v-grid-cell.italicCell {
+          font-style: italic;
+          color: #555555;
+      }
+
+      .v-grid-cell.rateCell {
+          color: #ffffff;
+          background-color: #6f5cc3;
+          text-align: right;
+      }
+
+      .v-grid-cell.readonly {
+          color: #ffffff;
+          background-color: #888888;
+          text-align: right;
+      }
+
+       .v-grid-cell.readonlytotal {
+              color: #ffffff;
+              background-color: #555555;
+              text-align: right;
+          }
+  }
+
+}

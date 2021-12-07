@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://editExpenses.caption">
+    <data>
+        <collection id="expensesDc" class="com.choqnet.budget.entity.Expense">
+            <fetchPlan extends="_base">
+                <property name="demand" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="expensesDl">
+                <query>
+                    <![CDATA[select e from Expense e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="expensesTable">
+        <label id="title" stylename="h1" width="100%"/>
+        <filter id="filter" columnsCount="3" dataLoader="expensesDl">
+            <properties include=".*"/>
+        </filter>
+        <hbox spacing="true" width="100%" expand="spacer">
+            <button id="btnAdd" caption="Create new line" icon="ADD_ACTION"/>
+            <button id="btnRemove" caption="Remove selected" icon="TRASH_O"/>
+            <button id="euroDemandsTableBulkEditBtn" action="euroDemandsTable.bulkEdit"/>
+            <button id="euroDemandsTableRefreshBtn" action="euroDemandsTable.refresh"/>
+            <label id="spacer"/>
+            <pagination
+                    itemsPerPageOptions="10,20,50"
+                    itemsPerPageDefaultValue="20"
+                    itemsPerPageUnlimitedOptionVisible="true"
+                    itemsPerPageVisible="true"
+                    align="TOP_RIGHT">
+                <loaderProvider loaderId="expensesDl"/>
+            </pagination>
+        </hbox>
+        <dataGrid
+                id="expensesTable"
+                width="100%"
+                editorEnabled="true"
+                editorBuffered="true"
+                selectionMode="MULTI"
+                dataContainer="euroDemandsDc">
+            <actions>
+                <action id="bulkEdit" type="bulkEdit"/>
+                <action id="refresh" type="refresh"/>
+            </actions>
+            <columns>
+                <column id="name" property="name"/>
+                <column id="amountKEuro" property="amountKEuro"/>
+                <column id="capex" property="capex"/>
+                <column id="accepted" property="accepted"/>
+            </columns>
+        </dataGrid>
+        <button align="BOTTOM_RIGHT" caption="Close" id="btnClose" icon="WINDOW_CLOSE"/>
+
+    </layout>
+</window>

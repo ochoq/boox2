@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://uploadCapacities.caption">
+    <layout spacing="true">
+        <label stylename="h1" value="Capacities upload from Excel list"/>
+        <vbox spacing="true" width="100%"  height="250px" align="TOP_CENTER" expand="dropArea">
+            <fileStorageUpload id="upload" fileStoragePutMode="MANUAL" dropZone="dropArea" caption="Select Excel file..." />
+            <hbox id="dropArea" stylename="grayArea" width="100%">
+                <label align="MIDDLE_CENTER" value="... or drop it here"/>
+            </hbox>
+        </vbox>
+        <button id="btnProcess" caption="Process File"/>
+        <textArea id="txtResult" width="100%" height="200px" align="MIDDLE_CENTER" caption="Results" editable="false"/>
+        <label id="spacer"/>
+        <vbox spacing="false" width="100%" align="BOTTOM_CENTER">
+            <button id="btnClose" caption="Close" align="BOTTOM_RIGHT"/>
+        </vbox>
+    </layout>
+</window>

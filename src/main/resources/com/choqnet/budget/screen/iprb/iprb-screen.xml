@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://iprbScreen.caption">
+    <data>
+        <collection id="iPRBsDc" class="com.choqnet.budget.entity.IPRB">
+            <fetchPlan extends="_base"/>
+            <loader id="iPRBsDl">
+                <query>
+                    <![CDATA[select e from IPRB e order by e.reference]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout expand="iPRBsTable" spacing="true">
+        <label stylename="h1" value="List of existing IPRB"/>
+        <hbox spacing="true"
+              expand="filter"
+              width="100%">
+            <filter id="filter" columnsCount="3" dataLoader="iPRBsDl">
+                <properties include=".*"/>
+            </filter>
+            <pagination
+                    itemsPerPageVisible="true"
+                    itemsPerPageUnlimitedOptionVisible="true"
+                    itemsPerPageOptions="10,20,50,100"
+                    align="MIDDLE_RIGHT"
+                    itemsPerPageDefaultValue="20">
+                <loaderProvider loaderId="iPRBsDl"/>
+            </pagination>
+        </hbox>
+        <dataGrid id="iPRBsTable"
+                  width="100%"
+                  selectionMode="MULTI"
+                  editorEnabled="true"
+                  editorBuffered="true"
+                  dataContainer="iPRBsDc">
+            <actions>
+                <action id="bulkEdit" type="bulkEdit"/>
+                <action id="remove" type="remove"/>
+                <action id="refresh" type="refresh"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true"
+                          width="100%"
+                          spacing="true">
+
+                <button id="iPRBsTableRefreshBtn" action="iPRBsTable.refresh"/>
+                <button id="btnCreate" caption="Create" icon="CREATE_ACTION"/>
+                <button id="iPRBsTableBulkEditBtn" action="iPRBsTable.bulkEdit"/>
+                <button id="iPRBsTableRemoveBtn" action="iPRBsTable.remove"/>
+                <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
+                <button id="btnClose" caption="Close" icon="CLOSE"/>
+
+
+
+
+            </buttonsPanel>
+            <columns>
+                <column id="reference" property="reference"/>
+                <column id="name" property="name"/>
+                <column id="firstMonthOff" property="firstMonthOff"/>
+                <column id="portfolioClassification" property="portfolioClassification"/>
+                <column id="legalEntity" property="legalEntity"/>
+                <column id="strategicProgram" property="strategicProgram"/>
+                <column id="activityType" property="activityType"/>
+                <column id="newProductIndicator" property="newProductIndicator"/>
+                <column id="groupOffering" property="groupOffering"/>
+                <column id="owner" property="owner"/>
+                <column id="estCAPI" property="estCAPI"/>
+                <column id="estOOI" property="estOOI"/>
+                <column id="startDate" property="startDate"/>
+                <column id="endDate" property="endDate"/>
+                <column id="comment" property="comment"/>
+                <column id="updated" property="updated" editable="false"/>
+                <column id="projectType" property="projectType"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

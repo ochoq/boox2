@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://editDetails.caption">
+    <data>
+        <collection id="detailsDc" class="com.choqnet.budget.entity.Detail">
+            <fetchPlan extends="_base">
+                <property name="team" fetchPlan="_instance_name">
+                    <property name="name"/>
+                    <property name="enabled"/>
+                    <property name="selectable"/>
+                </property>
+                <property name="onePager" fetchPlan="_base"/>
+                <property name="demand" fetchPlan="_base">
+                    <property name="iprb" fetchPlan="_base"/>
+                    <property name="budget" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="detailsDl">
+                <query>
+                    <![CDATA[select e from Detail e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="detailsTable">
+        <label id="title" stylename="h1"/>
+        <filter id="filter" columnsCount="3" dataLoader="detailsDl">
+            <properties include=".*"/>
+        </filter>
+        <hbox spacing="true" width="100%" expand="spacer">
+            <button id="btnAdd" caption="Create new line" icon="ADD_ACTION"/>
+            <button id="btnRemove" caption="Remove selected" icon="TRASH_O"/>
+            <label id="spacer"/>
+            <pagination
+                    itemsPerPageOptions="10,20,50"
+                    itemsPerPageDefaultValue="20"
+                    itemsPerPageUnlimitedOptionVisible="true"
+                    itemsPerPageVisible="true"
+                    align="TOP_RIGHT">
+                <loaderProvider loaderId="detailsDl"/>
+            </pagination>
+        </hbox>
+
+        <dataGrid id="detailsTable"
+                  width="100%"
+                  editorEnabled="true"
+                  editorBuffered="true"
+                  selectionMode="MULTI"
+                  dataContainer="detailsDc">
+            <columns>
+                <column id="team" property="team"/>
+                <column id="topic" property="topic"/>
+                <column id="roadmap" property="roadmap"/>
+                <column id="detail" property="detail"/>
+                <column id="tShirt" property="tShirt"/>
+                <column id="mdY" property="mdY" />
+                <column id="mdQ1" property="mdQ1" />
+                <column id="mdQ2" property="mdQ2" />
+                <column id="mdQ3" property="mdQ3" />
+                <column id="mdQ4" property="mdQ4" />
+                <column id="onePager" property="onePager"/>
+                <column id="category" property="category"/>
+                <column id="priority" property="priority"/>
+            </columns>
+        </dataGrid>
+        <button align="BOTTOM_RIGHT" caption="Close" id="btnClose" icon="WINDOW_CLOSE"/>
+    </layout>
+</window>

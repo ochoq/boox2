@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://iprbSelector.caption">
+    <data>
+        <collection id="iPRBsDc" class="com.choqnet.budget.entity.IPRB">
+            <fetchPlan extends="_base"/>
+            <loader id="iPRBsDl">
+                <query>
+                    <![CDATA[select e from IPRB e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="iPRBsTable">
+        <dataGrid
+                id="iPRBsTable"
+                width="100%"
+                selectionMode="MULTI_CHECK"
+                dataContainer="iPRBsDc">
+            <columns>
+                <column id="reference" property="reference"/>
+                <column id="name" property="name"/>
+                <column id="legalEntity" property="legalEntity"/>
+                <column id="groupOffering" property="groupOffering"/>
+                <column id="owner" property="owner"/>
+                <column id="estCAPI" property="estCAPI"/>
+                <column id="estOOI" property="estOOI"/>
+                <column id="startDate" property="startDate"/>
+                <column id="endDate" property="endDate"/>
+                <column id="firstMonthOff" property="firstMonthOff"/>
+            </columns>
+        </dataGrid>
+        <buttonsPanel width="100%">
+            <button id="btnCancel" caption="Cancel" align="BOTTOM_LEFT"/>
+            <button id="btnAdd" caption="Add selected" align="BOTTOM_RIGHT"/>
+        </buttonsPanel>
+    </layout>
+</window>

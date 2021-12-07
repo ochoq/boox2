@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://demandManagement.caption">
+    <data>
+        <collection id="demandsDc" class="com.choqnet.budget.entity.Demand">
+            <fetchPlan extends="_base">
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="details" fetchPlan="_base"/>
+                <property name="expenses" fetchPlan="_base"/>
+                <property name="budget" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="demandsDl">
+                <query>
+                    <![CDATA[select e from Demand e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <layout spacing="true" expand="demandsTable">
+        <hbox spacing="true" width="100%">
+            <label stylename="h1" value="Demand Management" align="MIDDLE_LEFT"/>
+            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+        </hbox>
+        <hbox spacing="true" width="100%" expand="filter">
+            <filter id="filter" columnsCount="3" dataLoader="demandsDl">
+                <properties include=".*"/>
+                <configurations>
+                    <configuration id="fltOnDemand" name="Demands filter" default="true">
+                        <propertyFilter property="iprb.reference" caption="IPRB Reference" operation="CONTAINS"/>
+                        <propertyFilter property="iprb.name" caption="IPRB Name" operation="CONTAINS"/>
+                    </configuration>
+                </configurations>
+            </filter>
+
+        </hbox>
+        <hbox spacing="true" expand="spacer" width="100%">
+            <button id="demandsTableRefreshBtn" action="demandsTable.refresh"/>
+            <button id="btnAdd" caption="Add missing IPRB's demand" icon="ADD_ACTION"/>
+            <button id="btnRemove" caption="Remove selected" icon="TRASH_O"/>
+            <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
+            <label id="spacer"/>
+            <pagination
+                    align="MIDDLE_RIGHT"
+                    itemsPerPageVisible="true"
+                    itemsPerPageOptions="10,20,50,100"
+                    itemsPerPageUnlimitedOptionVisible="true"
+                    itemsPerPageDefaultValue="50">
+                <loaderProvider loaderId="demandsDl"/>
+            </pagination>
+        </hbox>
+        <dataGrid id="demandsTable"
+                  selectionMode="MULTI"
+                  width="100%"
+                  dataContainer="demandsDc">
+            <actions>
+                <action id="refresh" type="refresh"/>
+            </actions>
+            <columns>
+                <column id="iprb" property="iprb"/>
+                <column id="iprbName" property="iprb.name"/>
+                <column id="mdY" property="mdY"/>
+                <column id="mdQ1" property="mdQ1"/>
+                <column id="mdQ2" property="mdQ2"/>
+                <column id="mdQ3" property="mdQ3"/>
+                <column id="mdQ4" property="mdQ4"/>
+                <column id="euroAmount" property="euroAmount"/>
+                <column id="details" width="75px">
+                    <componentRenderer/>
+                </column>
+                <column id="services" caption="Non Labor" width="75px">
+                    <componentRenderer/>
+                </column>
+            </columns>
+        </dataGrid>
+
+    </layout>
+</window>

@@ -1,0 +1,8 @@
+@import "budget-defaults";
+@import "addons";
+@import "budget";
+
+.budget {
+  @include addons;
+  @include budget;
+}

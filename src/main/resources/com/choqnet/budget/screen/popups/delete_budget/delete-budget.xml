@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://deleteBudget.caption">
+    <layout spacing="true">
+        <label stylename="h1" value="Budget Deletion Confirmation"/>
+        <label/>
+        <label value="You're about to delete all the data related to the budget:"/>
+        <label id="txtWarning" stylename="bold"/>
+        <label/>
+        <label value="Confirm by typing its name again in the text field below."/>
+        <textField id="txtConfirm" stylename="sensitive"/>
+        <label/>
+        <hbox width="100%">
+            <button id="btnCancel" caption="Cancel" icon="EDITOR_CANCEL" align="BOTTOM_LEFT"/>
+            <button id="btnDelete" caption="Delete" icon="TRASH_O" align="BOTTOM_RIGHT"/>
+        </hbox>
+
+    </layout>
+</window>

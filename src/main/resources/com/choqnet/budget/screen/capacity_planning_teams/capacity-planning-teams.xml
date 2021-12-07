@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://capacityPlanningTeams.caption">
+    <data>
+        <collection id="cPTeamsDc" class="com.choqnet.budget.entity.CPTeam">
+            <fetchPlan extends="_base"/>
+            <loader id="cPTeamsDl">
+                <query>
+                    <![CDATA[select e from CPTeam e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" width="100%" expand="cPTeamsTable">
+        <hbox spacing="true" width="100%" expand="title">
+            <label stylename="h1" id="title" value="Capacity planning by Team" align="MIDDLE_LEFT"/>
+            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+            <comboBox id="cmbPriority" caption="Kept demand up to (included)" align="MIDDLE_RIGHT"/>
+        </hbox>
+        <dataGrid id="cPTeamsTable" width="100%" dataContainer="cPTeamsDc">
+            <columns>
+                <column id="capaName" property="capacity.team.fullName"/>
+                <column id="labelQ1" property="labelQ1"/>
+                <column id="labelQ2" property="labelQ2"/>
+                <column id="labelQ3" property="labelQ3"/>
+                <column id="labelQ4" property="labelQ4"/>
+                <column id="parentLevel" property="capacity.team.level"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>
