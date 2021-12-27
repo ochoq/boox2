@@ -1,8 +1,9 @@
 package com.choqnet.budget.screen.demand;
 
+import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.screen.popups.edit_details.EditDetails;
-import com.choqnet.budget.screen.popups.editexpenses.EditExpenses;
+import com.choqnet.budget.screen.popups.edit_expenses.EditExpenses;
 import com.choqnet.budget.screen.popups.iprb_selector.IprbSelector;
 import com.choqnet.budget.screen.popups.upload_demand.UploadDemand;
 import io.jmix.core.DataManager;
@@ -18,6 +19,9 @@ import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,10 +53,15 @@ public class DemandManagement extends Screen {
     private Button btnRemove;
     @Autowired
     private FetchPlans fetchPlans;
+    @Autowired
+    private Button btnUpload;
 
     // *** init & decoration functions
     @Subscribe
     public void onInit(InitEvent event) {
+        // upload feature only visible from admin
+        btnUpload.setVisible("admin".equals(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+
         List<Budget> budgets = dataManager.load(Budget.class)
                 .query("select e from Budget e order by e.year desc, e.name asc")
                 .list();
@@ -186,7 +195,7 @@ public class DemandManagement extends Screen {
         UploadDemand uploadDemand = screenBuilders.screen(this)
                 .withScreenClass(UploadDemand.class)
                 .withOpenMode(OpenMode.DIALOG)
-                .withAfterCloseListener(z -> {
+                .withAfterCloseListener(e -> {
                     notifications.create()
                             .withType(Notifications.NotificationType.TRAY)
                             .withCaption("File upload utility closed.")
@@ -230,7 +239,17 @@ public class DemandManagement extends Screen {
         demandsDl.load();
     }
 
-
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">>" + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
+    }
 
 
 }

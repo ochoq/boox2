@@ -2,6 +2,7 @@ package com.choqnet.budget.entity;
 
 import com.choqnet.budget.entity.datalists.GTM;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 
@@ -23,7 +24,6 @@ public class OnePager {
     @Column(name = "GTM")
     private String gtm;
 
-    @InstanceName
     @Column(name = "VALUE_")
     private String value;
 
@@ -49,5 +49,11 @@ public class OnePager {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    @InstanceName
+    @DependsOnProperties({"gtm", "value"})
+    public String getInstanceName() {
+        return String.format("%s %s", gtm, value);
     }
 }

@@ -1,5 +1,7 @@
 package com.choqnet.budget.screen.teams;
 
+import com.choqnet.budget.UtilBean;
+import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Capacity;
 import com.choqnet.budget.entity.Team;
 import com.choqnet.budget.screen.popups.parent_chooser.ParentChooser;
@@ -16,6 +18,9 @@ import io.jmix.ui.component.data.ValueSource;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.inject.Named;
 import java.time.LocalDateTime;
@@ -47,6 +52,10 @@ public class Teams extends Screen {
 
     private Team oldParent;
     private String oldName;
+    @Autowired
+    private UtilBean utilBean;
+    @Autowired
+    private Button btnUpload;
 
     // *** UI functions
     @Subscribe
@@ -54,6 +63,8 @@ public class Teams extends Screen {
         teamsDl.load();
         table.expandAll();
         filter.setExpanded(false);
+        // upload feature only visible from admin
+        btnUpload.setVisible("admin".equals(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
     }
 
     @Install(to = "table.parent", subject="editFieldGenerator")
@@ -114,6 +125,22 @@ public class Teams extends Screen {
         uploadTeams.show();
     }
 
+    @Subscribe("btnRefreshFullName")
+    public void onBtnRefreshFullNameClick(Button.ClickEvent event) {
+        // browse all teams to restore their fullNames, starting from all the teams w/o parent
+        List<Team> startTeams = dataManager.load(Team.class).query("select e from Team e where e.parent is null").list();
+        for (Team branch: startTeams) {
+            utilBean.propagateFullName(branch);
+        }
+        notifications.create()
+                .withCaption("Refresh done.")
+                .withType(Notifications.NotificationType.TRAY)
+                .show();
+
+    }
+
+
+
     // *** data functions
     @Subscribe("btnAdd")
     public void onBtnAddClick(Button.ClickEvent event) {
@@ -165,7 +192,7 @@ public class Teams extends Screen {
                 || !oldName.equals(target.getName())
 
         ) {
-            propagateFullName(target);
+            utilBean.propagateFullName(target);
         }
         teamsDl.load();
         tableRefresh.execute();
@@ -178,18 +205,18 @@ public class Teams extends Screen {
         oldName = event.getItem().getName();
     }
 
-    private void propagateFullName(Team team) {
-        team.setFullName(team.getParent()==null ? team.getName() : team.getParent().getFullName() + "-" + team.getName());
-        dataManager.save(team);
-        List<Team> children = dataManager.load(Team.class)
-                .query("select e from Team e where e.parent = :parent")
-                .parameter("parent", team)
-                .list();
-        for (Team child: children) {
-            propagateFullName(child);
-        }
-    }
 
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">>" + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
+    }
 
 
 

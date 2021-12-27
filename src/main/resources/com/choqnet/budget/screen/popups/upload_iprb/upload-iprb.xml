@@ -4,7 +4,11 @@
     <layout spacing="true">
         <label stylename="h1" value="IPRB upload from Excel list"/>
         <vbox spacing="true" width="100%"  height="250px" align="TOP_CENTER" expand="dropArea">
-            <fileStorageUpload id="upload" fileStoragePutMode="MANUAL" dropZone="dropArea" caption="Select Excel file..." />
+            <fileStorageUpload id="upload"
+                               fileStoragePutMode="MANUAL"
+                               dropZone="dropArea"
+                               showFileName="true"
+                               caption="Select Excel file..." />
             <hbox id="dropArea" stylename="grayArea" width="100%">
                 <label align="MIDDLE_CENTER" value="... or drop it here"/>
             </hbox>

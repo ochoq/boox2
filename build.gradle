@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'org.springframework.boot'
 
 jmix {
-    bomVersion = '1.1.0'
+    bomVersion = '1.1.1'
 }
 
 group = 'com.company'
@@ -25,14 +25,13 @@ dependencies {
     implementation 'io.jmix.data:jmix-eclipselink-starter'
     implementation 'io.jmix.ui:jmix-ui-starter'
     implementation 'io.jmix.ui:jmix-ui-data-starter'
-    implementation 'io.jmix.ui:jmix-ui-widgets-compiled'
     implementation 'io.jmix.security:jmix-security-starter'
     implementation 'io.jmix.security:jmix-security-ui-starter'
     implementation 'io.jmix.security:jmix-security-data-starter'
     implementation 'io.jmix.localfs:jmix-localfs-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
-
+    implementation(platform("org.apache.logging.log4j:log4j-bom:2.15.0"))
 
     testImplementation('org.springframework.boot:spring-boot-starter-test:2.6.1') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -51,6 +50,11 @@ dependencies {
     implementation("io.jmix.audit:jmix-audit-ui-starter")
     implementation("io.jmix.audit:jmix-audit-starter")
     implementation("org.postgresql:postgresql")
+    implementation("io.jmix.ui:jmix-charts-starter")
+    widgets("io.jmix.ui:jmix-charts-widgets")
+    widgets("io.jmix.ui:jmix-ui-widgets")
+    implementation("io.jmix.email:jmix-email-starter")
+    implementation("io.jmix.email:jmix-email-ui-starter")
 }
 
 test {
@@ -58,4 +62,8 @@ test {
 }
 
 
-version = '1'
+//version = '1'
+compileWidgets {
+    generate "com.choqnet.budget.widgets.CustomWidgetSet"
+    includePaths("**/io/jmix/**/widget/**", "**/com/choqnet/budget/widgets/**")
+}

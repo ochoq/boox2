@@ -2,6 +2,11 @@ package com.choqnet.budget.screen.login;
 
 import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
+import io.jmix.core.metamodel.annotation.DateTimeFormat;
+import io.jmix.email.EmailException;
+import io.jmix.email.EmailInfo;
+import io.jmix.email.EmailInfoBuilder;
+import io.jmix.email.Emailer;
 import io.jmix.securityui.authentication.AuthDetails;
 import io.jmix.securityui.authentication.LoginScreenSupport;
 import io.jmix.ui.JmixApp;
@@ -19,6 +24,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @UiController("LoginScreen")
@@ -57,12 +66,42 @@ public class LoginScreen extends Screen {
     private JmixApp app;
 
     private final Logger log = LoggerFactory.getLogger(LoginScreen.class);
+    @Autowired
+    private VBoxLayout loginWrapper;
+    @Autowired
+    private VBoxLayout registerForm;
+    @Autowired
+    private VBoxLayout loginMainBox;
+    @Autowired
+    private RadioButtonGroup<String> rdgRole;
+    @Autowired
+    private TextField<String> txtFirstName;
+    @Autowired
+    private TextField<String> txtLastName;
+    @Autowired
+    private TextField<String> txtEmail;
+    @Autowired
+    private Emailer emailer;
+    @Autowired
+    private VBoxLayout congratsPanel;
+    @Autowired
+    private TextArea<String> txtCongrats;
+    @Autowired
+    private TextArea txtComment;
 
     @Subscribe
     private void onInit(InitEvent event) {
         usernameField.focus();
         initLocalesField();
         initDefaultCredentials();
+        // sets the role's radioButtonGroup's items
+        List<String> list = new ArrayList<>();
+        list.add("Viewer");
+        list.add("Product Owner");
+        list.add("Product Manager");
+        list.add("Delivery Manager");
+        rdgRole.setOptionsList(list);
+        rdgRole.setValue("Viewer");
     }
 
     private void initLocalesField() {
@@ -124,4 +163,52 @@ public class LoginScreen extends Screen {
                     .show();
         }
     }
+
+
+
+    // *** Custom Part
+    @Subscribe("lnkRegister")
+    public void onLnkRegisterClick(Button.ClickEvent event) {
+        loginMainBox.setVisible(false);
+        registerForm.setVisible(true);
+    }
+
+    @Subscribe("btnCancel")
+    public void onBtnCancelClick(Button.ClickEvent event) {
+        loginMainBox.setVisible(true);
+        registerForm.setVisible(false);
+    }
+
+    @Subscribe("btnRegister")
+    public void onBtnRegisterClick(Button.ClickEvent event) {
+        try {
+            txtFirstName.validate();
+            txtLastName.validate();
+            txtEmail.validate();
+        } catch (ValidationException e) {
+            return;
+        }
+
+        if (txtFirstName.isValid() && txtLastName.isValid() && txtEmail.isValid()) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:MM");
+            String msg = "Boox Registration request from:\n\n"+ txtFirstName.getValue() + "\n" + txtLastName.getValue() + "\n" + txtEmail.getValue() + "\n" + rdgRole.getValue() + "\n\nComment:\n" + txtComment.getValue() + "\n\n" + LocalDateTime.now().format(dtf);
+            EmailInfo emailInfo = EmailInfoBuilder.create("choqnet@gmail.com,ochoq@outlook.com,olivier.choquet@ingenico.com","Boox : Account creation request", msg)
+                    .build();
+            try {
+                emailer.sendEmail(emailInfo);
+                registerForm.setVisible(false);
+                congratsPanel.setVisible(true);
+                txtCongrats.setValue("Your request is sent and will be managed shortly.\n\nThanks for you interest in Boox.");
+            } catch (EmailException e) {
+                notifications.create()
+                        .withDescription("Error while sending the request")
+                        .withType(Notifications.NotificationType.ERROR)
+                        .show();
+            }
+        }
+
+    }
+
+
+
 }

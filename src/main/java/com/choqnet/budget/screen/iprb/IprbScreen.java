@@ -47,12 +47,17 @@ public class IprbScreen extends Screen {
     private Button btnClose;
     @Named("iPRBsTable.refresh")
     private RefreshAction iPRBsTableRefresh;
+    @Autowired
+    private Button btnUpload;
 
     @Subscribe
     public void onInit(InitEvent event) {
         filter.setExpanded(false);
         iPRBsDl.load();
         btnClose.setEnabled(false);
+        // upload feature only visible from admin
+        boolean allowed = "admin".equals(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        btnUpload.setVisible("admin".equals(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
     }
 
     // *** UI Functions
@@ -65,6 +70,7 @@ public class IprbScreen extends Screen {
         iprb.setReference(" "+ ((UserDetails)principal).getUsername() + LocalDateTime.now().format(formatter));
         dataManager.save(iprb);
         iPRBsDl.load();
+        iPRBsTable.sort("reference", DataGrid.SortDirection.ASCENDING);
     }
 
     @Subscribe("btnUpload")
@@ -129,6 +135,7 @@ public class IprbScreen extends Screen {
     }
 
     // *** communications
+    // --- General Messaging
     @EventListener
     private void received(UserNotification event) {
         notifications.create()

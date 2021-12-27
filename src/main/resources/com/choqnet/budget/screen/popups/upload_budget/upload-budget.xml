@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://uploadBudget.caption">
+    <data>
+        <collection id="templatesDc" class="com.choqnet.budget.entity.Template">
+            <fetchPlan extends="_base"/>
+            <loader id="templatesDl">
+                <query>
+                    <![CDATA[select e from Template e where e.code='MSBUDGET']]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="templateDc" class="com.choqnet.budget.entity.Template">
+            <fetchPlan extends="_base"/>
+            <loader id="templateDl"/>
+        </instance>
+    </data>
+    <layout spacing="true" expand="spacer">
+        <vbox spacing="true" margin="true">
+            <label stylename="h1" value="Upload MS Acceptance Budget 2022 file."/>
+            <comboBox id="cmbBudget" caption="Pick a budget"/>
+        </vbox>
+        <vbox spacing="true"
+              width="100%" height="150px"
+              margin="true"
+              align="TOP_CENTER" expand="dropArea">
+            <hbox id="dropArea" stylename="grayArea" width="100%" spacing="true" margin="true">
+                <fileStorageUpload id="upload"
+                                   align="TOP_LEFT"
+                                   fileStoragePutMode="MANUAL"
+                                   dropZone="dropArea"
+                                   showFileName="true"
+                                   caption="Select Excel file..."/>
+                <label align="BOTTOM_RIGHT" value="... or drop it here"/>
+            </hbox>
+        </vbox>
+
+        <label/>
+        <textArea id="txtResult" width="100%" height="150px" align="MIDDLE_CENTER" caption="Results" editable="false"/>
+        <label id="spacer"/>
+        <hbox spacing="false" width="100%" align="BOTTOM_CENTER" height="30px">
+            <button id="btnClose" caption="Close" align="BOTTOM_LEFT"/>
+            <button id="btnProcess" caption="Process File" align="BOTTOM_RIGHT"/>
+        </hbox>
+    </layout>
+</window>

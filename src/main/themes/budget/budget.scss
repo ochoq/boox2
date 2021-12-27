@@ -17,6 +17,16 @@
       border-color: red;
     }
 
+    .warning {
+        color: red;
+        background-color: #eeeeee;
+        border-color: red;
+        border-radius: 15px;
+        font-size:25px !important;
+        text-align: center;
+        vertical-align: middle;
+    }
+
   .v-grid {
   .v-grid-cell.basicCell {
           color: #555555;
@@ -29,6 +39,10 @@
           font-weight: bold;
           text-align: right;
       }
+       .v-grid-cell.center {
+           font-weight: bold;
+           text-align: center;
+       }
 
       .v-grid-cell.rightCell {
               text-align: right;
@@ -56,6 +70,32 @@
               background-color: #555555;
               text-align: right;
           }
+
+       .v-grid-cell.green {
+            color: black;
+            background-color: #B6E580;
+            text-align: right;
+       }
+       .v-grid-cell.orange {
+            color: black;
+            background-color: #FFEA94;
+            text-align: right;
+       }
+       .v-grid-cell.red {
+            color: black;
+            background-color: #E58080;
+            text-align: right;
+       }
+       .v-grid-cell.gray {
+            color: black;
+            background-color: #E0E1DF;
+            text-align: right;
+       }
+       .v-grid-cell.empty {
+            color: black;
+            text-align: right;
+       }
+
   }
 
 }

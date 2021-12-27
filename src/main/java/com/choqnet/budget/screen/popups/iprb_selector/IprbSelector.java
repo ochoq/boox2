@@ -8,10 +8,7 @@ import io.jmix.core.SaveContext;
 import io.jmix.ui.component.Button;
 import io.jmix.ui.component.DataGrid;
 import io.jmix.ui.model.CollectionContainer;
-import io.jmix.ui.screen.Screen;
-import io.jmix.ui.screen.Subscribe;
-import io.jmix.ui.screen.UiController;
-import io.jmix.ui.screen.UiDescriptor;
+import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +18,7 @@ import java.util.stream.Collectors;
 
 @UiController("IprbSelector")
 @UiDescriptor("iprb-selector.xml")
+@DialogMode(width = "90%", height = "90%")
 public class IprbSelector extends Screen {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(IprbSelector.class);
     private Budget budget;

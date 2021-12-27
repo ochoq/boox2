@@ -1,10 +1,7 @@
 package com.choqnet.budget.screen.popups.edit_details;
 
 import com.choqnet.budget.UtilBean;
-import com.choqnet.budget.entity.Budget;
-import com.choqnet.budget.entity.Demand;
-import com.choqnet.budget.entity.Detail;
-import com.choqnet.budget.entity.Team;
+import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.Priority;
 import com.choqnet.budget.entity.datalists.TShirt;
 import io.jmix.core.DataManager;
@@ -19,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @UiController("EditDetails")
 @UiDescriptor("edit-details.xml")
+@DialogMode(width = "90%", height = "90%")
 public class EditDetails extends Screen {
-    private static final Logger log = LoggerFactory.getLogger(EditDetails.class);
-    private Demand demand;
+
     @Autowired
     private Label<String> title;
     @Autowired
@@ -36,13 +33,30 @@ public class EditDetails extends Screen {
     private DataManager dataManager;
     @Autowired
     private UiComponents uiComponents;
-
-    private Double mdY, mdQ1, mdQ2, mdQ3, mdQ4;
-    private TShirt tShirt;
     @Autowired
     private Button btnRemove;
 
+    private static final Logger log = LoggerFactory.getLogger(EditDetails.class);
+    private Demand demand;
+    private Double mdY, mdQ1, mdQ2, mdQ3, mdQ4;
+    private TShirt tShirt;
+
     // *** Initialization functions
+    @Subscribe
+    public void onInit(InitEvent event) {
+        filter.setExpanded(false);
+        btnRemove.setEnabled(false);
+        // style if the table
+        detailsTable.getHeaderRow(0).getCell("mdY").setStyleName("boldCell");
+        detailsTable.getHeaderRow(0).getCell("mdQ1").setStyleName("boldCell");
+        detailsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("boldCell");
+        detailsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("boldCell");
+        detailsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("boldCell");
+        for (int i=1; i<5; i++) {
+            detailsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "rightCell");
+        }
+        detailsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
+    }
 
     public void setContext(Demand demand)  {
         title.setValue("Details for IPRB: " + demand.getIprb().getReference() + ", in budget " + demand.getBudget().getName());
@@ -52,7 +66,7 @@ public class EditDetails extends Screen {
         detailsDl.setQuery("select e from Detail e where e.demand = :demand");
         detailsDl.setParameter("demand", demand);
         detailsDl.load();
-        // set the column editable mode, depending on the budget's lifecycle
+        // set the columns' editable mode, depending on the budget's lifecycle
         boolean oneQuarterClosed = false;
         for (int i = 1; i< 5; i++) {
             boolean edit = utilBean.giveProp(budget, "closeQ" + i).equals("false");
@@ -68,7 +82,8 @@ public class EditDetails extends Screen {
         }
     }
 
-    // restricts the list of teams to selectable teams only; display it with a combo
+    // *** UI Customisation
+    // TEAMS - restricts the list of teams to selectable teams only; display it with a combo
     @Install(to = "detailsTable.team", subject = "editFieldGenerator")
     private Field<Team> editingTeam(DataGrid.EditorFieldGenerationContext<Detail> editorContext) {
         ComboBox<Team> cb = uiComponents.create(ComboBox.NAME);
@@ -77,26 +92,14 @@ public class EditDetails extends Screen {
         return cb;
     }
 
-    // OnePager renderer is a comboBox
-
-
-    @Subscribe
-    public void onInit(InitEvent event) {
-        filter.setExpanded(false);
-        btnRemove.setEnabled(false);
-        // style if the table
-        detailsTable.getHeaderRow(0).getCell("mdY").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ1").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("boldCell");
-        for (int i=1; i<5; i++) {
-            detailsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "rightCell");
-        }
-        detailsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
-
+    // ONEPAGER - OnePager renderer is a comboBox
+    @Install(to = "detailsTable.onePager", subject = "editFieldGenerator")
+    private Field<OnePager> editOnePager(DataGrid.EditorFieldGenerationContext efc) {
+        ComboBox<OnePager> cb = uiComponents.create(ComboBox.NAME);
+        cb.setValueSource((ValueSource<OnePager>) efc.getValueSourceProvider().getValueSource("onePager"));
+        cb.setOptionsList(dataManager.load(OnePager.class).all().list());
+        return cb;
     }
-
 
     /*
     // makes the column mdY in readonly if an actual TShirt size is set
@@ -112,7 +115,6 @@ public class EditDetails extends Screen {
    */
 
     // *** UI functions
-
     @Subscribe("btnAdd")
     public void onBtnAddClick(Button.ClickEvent event) {
         // creates a new Detail with the right context
@@ -140,10 +142,7 @@ public class EditDetails extends Screen {
         closeWithDefaultAction();
     }
 
-
-
     // *** Data functions
-
     @Subscribe("detailsTable")
     public void onDetailsTableEditorOpen(DataGrid.EditorOpenEvent<Detail> event) {
         // saves the values of the effort properties for a further comparison
@@ -163,7 +162,6 @@ public class EditDetails extends Screen {
                 !event.getItem().getMdQ3().equals(mdQ3) ||
                 !event.getItem().getMdQ4().equals(mdQ4)
         ) {
-            log.info("> mdQx changed");
             event.getItem().setTShirt(TShirt.FREE);
             event.getItem().setMdY(event.getItem().getMdQ1() +
                     event.getItem().getMdQ2() +
@@ -171,7 +169,6 @@ public class EditDetails extends Screen {
                     event.getItem().getMdQ4());
         } else {
             if (!event.getItem().getMdY().equals(mdY)) {
-                log.info(">> mdY changed");
                 Double effort = event.getItem().getMdY();
                 event.getItem().setTShirt(TShirt.FREE);
                 event.getItem().setMdQ1(effort / 4);
@@ -180,7 +177,6 @@ public class EditDetails extends Screen {
                 event.getItem().setMdQ4(effort / 4);
             } else {
                 if (!event.getItem().getTShirt().equals(tShirt)) {
-                    log.info(">>> tShirt changed");
                     Double effort = event.getItem().getTShirt().getId() * 1.0;
                     event.getItem().setMdY(effort);
                     event.getItem().setMdQ1(effort / 4);

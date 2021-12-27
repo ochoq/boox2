@@ -11,20 +11,37 @@
             </loader>
         </collection>
     </data>
-    <layout spacing="true" width="100%" expand="cPTeamsTable">
-        <hbox spacing="true" width="100%" expand="title">
-            <label stylename="h1" id="title" value="Capacity planning by Team" align="MIDDLE_LEFT"/>
+    <layout spacing="true"
+            width="100%"
+            expand="cPTeamsTable">
+        <hbox spacing="true"
+              width="100%"
+              expand="title">
+            <label stylename="h1"
+                   id="title"
+                   value="Capacity Planning by Team"
+                   align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
-            <comboBox id="cmbPriority" caption="Kept demand up to (included)" align="MIDDLE_RIGHT"/>
+            <comboBox id="cmbPriority" caption="Keep demand up to (included)" align="MIDDLE_RIGHT"/>
         </hbox>
-        <dataGrid id="cPTeamsTable" width="100%" dataContainer="cPTeamsDc">
+        <hbox spacing="true" width="100%" expand="spacer">
+            <label value="Name contains: " align="MIDDLE_LEFT"/>
+            <textField id="txtFilter"/>
+            <label id="spacer"/>
+        </hbox>
+        <dataGrid id="cPTeamsTable"
+                  width="100%"
+                  dataContainer="cPTeamsDc">
             <columns>
                 <column id="capaName" property="capacity.team.fullName"/>
-                <column id="labelQ1" property="labelQ1"/>
-                <column id="labelQ2" property="labelQ2"/>
-                <column id="labelQ3" property="labelQ3"/>
-                <column id="labelQ4" property="labelQ4"/>
-                <column id="parentLevel" property="capacity.team.level"/>
+                <column id="labelQ1" property="labelQ1" caption="Q1" width="200px"/>
+                <column id="labelQ2" property="labelQ2" caption="Q2" width="200px"/>
+                <column id="labelQ3" property="labelQ3" caption="Q3" width="200px"/>
+                <column id="labelQ4" property="labelQ4" caption="Q4" width="200px"/>
+                <column id="detail" caption="Details"  width="100px">
+                    <componentRenderer/>
+                </column>
+                <column id="labelY" property="labelY" caption="Full Year" width="200px"/>
             </columns>
         </dataGrid>
     </layout>

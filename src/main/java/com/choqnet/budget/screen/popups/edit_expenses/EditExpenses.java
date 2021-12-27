@@ -1,6 +1,5 @@
-package com.choqnet.budget.screen.popups.editexpenses;
+package com.choqnet.budget.screen.popups.edit_expenses;
 
-import com.choqnet.budget.entity.Budget;
 import com.choqnet.budget.entity.Demand;
 import com.choqnet.budget.entity.Expense;
 import io.jmix.core.DataManager;
@@ -9,17 +8,15 @@ import io.jmix.ui.component.DataGrid;
 import io.jmix.ui.component.Filter;
 import io.jmix.ui.component.Label;
 import io.jmix.ui.model.CollectionLoader;
-import io.jmix.ui.screen.Screen;
-import io.jmix.ui.screen.Subscribe;
-import io.jmix.ui.screen.UiController;
-import io.jmix.ui.screen.UiDescriptor;
+import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @UiController("EditExpenses")
 @UiDescriptor("edit_expenses.xml")
+@DialogMode(width = "90%", height = "90%")
 public class EditExpenses extends Screen {
     @Autowired
-    private Label title;
+    private Label<String> title;
 
     // *** Properties
     Demand demand;
@@ -32,16 +29,15 @@ public class EditExpenses extends Screen {
     @Autowired
     private DataManager dataManager;
     @Autowired
-    private DataGrid<Expense> euroDemandsTable;
+    private DataGrid<Expense> expensesTable;
 
     // *** Initialization functions
 
     public void setContext(Demand demand) {
         title.setValue("Extra Demands in k€ for the IPRB: " + demand.getIprb().getReference() + ", in budget " + demand.getBudget().getName());
         this.demand = demand;
-        Budget budget = demand.getBudget();
         // loads the relevant set of data
-        expensesDl.setQuery("select e from EuroDemand e where e.demand = :demand");
+        expensesDl.setQuery("select e from Expense e where e.demand = :demand");
         expensesDl.setParameter("demand", demand);
         expensesDl.load();
     }
@@ -62,10 +58,14 @@ public class EditExpenses extends Screen {
         expensesDl.load();
     }
 
-    @Subscribe("euroDemandsTable")
-    public void onEuroDemandsTableSelection(DataGrid.SelectionEvent<Expense> event) {
+    @Subscribe("expensesTable")
+    public void onExpensesTableSelection(DataGrid.SelectionEvent<Expense> event) {
         btnRemove.setEnabled(true);
     }
+
+
+
+
 
     @Subscribe("btnClose")
     public void onBtnCloseClick(Button.ClickEvent event) {
@@ -74,17 +74,17 @@ public class EditExpenses extends Screen {
 
     @Subscribe("btnRemove")
     public void onBtnRemoveClick(Button.ClickEvent event) {
-        dataManager.remove(euroDemandsTable.getSelected());
+        dataManager.remove(expensesTable.getSelected());
         expensesDl.load();
     }
 
     // *** Data Functions
-
-    @Subscribe("euroDemandsTable")
-    public void onEuroDemandsTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Expense> event) {
+    @Subscribe("expensesTable")
+    public void onExpensesTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Expense> event) {
         dataManager.save(event.getItem());
         expensesDl.load();
     }
+
 
 
 }

@@ -195,6 +195,21 @@ public class Detail {
         this.id = id;
     }
 
+    public Double getQx(int i)  {
+        switch (i) {
+            case 1:
+                return getMdQ1();
+            case 2:
+                return getMdQ2();
+            case 3:
+                return getMdQ3();
+            case 4:
+                return getMdQ4();
+            default:
+                return 0.0;
+        }
+    }
+
     @InstanceName
     @DependsOnProperties({"topic", "team"})
     public String getInstanceName() {

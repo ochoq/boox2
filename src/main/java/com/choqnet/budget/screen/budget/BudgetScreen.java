@@ -1,5 +1,6 @@
 package com.choqnet.budget.screen.budget;
 
+import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Budget;
 import com.choqnet.budget.screen.popups.create_budget.CreateBudget;
 import com.choqnet.budget.screen.popups.delete_budget.DeleteBudget;
@@ -15,6 +16,7 @@ import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 
 @UiController("BudgetScreen")
 @UiDescriptor("budget-screen.xml")
@@ -94,5 +96,15 @@ public class BudgetScreen extends Screen {
         budgetsDl.load();
     }
 
-
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">>" + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
+    }
 }

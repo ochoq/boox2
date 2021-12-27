@@ -55,6 +55,7 @@
 
             </buttonsPanel>
             <columns>
+                <column id="outBudget" property="outBudget" width="75"/>
                 <column id="reference" property="reference"/>
                 <column id="name" property="name"/>
                 <column id="firstMonthOff" property="firstMonthOff"/>

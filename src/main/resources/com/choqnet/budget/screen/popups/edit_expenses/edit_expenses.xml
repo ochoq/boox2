@@ -21,8 +21,8 @@
         <hbox spacing="true" width="100%" expand="spacer">
             <button id="btnAdd" caption="Create new line" icon="ADD_ACTION"/>
             <button id="btnRemove" caption="Remove selected" icon="TRASH_O"/>
-            <button id="euroDemandsTableBulkEditBtn" action="euroDemandsTable.bulkEdit"/>
-            <button id="euroDemandsTableRefreshBtn" action="euroDemandsTable.refresh"/>
+            <button id="euroDemandsTableBulkEditBtn" action="expensesTable.bulkEdit"/>
+            <button id="euroDemandsTableRefreshBtn" action="expensesTable.refresh"/>
             <label id="spacer"/>
             <pagination
                     itemsPerPageOptions="10,20,50"
@@ -39,7 +39,7 @@
                 editorEnabled="true"
                 editorBuffered="true"
                 selectionMode="MULTI"
-                dataContainer="euroDemandsDc">
+                dataContainer="expensesDc">
             <actions>
                 <action id="bulkEdit" type="bulkEdit"/>
                 <action id="refresh" type="refresh"/>

@@ -66,6 +66,14 @@ public class Demand {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Budget budget;
 
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
+    }
+
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
+
     public Budget getBudget() {
         return budget;
     }
@@ -86,13 +94,6 @@ public class Demand {
         return temp.orElse(0.0);
     }
 
-    public List<Expense> getEuroDemands() {
-        return expenses;
-    }
-
-    public void setEuroDemands(List<Expense> euroDemands) {
-        this.expenses = euroDemands;
-    }
 
     public Double getMdQ4() {
         Optional<Double> temp = details.stream()

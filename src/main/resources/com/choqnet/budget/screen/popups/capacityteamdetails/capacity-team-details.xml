@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://capacityTeamDetails.caption"
+        xmlns:chart="http://jmix.io/schema/ui/charts">
+    <data>
+        <collection id="detailsDc" class="com.choqnet.budget.entity.Detail">
+            <fetchPlan extends="_base">
+                <property name="team" fetchPlan="_instance_name">
+                    <property name="selectable"/>
+                </property>
+                <property name="demand" fetchPlan="_base">
+                    <property name="iprb" fetchPlan="_base"/>
+                    <property name="budget" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="detailsDl">
+                <query>
+                    <![CDATA[select e from Detail e where e = null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true"
+            expand="mainScreen">
+        <label stylename="h1" id="title"/>
+        <label/>
+        <vbox width="100%"
+              id="mainScreen"
+              spacing="true">
+            <hbox width="100%" height="100%"
+                  spacing="true">
+                <chart:serialChart
+                        id="capaChart"
+                        borderColor="DARKGRAY"
+                        categoryField="quarter"
+                        width="100%" height="100%">
+                    <chart:legend
+                            reversedOrder="true"
+                            periodValueText="total: [[value.sum]]"
+                            fontSize="16"
+                            color="DARKGRAY"
+                            valueWidth="100"
+                            position="RIGHT" />
+                    <chart:valueAxes>
+                        <chart:axis
+                                fontSize="16"
+                                color="DARKGRAY"
+                                position="LEFT"
+                                stackType="REGULAR"
+                                titleColor="DARKGRAY"
+                                titleFontSize="16"
+                                title="MD"/>
+                    </chart:valueAxes>
+                    <chart:categoryAxis
+                        fontSize="16"
+                        color="DARKGRAY"/>
+                    <chart:colors>
+                        <chart:color value="GREEN"/>
+                        <chart:color value="LIGHTGREEN"/>
+                        <chart:color value="YELLOW"/>
+
+                        <chart:color value="ORANGE"/>
+                        <chart:color value="DARKRED"/>
+                        <chart:color value="BLACK"/>
+                    </chart:colors>
+                    <chart:chartCursor/>
+                    <chart:graphs>
+                        <chart:graph
+                                type="COLUMN"
+                                fillAlphas="0.6"
+                                color="GRAY"
+                                title="P1"
+                                valueField="p1"/>
+                        <chart:graph
+                                type="COLUMN"
+                                fillAlphas="0.6"
+                                color="GRAY"
+                                title="P2"
+                                valueField="p2"/>
+                        <chart:graph
+                                type="COLUMN"
+                                fillAlphas="0.6"
+                                color="GRAY"
+                                title="P3"
+                                valueField="p3"/>
+                        <chart:graph
+                                type="COLUMN"
+                                fillAlphas="0.6"
+                                color="GRAY"
+                                title="P4"
+                                valueField="p4"/>
+                        <chart:graph
+                                type="COLUMN"
+                                fillAlphas="0.6"
+                                color="GRAY"
+                                title="P5"
+                                valueField="p5"/>
+                        <chart:graph
+                                type="LINE"
+                                color="BLACK"
+                                lineThickness="2"
+                                title="Capacity"
+                                valueField="capacity"/>
+                    </chart:graphs>
+                </chart:serialChart>
+                <vbox
+                        stylename="background-color: #eeeeee;"
+                        width="100%" height="100%">
+                    <label stylename="h2" align="MIDDLE_CENTER" value="Free billboard to rent here" icon="SMILE_O" />
+                </vbox>
+            </hbox>
+            <vbox width="100%" height="100%"
+                  spacing="true"
+                  expand="detailsTable"
+                  id="dataScreen">
+                <button id="btnChangeIPRB" caption="Change IPRB" icon="font-icon:EXCHANGE"/>
+                <dataGrid id="detailsTable"
+                          width="100%"
+                          selectionMode="MULTI"
+                          editorEnabled="true"
+                          editorBuffered="true"
+                          dataContainer="detailsDc">
+                    <columns>
+                        <column id="team" property="team"/>
+                        <column id="roadmap" property="roadmap"/>
+                        <column id="detail" property="detail"/>
+                        <column id="tShirt" property="tShirt"/>
+                        <column id="mdY" property="mdY"/>
+                        <column id="mdQ1" property="mdQ1"/>
+                        <column id="mdQ2" property="mdQ2"/>
+                        <column id="mdQ3" property="mdQ3"/>
+                        <column id="mdQ4" property="mdQ4"/>
+                        <column id="priority" property="priority"/>
+                        <column id="iprb" property="demand.iprb.reference" editable="false" caption="IPRB"/>
+                    </columns>
+                </dataGrid>
+            </vbox>
+        </vbox>
+        <hbox spacing="true" width="100%">
+            <button align="BOTTOM_RIGHT" id="btnClose" caption="Close" icon="DIALOG_CLOSE"/>
+        </hbox>
+    </layout>
+</window>

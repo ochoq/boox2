@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://iprbChooser.caption">
+    <layout spacing="true" expand="spacer">
+        <label stylename="h2" value="Please choose the destination IPRB"/>
+        <comboBox id="cmbIPRB" />
+        <label id="spacer"/>
+        <hbox spacing="true">
+            <button id="btnCancel" caption="Cancel" align="BOTTOM_RIGHT" icon="DIALOG_CANCEL"/>
+            <button id="btnMove" caption="Move" align="BOTTOM_RIGHT" icon="EXCHANGE"/>
+        </hbox>
+
+
+    </layout>
+</window>

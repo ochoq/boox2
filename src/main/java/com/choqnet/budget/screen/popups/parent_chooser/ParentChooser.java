@@ -1,15 +1,13 @@
 package com.choqnet.budget.screen.popups.parent_chooser;
 
+import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.entity.Team;
 import io.jmix.core.DataManager;
 import io.jmix.core.SaveContext;
 import io.jmix.ui.component.Button;
 import io.jmix.ui.component.ComboBox;
 import io.jmix.ui.component.HasValue;
-import io.jmix.ui.screen.Screen;
-import io.jmix.ui.screen.Subscribe;
-import io.jmix.ui.screen.UiController;
-import io.jmix.ui.screen.UiDescriptor;
+import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -18,6 +16,7 @@ import java.util.Set;
 
 @UiController("ParentChooser")
 @UiDescriptor("parent-chooser.xml")
+@DialogMode(height = "300px", width = "600px")
 public class ParentChooser extends Screen {
     private Set<Team> teamList;
     private List<Team> parentList;
@@ -28,6 +27,8 @@ public class ParentChooser extends Screen {
     private ComboBox<Team> cmbParent;
     @Autowired
     private Button btnConnect;
+    @Autowired
+    private UtilBean utilBean;
 
     public void getTeamList(Set<Team> teams) {
         // populates the combo's option with all teams but the children of the current selection
@@ -59,6 +60,7 @@ public class ParentChooser extends Screen {
             SaveContext sc = new SaveContext();
             for (Team team: teamList) {
                 team.setParent(cmbParent.getValue());
+                utilBean.propagateFullName(team);
                 sc.saving(team);
             }
             dataManager.save(sc);

@@ -335,7 +335,7 @@ public class UploadDemand extends Screen {
                 .list();
         dataManager.remove(details);
         expenses = dataManager.load(Expense.class)
-                .query("select e from EuroDemand e where e.demand.budget = :budget")
+                .query("select e from Expense e where e.demand.budget = :budget")
                 .parameter("budget", budget)
                 .list();
         dataManager.remove(expenses);

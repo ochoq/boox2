@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://jmix.io/schema/ui/window"
-        caption="msg://onePagerBrowse.caption">
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://onePagerBrowse.caption"
+        focusComponent="table">
     <data>
         <collection id="onePagersDc"
                     class="com.choqnet.budget.entity.OnePager">

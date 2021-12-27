@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://mappingBrowse.caption"
+        focusComponent="mappingsTable">
+    <data readOnly="true">
+        <collection id="mappingsDc"
+                    class="com.choqnet.budget.entity.Mapping">
+            <fetchPlan extends="_base"/>
+            <loader id="mappingsDl">
+                <query>
+                    <![CDATA[select e from Mapping e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="mappingsTable" spacing="true">
+        <label stylename="h1" value="Excel Budget Import Mapping Values"/>
+        <filter id="filter"
+                dataLoader="mappingsDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="mappingsTable"
+                  width="100%"
+                  editorEnabled="true"
+                  editorBuffered="true"
+                  selectionMode="MULTI"
+                  dataContainer="mappingsDc">
+
+            <columns>
+                <column property="isMD" id="isMD"/>
+                <column property="colNP" id="colNP"/>
+                <column property="colOGP" id="colOGP"/>
+                <column property="colRUN" id="colRUN"/>
+                <column property="code" id="code"/>
+                <column property="description" id="description"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="btnCreate" caption="Create"/>
+                <button id="btnRemove" caption="Remove"/>
+                <button id="btnNext" caption="Next Column"/>
+            </buttonsPanel>
+        </dataGrid>
+
+    </layout>
+</window>

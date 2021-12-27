@@ -12,7 +12,7 @@
         <vbox id="loginWrapper" height="100%" width="100%">
             <vbox id="loginMainBox"
                   align="MIDDLE_CENTER"
-                  margin="true"
+                  margin="true,true,false,true"
                   spacing="true"
                   stylename="jmix-login-panel"
                   width="AUTO">
@@ -51,7 +51,53 @@
                             align="MIDDLE_CENTER"
                             action="submit"
                             stylename="jmix-login-submit-button"/>
+                    <label/>
+                    <linkButton caption="Not registered already? Request access"
+                                id="lnkRegister"
+                                align="BOTTOM_RIGHT"
+                                icon="ARROW_CIRCLE_RIGHT"/>
                 </vbox>
+            </vbox>
+            <vbox id="registerForm"
+                  align="MIDDLE_CENTER"
+                  visible="false"
+                  margin="true"
+                  spacing="true"
+                  width="AUTO">
+                <label stylename="h1" value="Send a Registration Request"/>
+                <textField id="txtFirstName" caption="First Name">
+                    <validators>
+                        <notEmpty/>
+                    </validators>
+                </textField>
+                <textField id="txtLastName" caption="Last Name">
+                    <validators>
+                        <notEmpty/>
+                    </validators>
+                </textField>
+                <textField id="txtEmail" caption="Valid Email Address">
+                    <validators>
+                        <email/>
+                        <notEmpty/>
+                    </validators>
+                </textField>
+                <radioButtonGroup id="rdgRole" caption="What is your role?"/>
+                <textArea id="txtComment" width="100%" caption="You want to add a comment?"/>
+            <hbox spacing="true">
+                <button id="btnCancel" caption="Cancel" align="BOTTOM_LEFT"/>
+                <button id="btnRegister" caption="Register" align="BOTTOM_RIGHT"/>
+            </hbox>
+            </vbox>
+            <vbox id="congratsPanel"
+                  align="MIDDLE_CENTER"
+                  visible="false"
+                  margin="true"
+                  spacing="true"
+                  width="AUTO">
+                <textArea
+                    id="txtCongrats"
+                    width="100%" align="MIDDLE_CENTER"
+                    editable="false"/>
             </vbox>
         </vbox>
     </layout>

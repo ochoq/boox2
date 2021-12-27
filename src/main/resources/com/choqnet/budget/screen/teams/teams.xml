@@ -27,6 +27,12 @@
 
         <filter id="filter" columnsCount="3" dataLoader="teamsDl">
             <properties include=".*"/>
+            <configurations>
+                <configuration id="default" name="Basic" default="true">
+                    <propertyFilter property="sourceName" operation="CONTAINS" editable="true"/>
+                    <propertyFilter property="fullName" operation="CONTAINS" editable="true"/>
+                </configuration>
+            </configurations>
         </filter>
         <treeDataGrid id="table"
                       height="100%" width="100%"
@@ -39,7 +45,7 @@
             <actions>
                 <action id="bulkEdit" type="bulkEdit">
                     <properties>
-                        <property name="includeProperties" value="selectable,mainGTM,enabled,source"/>
+                        <property name="includeProperties" value="selectable,mainGTM,enabled,source,icTarget"/>
                     </properties>
                 </action>
                 <action id="refresh" type="refresh"/>
@@ -54,6 +60,7 @@
                 <button id="teamsTableRefreshBtn" action="table.refresh"/>
                 <button id="btnMove" caption="Bulk Move" icon="ARROWS"/>
                 <button id="btnUpload" caption="Upload Data" icon="UPLOAD"/>
+                <button id="btnRefreshFullName" caption="Refresh Full Names" icon="EXCLAMATION_TRIANGLE"/>
             </buttonsPanel>
             <columns>
                 <column id="name" property="name"/>

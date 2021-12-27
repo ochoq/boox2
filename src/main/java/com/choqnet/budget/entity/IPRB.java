@@ -74,6 +74,17 @@ public class IPRB {
     @Column(name = "FIRST_MONTH_OFF")
     private String firstMonthOff;
 
+    @Column(name = "OUT_BUDGET")
+    private Boolean outBudget = false;
+
+    public Boolean getOutBudget() {
+        return outBudget==null ? false : outBudget;
+    }
+
+    public void setOutBudget(Boolean outBudget) {
+        this.outBudget = outBudget;
+    }
+
     public String getFirstMonthOff() {
         return firstMonthOff;
     }

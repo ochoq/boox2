@@ -8,16 +8,14 @@ import io.jmix.core.SaveContext;
 import io.jmix.ui.component.Button;
 import io.jmix.ui.component.DataGrid;
 import io.jmix.ui.model.CollectionContainer;
-import io.jmix.ui.screen.Screen;
-import io.jmix.ui.screen.Subscribe;
-import io.jmix.ui.screen.UiController;
-import io.jmix.ui.screen.UiDescriptor;
+import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @UiController("TeamSelector")
 @UiDescriptor("team-selector.xml")
+@DialogMode(width = "90%", height = "90%")
 public class TeamSelector extends Screen {
     @Autowired
     private CollectionContainer<Team> teamsDc;

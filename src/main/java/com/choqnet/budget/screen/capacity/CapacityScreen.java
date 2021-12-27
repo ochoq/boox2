@@ -1,5 +1,6 @@
 package com.choqnet.budget.screen.capacity;
 
+import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Budget;
 import com.choqnet.budget.entity.Capacity;
 import com.choqnet.budget.entity.Team;
@@ -15,6 +16,9 @@ import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,10 +45,14 @@ public class CapacityScreen extends Screen {
     private Notifications notifications;
 
     private Budget budget;
+    @Autowired
+    private Button btnUpload;
 
     // *** init & decoration functions
     @Subscribe
     public void onInit(InitEvent event) {
+        // upload feature only visible from admin
+        btnUpload.setVisible("admin".equals(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
         // sets the options and default value for the Budget list
         List<Budget> budgets = dataManager.load(Budget.class)
                 .query("select e from Budget e order by e.year desc, e.name asc")
@@ -166,5 +174,17 @@ public class CapacityScreen extends Screen {
         uploadCapacities.show();
     }
     // *** Data functions
+
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">>" + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
+    }
 
 }
