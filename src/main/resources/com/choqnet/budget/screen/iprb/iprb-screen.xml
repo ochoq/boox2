@@ -19,14 +19,14 @@
             <filter id="filter" columnsCount="3" dataLoader="iPRBsDl">
                 <properties include=".*"/>
             </filter>
-            <pagination
+            <!--<pagination
                     itemsPerPageVisible="true"
                     itemsPerPageUnlimitedOptionVisible="true"
                     itemsPerPageOptions="10,20,50,100"
                     align="MIDDLE_RIGHT"
                     itemsPerPageDefaultValue="20">
                 <loaderProvider loaderId="iPRBsDl"/>
-            </pagination>
+            </pagination>-->
         </hbox>
         <dataGrid id="iPRBsTable"
                   width="100%"

@@ -31,6 +31,8 @@
                     <configuration id="fltOnDemand" name="Demands filter" default="true">
                         <propertyFilter property="iprb.reference" caption="IPRB Reference" operation="CONTAINS"/>
                         <propertyFilter property="iprb.name" caption="IPRB Name" operation="CONTAINS"/>
+                        <propertyFilter property="iprb.owner" caption="IPRB Owner" operation="CONTAINS"/>
+                        <propertyFilter property="iprb.groupOffering" caption="Group Offering" operation="IN_LIST"/>
                     </configuration>
                 </configurations>
             </filter>

@@ -4,15 +4,15 @@
     <data>
         <collection id="detailsDc" class="com.choqnet.budget.entity.Detail">
             <fetchPlan extends="_base">
-                <property name="team" fetchPlan="_instance_name">
+                <property fetchPlan="_instance_name" name="team">
                     <property name="name"/>
                     <property name="enabled"/>
                     <property name="selectable"/>
                 </property>
-                <property name="onePager" fetchPlan="_base"/>
-                <property name="demand" fetchPlan="_base">
-                    <property name="iprb" fetchPlan="_base"/>
-                    <property name="budget" fetchPlan="_base"/>
+                <property fetchPlan="_base" name="onePager"/>
+                <property fetchPlan="_base" name="demand">
+                    <property fetchPlan="_base" name="iprb"/>
+                    <property fetchPlan="_base" name="budget"/>
                 </property>
             </fetchPlan>
             <loader id="detailsDl">
@@ -61,6 +61,10 @@
                 <column id="onePager" property="onePager"/>
                 <column id="category" property="category"/>
                 <column id="priority" property="priority"/>
+                <column id="jira" property="jira" >
+                    <componentRenderer/>
+                </column>
+
             </columns>
         </dataGrid>
         <button align="BOTTOM_RIGHT" caption="Close" id="btnClose" icon="WINDOW_CLOSE"/>

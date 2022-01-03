@@ -8,11 +8,14 @@ import io.jmix.core.DataManager;
 import io.jmix.ui.UiComponents;
 import io.jmix.ui.component.*;
 import io.jmix.ui.component.data.ValueSource;
+import io.jmix.ui.icon.JmixIcon;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @UiController("EditDetails")
 @UiDescriptor("edit-details.xml")
@@ -56,6 +59,7 @@ public class EditDetails extends Screen {
             detailsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "rightCell");
         }
         detailsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
+        detailsTable.getColumn("jira").setStyleProvider(e -> "rightCell");
     }
 
     public void setContext(Demand demand)  {
@@ -99,6 +103,30 @@ public class EditDetails extends Screen {
         cb.setValueSource((ValueSource<OnePager>) efc.getValueSourceProvider().getValueSource("onePager"));
         cb.setOptionsList(dataManager.load(OnePager.class).all().list());
         return cb;
+    }
+
+    // JIRA link management - Edit mode
+    @Install(to = "detailsTable.jira", subject = "editFieldGenerator")
+    private Field<String> editJIRA(DataGrid.EditorFieldGenerationContext efc) {
+        TextField<String> txtJira  = uiComponents.create(TextField.NAME);
+        txtJira.setValueSource((ValueSource<String>) efc.getValueSourceProvider().getValueSource("jira"));
+        return txtJira;
+    }
+    // JIRA link management - Read mode
+    @Install(to = "detailsTable.jira", subject = "columnGenerator")
+    private Component reachURL(DataGrid.ColumnGeneratorEvent<Detail> cDetail) {
+        Link lnk = uiComponents.create(Link.NAME);
+        lnk.setUrl(cDetail.getItem().getJira());
+        // cut the key of the Initiative
+        String[] heap = cDetail.getItem().getJira().split("/");
+        int i = heap.length;
+        if (i==0) {
+            lnk.setCaption(cDetail.getItem().getJira());
+        } else {
+            lnk.setCaption(heap[i-1]);
+        }
+        lnk.setTarget("_blank");
+        return lnk;
     }
 
     /*

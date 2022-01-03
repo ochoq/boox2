@@ -74,6 +74,17 @@ public class Detail {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Demand demand;
 
+    @Column(name = "JIRA")
+    private String jira;
+
+    public String getJira() {
+        return jira==null ? "" : jira;
+    }
+
+    public void setJira(String jira) {
+        this.jira = jira;
+    }
+
 
     public Demand getDemand() {
         return demand;

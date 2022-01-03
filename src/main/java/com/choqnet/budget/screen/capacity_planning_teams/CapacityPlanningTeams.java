@@ -86,15 +86,16 @@ public class CapacityPlanningTeams extends Screen {
         cPTeamsTable.getHeaderRow(0).getCell("labelQ3").setStyleName("boldCell");
         cPTeamsTable.getHeaderRow(0).getCell("labelQ4").setStyleName("boldCell");
         cPTeamsTable.getHeaderRow(0).getCell("labelY").setStyleName("boldCell");
-        cPTeamsTable.getHeaderRow(0).getCell("detail").setStyleName("center");
+        //cPTeamsTable.getHeaderRow(0).getCell("detail").setStyleName("center");
 
         DataGrid.HeaderRow headerRow = cPTeamsTable.prependHeaderRow();
-        DataGrid.HeaderCell headerCell = headerRow.join("labelQ1", "labelQ2", "labelQ3", "labelQ4", "detail", "labelY");
+        DataGrid.HeaderCell headerCell = headerRow.join("labelQ1", "labelQ2", "labelQ3", "labelQ4", "spacer", "labelY");
         headerCell.setText("Demand / Capacity in MD");
         headerCell.setStyleName("center");
     }
 
-    // add details view
+    // open details view (old version, driven by a click on a dedicated icon)
+    /*
     @Install(to = "cPTeamsTable.detail", subject = "columnGenerator")
     private Component editDetail(DataGrid.ColumnGeneratorEvent<CPTeam> cEvent) {
         HBoxLayout hbl = uiComponents.create(HBoxLayout.NAME);
@@ -108,6 +109,18 @@ public class CapacityPlanningTeams extends Screen {
         hbl.add(detail);
         return hbl;
     }
+    */
+
+    // open details view by clicking on the name
+    @Install(to = "cPTeamsTable.capaName", subject = "columnGenerator")
+    private Component editDetail(DataGrid.ColumnGeneratorEvent<CPTeam> cEvent) {
+        LinkButton detail = uiComponents.create(LinkButton.NAME);
+        detail.setIconFromSet(JmixIcon.ARROW_CIRCLE_RIGHT);
+        detail.addClickListener(e -> editCPTeam(cEvent.getItem()));
+        detail.setCaption(cEvent.getItem().getCapacity().getTeam().getFullName());
+        return detail;
+    }
+
 
     private void editCPTeam(CPTeam item) {
         CapacityTeamDetails ctd = screenBuilders.screen(this)
@@ -140,7 +153,6 @@ public class CapacityPlanningTeams extends Screen {
         // updates the default priority threshold
     }
 
-
     @Subscribe("cmbPriority")
     public void onCmbPriorityValueChange(HasValue.ValueChangeEvent<Priority> event) {
         log.info("priority updated");
@@ -159,7 +171,6 @@ public class CapacityPlanningTeams extends Screen {
             );
         }
     }
-
 
     // *** Data functions
     private void updateCapacityPlanningData() {
