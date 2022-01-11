@@ -1,4 +1,4 @@
-package com.choqnet.budget.entity.template;
+package com.choqnet.budget.screen.template;
 
 import io.jmix.ui.screen.*;
 import com.choqnet.budget.entity.Template;

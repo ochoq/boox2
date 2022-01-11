@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:pivot="http://jmix.io/schema/ui/pivot-table"
         caption="msg://demandManagement.caption">
     <data>
         <collection id="demandsDc" class="com.choqnet.budget.entity.Demand">
@@ -11,7 +12,14 @@
             </fetchPlan>
             <loader id="demandsDl">
                 <query>
-                    <![CDATA[select e from Demand e]]>
+                    <![CDATA[select e from Demand e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="detailsDc" class="com.choqnet.budget.entity.Detail" fetchPlan="details">
+            <loader id="detailsDl">
+                <query>
+                    <![CDATA[select e from Detail e where e is null]]>
                 </query>
             </loader>
         </collection>
@@ -19,64 +27,154 @@
     <facets>
         <dataLoadCoordinator auto="true"/>
     </facets>
-    <layout spacing="true" expand="demandsTable">
+    <layout spacing="true" expand="screen">
         <hbox spacing="true" width="100%">
             <label stylename="h1" value="Demand Management" align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
         </hbox>
-        <hbox spacing="true" width="100%" expand="filter">
-            <filter id="filter" columnsCount="3" dataLoader="demandsDl">
-                <properties include=".*"/>
-                <configurations>
-                    <configuration id="fltOnDemand" name="Demands filter" default="true">
-                        <propertyFilter property="iprb.reference" caption="IPRB Reference" operation="CONTAINS"/>
-                        <propertyFilter property="iprb.name" caption="IPRB Name" operation="CONTAINS"/>
-                        <propertyFilter property="iprb.owner" caption="IPRB Owner" operation="CONTAINS"/>
-                        <propertyFilter property="iprb.groupOffering" caption="Group Offering" operation="IN_LIST"/>
-                    </configuration>
-                </configurations>
-            </filter>
+        <tabSheet id="screen">
+            <tab caption="Summary" id="summary" spacing="true" expand="demandsTable">
+                <hbox spacing="true" width="100%" expand="filter">
+                    <filter id="filter" columnsCount="3" dataLoader="demandsDl">
+                        <properties include=".*"/>
+                        <configurations>
+                            <configuration id="fltOnDemand" name="Demands filter" default="true">
+                                <propertyFilter property="iprb.reference" caption="IPRB Reference" operation="CONTAINS"/>
+                                <propertyFilter property="iprb.name" caption="IPRB Name" operation="CONTAINS"/>
+                                <propertyFilter property="iprb.owner" caption="IPRB Owner" operation="CONTAINS"/>
+                                <propertyFilter property="iprb.groupOffering" caption="Group Offering" operation="IN_LIST"/>
+                            </configuration>
+                        </configurations>
+                    </filter>
 
-        </hbox>
-        <hbox spacing="true" expand="spacer" width="100%">
-            <button id="demandsTableRefreshBtn" action="demandsTable.refresh"/>
-            <button id="btnAdd" caption="Add missing IPRB's demand" icon="ADD_ACTION"/>
-            <button id="btnRemove" caption="Remove selected" icon="TRASH_O"/>
-            <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
-            <label id="spacer"/>
-            <pagination
-                    align="MIDDLE_RIGHT"
-                    itemsPerPageVisible="true"
-                    itemsPerPageOptions="10,20,50,100"
-                    itemsPerPageUnlimitedOptionVisible="true"
-                    itemsPerPageDefaultValue="50">
-                <loaderProvider loaderId="demandsDl"/>
-            </pagination>
-        </hbox>
-        <dataGrid id="demandsTable"
-                  selectionMode="MULTI"
-                  width="100%"
-                  dataContainer="demandsDc">
-            <actions>
-                <action id="refresh" type="refresh"/>
-            </actions>
-            <columns>
-                <column id="iprb" property="iprb"/>
-                <column id="iprbName" property="iprb.name"/>
-                <column id="mdY" property="mdY"/>
-                <column id="mdQ1" property="mdQ1"/>
-                <column id="mdQ2" property="mdQ2"/>
-                <column id="mdQ3" property="mdQ3"/>
-                <column id="mdQ4" property="mdQ4"/>
-                <column id="euroAmount" property="euroAmount"/>
-                <column id="details" width="75px">
-                    <componentRenderer/>
-                </column>
-                <column id="services" caption="Non Labor" width="75px">
-                    <componentRenderer/>
-                </column>
-            </columns>
-        </dataGrid>
+                </hbox>
+                <hbox spacing="true" expand="spacer" width="100%">
+                    <button id="demandsTableRefreshBtn" action="demandsTable.refresh"/>
+                    <button id="btnAdd" caption="Add missing IPRB's demand" icon="ADD_ACTION"/>
+                    <button id="btnRemove" caption="Remove selected" icon="TRASH_O"/>
+                    <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
+                    <button id="demandsTableExcelExportBtn" action="demandsTable.excelExport"/>
+                    <label id="spacer"/>
+                    <pagination
+                            align="MIDDLE_RIGHT"
+                            itemsPerPageVisible="true"
+                            itemsPerPageOptions="10,20,50,100"
+                            itemsPerPageUnlimitedOptionVisible="true"
+                            itemsPerPageDefaultValue="50">
+                        <loaderProvider loaderId="demandsDl"/>
+                    </pagination>
+                </hbox>
+                <dataGrid id="demandsTable"
+                                  selectionMode="MULTI"
+                                  width="100%"
+                                  dataContainer="demandsDc">
+                    <actions>
+                        <action id="refresh" type="refresh"/>
+                        <action id="excelExport" type="excelExport"/>
+                    </actions>
+                    <columns>
+                        <column id="iprb" property="iprb"/>
+                        <column id="iprbName" property="iprb.name"/>
+                        <column id="mdY" property="mdY"/>
+                        <column id="mdQ1" property="mdQ1"/>
+                        <column id="mdQ2" property="mdQ2"/>
+                        <column id="mdQ3" property="mdQ3"/>
+                        <column id="mdQ4" property="mdQ4"/>
+                        <column id="euroAmount" property="euroAmount"/>
+                        <column id="details" width="75px">
+                            <componentRenderer/>
+                        </column>
+                        <column id="services" caption="Non Labor" width="75px">
+                            <componentRenderer/>
+                        </column>
+                    </columns>
+                </dataGrid>
+            </tab>
+            <tab caption="Details" id="detail" spacing="true">
+
+                <groupTable id="detailsTable" height="100%" width="100%" dataContainer="detailsDc">
+                    <actions>
+                        <action id="excelExport" type="excelExport"/>
+                        <action id="showPivot" type="showPivot"/>
+                    </actions>
+                    <buttonsPanel spacing="true">
+                        <button id="detailsTableExcelExportBtn" action="detailsTable.excelExport"/>
+                        <button id="detailsTableShowPivotBtn" action="detailsTable.showPivot"/>
+                    </buttonsPanel>
+                    <columns>
+                        <column id="team.name"/>
+                        <column id="team.tLine"/>
+                        <column id="team.tDiv"/>
+                        <column id="team.tDomain"/>
+                        <column id="topic"/>
+                        <column id="roadmap"/>
+                        <column id="detail"/>
+                        <column id="tShirt"/>
+                        <column id="mdY"/>
+                        <column id="mdQ1"/>
+                        <column id="mdQ2"/>
+                        <column id="mdQ3"/>
+                        <column id="mdQ4"/>
+                        <column id="category"/>
+                        <column id="priority"/>
+                        <column id="demand.iprb.reference"/>
+                        <column id="demand.iprb.name"/>
+                        <column id="demand.iprb.groupOffering"/>
+                        <column id="demand.iprb.outBudget"/>
+                        <column id="demand.iprb.legalEntity"/>
+                        <column id="demand.iprb.activityType"/>
+                        <column id="demand.iprb.portfolioClassification"/>
+                        <column id="jira"/>
+                    </columns>
+                </groupTable>
+            </tab>
+            <tab id="pivot" caption="Pivot Table" spacing="true">
+                <pivot:pivotTable
+                        dataContainer="detailsDc"
+                        height="100%" width="100%"
+                        renderer="TABLE"
+                        editable="true"
+                        id="pivotTable">
+                    <pivot:aggregationProperties>
+                        <pivot:property name="mdY"/>
+                        <pivot:property name="mdQ1"/>
+                        <pivot:property name="mdQ2"/>
+                        <pivot:property name="mdQ3"/>
+                        <pivot:property name="mdQ4"/>
+                    </pivot:aggregationProperties>
+                    <pivot:aggregations>
+                        <pivot:aggregation mode="SUM"/>
+                        <pivot:aggregation mode="SUM_AS_FRACTION_OF_COLUMNS"/>
+                        <pivot:aggregation mode="SUM_AS_FRACTION_OF_ROWS"/>
+                        <pivot:aggregation mode="SUM_AS_FRACTION_OF_TOTAL"/>
+                    </pivot:aggregations>
+                    <pivot:properties>
+                        <pivot:property name="team"/>
+<!--                        <pivot:property name="team.tLine"/>-->
+                        <pivot:property name="tFullName"/>
+                        <pivot:property name="roadmap"/>
+<!--                        <pivot:property name="tLine"/>-->
+<!--                        <pivot:property name="team.tLine"/>-->
+                        <!--<pivot:property name="team.gbd"/>
+                        <pivot:property name="team.domain"/>-->
+                        <pivot:property name="category"/>
+                        <pivot:property name="mdY"/>
+                        <pivot:property name="onePager"/>
+                        <pivot:property name="priority"/>
+                        <!--<pivot:property name="demand.iprb.reference"/>
+                        <pivot:property name="demand.iprb.name"/>
+                        <pivot:property name="demand.iprb.groupOffering"/>
+                        <pivot:property name="demand.iprb.outBudget"/>
+                        <pivot:property name="demand.iprb.legalEntity"/>
+                        <pivot:property name="demand.iprb.activityType"/>
+                        <pivot:property name="demand.iprb.portfolioClassification"/>-->
+                    </pivot:properties>
+                    <pivot:aggregation mode="SUM">
+                        <pivot:property name="mdY"/>
+                    </pivot:aggregation>
+                </pivot:pivotTable>
+            </tab>
+        </tabSheet>
 
     </layout>
 </window>

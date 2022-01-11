@@ -121,6 +121,7 @@
                           editorBuffered="true"
                           dataContainer="detailsDc">
                     <columns>
+                        <column id="iprb" property="demand.iprb.reference" editable="false" caption="IPRB"/>
                         <column id="team" property="team"/>
                         <column id="roadmap" property="roadmap"/>
                         <column id="detail" property="detail"/>
@@ -131,7 +132,7 @@
                         <column id="mdQ3" property="mdQ3"/>
                         <column id="mdQ4" property="mdQ4"/>
                         <column id="priority" property="priority"/>
-                        <column id="iprb" property="demand.iprb.reference" editable="false" caption="IPRB"/>
+
                     </columns>
                 </dataGrid>
             </vbox>

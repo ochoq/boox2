@@ -38,6 +38,7 @@
                 <action id="bulkEdit" type="bulkEdit"/>
                 <action id="remove" type="remove"/>
                 <action id="refresh" type="refresh"/>
+                <action id="excelExport" type="excelExport"/>
             </actions>
             <buttonsPanel alwaysVisible="true"
                           width="100%"
@@ -49,8 +50,7 @@
                 <button id="iPRBsTableRemoveBtn" action="iPRBsTable.remove"/>
                 <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
                 <button id="btnClose" caption="Close" icon="CLOSE"/>
-
-
+                <button id="iPRBsTableExcelExportBtn" action="iPRBsTable.excelExport"/>
 
 
             </buttonsPanel>

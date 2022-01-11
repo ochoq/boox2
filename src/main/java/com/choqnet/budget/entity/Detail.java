@@ -40,23 +40,23 @@ public class Detail {
     @Column(name = "T_SHIRT")
     private Integer tShirt;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Y")
     private Double mdY = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q1")
     private Double mdQ1 = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q2")
     private Double mdQ2 = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q3")
     private Double mdQ3 = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q4")
     private Double mdQ4 = 0.0;
 
@@ -76,6 +76,20 @@ public class Detail {
 
     @Column(name = "JIRA")
     private String jira;
+
+    @Column(name = "T_FULL_NAME")
+    private String tFullName;
+
+    @Column(name = "T_LINE")
+    private String tLine;
+
+    public String getTLine() {
+        return team==null ? "" : team.getTLine();
+    }
+
+    public String getTFullName() {
+        return team==null ? "" : team.getFullName();
+    }
 
     public String getJira() {
         return jira==null ? "" : jira;
@@ -222,8 +236,8 @@ public class Detail {
     }
 
     @InstanceName
-    @DependsOnProperties({"topic", "team"})
+    @DependsOnProperties({"roadmap", "team"})
     public String getInstanceName() {
-        return String.format("%s %s", topic, team);
+        return String.format("<i> %s - %s", roadmap, team.getName());
     }
 }

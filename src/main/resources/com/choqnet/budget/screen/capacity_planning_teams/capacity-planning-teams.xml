@@ -32,6 +32,12 @@
         <dataGrid id="cPTeamsTable"
                   width="100%"
                   dataContainer="cPTeamsDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <buttonsPanel>
+                <button id="cPTeamsTableExcelExportBtn" action="cPTeamsTable.excelExport"/>
+            </buttonsPanel>
             <columns>
                 <column id="capaName" property="capacity.team.fullName">
                     <componentRenderer/>
@@ -40,7 +46,7 @@
                 <column id="labelQ2" property="labelQ2" caption="Q2" width="200px"/>
                 <column id="labelQ3" property="labelQ3" caption="Q3" width="200px"/>
                 <column id="labelQ4" property="labelQ4" caption="Q4" width="200px"/>
-                <column id="spacer" width="5px"/>
+                <column id="spacer" width="5px" property="spacer" caption="|"/>
                 <!--<column id="detail" caption="Details"  width="100px">
                     <componentRenderer/>
                 </column>-->

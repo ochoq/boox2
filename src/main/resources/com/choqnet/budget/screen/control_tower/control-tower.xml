@@ -20,7 +20,7 @@
         <label/>
 
         <label id="spacer"/>
-
+        <button id="cleanTeams" caption="Clean Teams" />
         <label stylename="h2" value="Boox by ChoqNet"/>
 
     </layout>

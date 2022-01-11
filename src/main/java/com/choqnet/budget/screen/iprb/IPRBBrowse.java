@@ -1,4 +1,4 @@
-package com.choqnet.budget.entity.iprb;
+package com.choqnet.budget.screen.iprb;
 
 import io.jmix.ui.screen.*;
 import com.choqnet.budget.entity.IPRB;

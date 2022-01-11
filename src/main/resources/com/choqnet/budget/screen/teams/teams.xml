@@ -6,14 +6,8 @@
             <fetchPlan extends="_base">
                 <property name="parent" fetchPlan="_base">
                     <property name="level"/>
-                    <property name="gbl"/>
-                    <property name="gbd"/>
-                    <property name="domain"/>
                 </property>
                 <property name="level"/>
-                <property name="gbl"/>
-                <property name="gbd"/>
-                <property name="domain"/>
             </fetchPlan>
             <loader id="teamsDl">
                 <query>
@@ -49,6 +43,7 @@
                     </properties>
                 </action>
                 <action id="refresh" type="refresh"/>
+                <action id="excelExport" type="excelExport"/>
             </actions>
             <buttonsPanel
                     alwaysVisible="true"
@@ -61,6 +56,7 @@
                 <button id="btnMove" caption="Bulk Move" icon="ARROWS"/>
                 <button id="btnUpload" caption="Upload Data" icon="UPLOAD"/>
                 <button id="btnRefreshFullName" caption="Refresh Full Names" icon="EXCLAMATION_TRIANGLE"/>
+                <button id="tableExcelExportBtn" action="table.excelExport"/>
             </buttonsPanel>
             <columns>
                 <column id="name" property="name"/>
@@ -74,6 +70,10 @@
                 <column id="selectable" property="selectable"/>
                 <column id="updated" property="updated" editable="false"/>
                 <column id="fullName" property="fullName" editable="false"/>
+                <column id="tLine" property="tLine" editable="false"/>
+                <column id="tDiv" property="tDiv" editable="false"/>
+                <column id="tDomain" property="tDomain" editable="false"/>-->
+                <column id="level" property="level" editable="false"/>
 
                 <!--
                 <column id="fullName" property="fullName" editable="false"/>

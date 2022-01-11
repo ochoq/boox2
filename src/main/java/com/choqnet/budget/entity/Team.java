@@ -7,7 +7,6 @@ import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -58,12 +57,48 @@ public class Team {
     @InstanceName
     private String fullName;
 
-    @JmixProperty
-    @Transient
+    @Column(name = "LEVEL_")
     private Integer level = 0;
 
+    @Column(name = "T_LINE")
+    private String tLine;
+
+    @Column(name = "T_DIV")
+    private String tDiv;
+
+    @Column(name = "T_DOMAIN")
+    private String tDomain;
+
+    public String getTDomain() {
+        return tDomain;
+    }
+
+    public void setTDomain(String tDomain) {
+        this.tDomain = tDomain;
+    }
+
+    public String getTDiv() {
+        return tDiv;
+    }
+
+    public void setTDiv(String tDiv) {
+        this.tDiv = tDiv;
+    }
+
+    public String getTLine() {
+        return tLine;
+    }
+
+    public void setTLine(String tLine) {
+        this.tLine = tLine;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     public Integer getLevel() {
-        return level;
+        return level==null ? 0 : level;
     }
 
     public void setFullName(String fullName) {
@@ -94,50 +129,12 @@ public class Team {
         this.enabled = enabled;
     }
 
-    @Transient
-    @JmixProperty
-    public String getGbl() {
-        switch (level) {
-            case 0:
-                return name;
-            default:
-                return (parent==null ? "please refresh" : parent.getGbl());
-        }
-    }
-
     public String getIcTarget() {
         return icTarget;
     }
 
     public void setIcTarget(String icTarget) {
         this.icTarget = icTarget;
-    }
-
-    @Transient
-    @JmixProperty
-    public String getGbd() {
-        switch (level) {
-            case 0:
-                return "-";
-            case 1:
-                return name;
-            default:
-                return (parent==null ? "please refresh" : parent.getGbd());
-        }
-    }
-
-    @Transient
-    @JmixProperty
-    public String getDomain() {
-        switch (level) {
-            case 0:
-            case 1:
-                return "-";
-            case 2:
-                return name;
-            default:
-                return (parent==null ? "please refresh" : parent.getDomain());
-        }
     }
 
     public GTM getMainGTM() {
@@ -181,6 +178,29 @@ public class Team {
     }
 
     public void setParent(Team parent) {
+        /*level = parent==null ? 0 : parent.getLevel()+1;
+        switch(level) {
+            case 0:
+                gbl = name;
+                gbd = "";
+                domain = "";
+                break;
+            case 1:
+                gbl = parent.getGbl();
+                gbd = name;
+                domain = "";
+                break;
+            case 2:
+                gbl = parent.getGbl();
+                gbd = parent.getGbd();
+                domain = name;
+                break;
+            default:
+                gbl = parent.getGbl();
+                gbd = parent.getGbd();
+                domain = parent.getDomain();
+                break;
+        }*/
         this.parent = parent;
     }
 

@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.inject.Named;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +55,8 @@ public class Teams extends Screen {
     private UtilBean utilBean;
     @Autowired
     private Button btnUpload;
+    @Autowired
+    private Button btnRefreshFullName;
 
     // *** UI functions
     @Subscribe
@@ -65,20 +66,20 @@ public class Teams extends Screen {
         filter.setExpanded(false);
         // upload feature only visible from admin
         btnUpload.setVisible("admin".equals(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+        btnRefreshFullName.setVisible("admin".equals(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
     }
 
-    @Install(to = "table.parent", subject="editFieldGenerator")
-    private Field<Team> editingParent (
-            DataGrid.EditorFieldGenerationContext<Team> editorParent) {
+    @Install(to = "table.parent", subject = "editFieldGenerator")
+    private Field<Team> editingParent(DataGrid.EditorFieldGenerationContext<Team> editorParent) {
         // make the field parent displayed as a list
         // proposed items are teams, not child of the current team
         ComboBox<Team> cb = uiComponents.create(ComboBox.NAME);
-        List<Team> restricted  = dataManager
+        List<Team> restricted = dataManager
                 .load(Team.class).query("select e from Team e").list();
         // removes current team's children from the list. Skipped if no team selected
-        if (table.getSingleSelected()!=null && table.getSingleSelected().getFullName()!= null) {
+        if (table.getSingleSelected() != null && table.getSingleSelected().getFullName() != null) {
             restricted = restricted.stream()
-                    .filter(e -> e.getFullName()!=null && !e.getFullName().contains(table.getSingleSelected().getFullName()))
+                    .filter(e -> e.getFullName() != null && !e.getFullName().contains(table.getSingleSelected().getFullName()))
                     .collect(Collectors.toList());
         }
         // sorting by fullName
@@ -129,17 +130,14 @@ public class Teams extends Screen {
     public void onBtnRefreshFullNameClick(Button.ClickEvent event) {
         // browse all teams to restore their fullNames, starting from all the teams w/o parent
         List<Team> startTeams = dataManager.load(Team.class).query("select e from Team e where e.parent is null").list();
-        for (Team branch: startTeams) {
-            utilBean.propagateFullName(branch);
+        for (Team branch : startTeams) {
+            utilBean.HierarchicalData(branch);
         }
         notifications.create()
                 .withCaption("Refresh done.")
                 .withType(Notifications.NotificationType.TRAY)
                 .show();
-
     }
-
-
 
     // *** data functions
     @Subscribe("btnAdd")
@@ -149,7 +147,7 @@ public class Teams extends Screen {
         Team parent = table.getSingleSelected();
         newTeam.setParent(table.getSingleSelected());
         newTeam.setName("_");
-        newTeam.setFullName(parent==null ? "_" : parent.getFullName() +  "-" +"new");
+        newTeam.setFullName(parent == null ? "_" : parent.getFullName() + "-" + "new");
         dataManager.save(newTeam);
         teamsDl.load();
         table.expand(table.getSingleSelected());
@@ -165,7 +163,7 @@ public class Teams extends Screen {
                         new DialogAction(DialogAction.Type.OK)
                                 .withHandler(e -> {
                                     // actual deletion of teams
-                                    for (Team team: table.getSelected()) {
+                                    for (Team team : table.getSelected()) {
                                         // deletion of the attached capacities
                                         List<Capacity> capacities = dataManager.load(Capacity.class)
                                                 .query("select e from Capacity e where e.team = :team")
@@ -184,15 +182,13 @@ public class Teams extends Screen {
     @Subscribe("table")
     public void onTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Team> event) {
         // saves actually the changes in the DB
-        Team target = event.getItem();
-        target.setUpdated(LocalDateTime.now());
-        target = dataManager.save(target);
+        Team target = dataManager.save(event.getItem());
         if (
-                (oldParent!=null && !oldParent.equals(target.getParent())) || (oldParent==null && target.getParent()!=null)
-                || !oldName.equals(target.getName())
+                (oldParent != null && !oldParent.equals(target.getParent())) || (oldParent == null && target.getParent() != null)
+                        || !oldName.equals(target.getName())
 
         ) {
-            utilBean.propagateFullName(target);
+            utilBean.HierarchicalData(target);
         }
         teamsDl.load();
         tableRefresh.execute();
@@ -201,10 +197,10 @@ public class Teams extends Screen {
 
     @Subscribe("table")
     public void onTableEditorOpen(DataGrid.EditorOpenEvent<Team> event) {
+        // save values before any changes
         oldParent = event.getItem().getParent();
         oldName = event.getItem().getName();
     }
-
 
     // *** communications
     // --- General Messaging
@@ -217,7 +213,6 @@ public class Teams extends Screen {
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
     }
-
 
 
 }

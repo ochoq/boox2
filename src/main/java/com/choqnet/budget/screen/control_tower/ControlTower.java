@@ -1,15 +1,14 @@
 package com.choqnet.budget.screen.control_tower;
 
+import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.XLUtils;
 import com.choqnet.budget.app.UMsgBean;
 import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Budget;
-import com.choqnet.budget.entity.IPRB;
+import com.choqnet.budget.entity.Team;
 import com.choqnet.budget.entity.Template;
-import com.choqnet.budget.screen.popups.upload_budget.UploadBudget;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
-import io.jmix.core.SaveContext;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.component.Button;
@@ -51,6 +50,8 @@ public class ControlTower extends Screen {
     private XLUtils xLUtils;
     @Autowired
     private Downloader downloader;
+    @Autowired
+    private UtilBean utilBean;
 
 
     // *** Initialisations
@@ -98,6 +99,18 @@ public class ControlTower extends Screen {
             downloader.download(bytes2, "MS Budget - Acceptance.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Subscribe("cleanTeams")
+    public void onCleanTeamsClick(Button.ClickEvent event) {
+        //
+        List<Team> zeroTeam = dataManager.load(Team.class)
+                .query("select e from Team e where e.parent is null")
+                .list();
+        System.out.println("liste " + zeroTeam.size());
+        for (Team team: zeroTeam) {
+            utilBean.HierarchicalData(team);
         }
     }
 

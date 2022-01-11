@@ -19,16 +19,16 @@ public class CPTeam {
 
     private String priority;
 
-    @NumberFormat(pattern = "0.00", groupingSeparator = " ")
+    @NumberFormat(pattern = "0.00")
     private Double demandQ1;
 
-    @NumberFormat(pattern = "0.00", groupingSeparator = " ")
+    @NumberFormat(pattern = "0.00")
     private Double demandQ2;
 
-    @NumberFormat(pattern = "0.00", groupingSeparator = " ")
+    @NumberFormat(pattern = "0.00")
     private Double demandQ3;
 
-    @NumberFormat(pattern = "0.00", groupingSeparator = " ")
+    @NumberFormat(pattern = "0.00")
     private Double demandQ4;
 
     private String labelQ1;
@@ -42,6 +42,12 @@ public class CPTeam {
     private String labelY;
 
     private DecimalFormat df = new DecimalFormat("#,###");
+
+    private String spacer;
+
+    public String getSpacer() {
+        return " ";
+    }
 
     public void setPriority(Priority priority) {
         this.priority = priority == null ? null : priority.getId();

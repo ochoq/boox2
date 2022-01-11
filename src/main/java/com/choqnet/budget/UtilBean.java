@@ -2,11 +2,11 @@ package com.choqnet.budget;
 
 import com.choqnet.budget.entity.Team;
 import io.jmix.core.DataManager;
+import io.jmix.core.SaveContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,16 +28,90 @@ public class UtilBean {
 
     // *** data management functions
 
-    public void propagateFullName(Team team) {
-        team.setFullName(team.getParent()==null ? team.getName() : team.getParent().getFullName() + "-" + team.getName());
+    public void HierarchicalData(Team team) {
+        int level;
+        String fullName;
+        String line, div, domain=null;
+        if (team.getParent()==null) {
+            level = 0;
+            fullName = team.getName();
+            line = fullName;
+            div = "";
+            domain = "";
+
+        } else {
+            level = team.getParent().getLevel() + 1;
+            fullName = team.getParent().getFullName() + "-" + team.getName();
+            Team parent = dataManager.load(Team.class).query("select e from Team e where e.name = :parent").parameter("parent", team.getParent().getName()).one();
+            switch(level) {
+                case 1:
+                    line = parent.getTLine();
+                    div = team.getName();
+                    domain = "";
+                    break;
+                case 2:
+                    line = parent.getTLine();
+                    div = parent.getTDiv();
+                    domain = team.getName();
+                    break;
+                default:
+                    line = parent.getTLine();
+                    div = parent.getTDiv();
+                    domain = parent.getTDomain();
+                    break;
+            }
+        }
+        team.setLevel(level);
+        team.setFullName(fullName);
+        team.setTLine(line);
+        team.setTDiv(div);
+        team.setTDomain(domain);
         dataManager.save(team);
         List<Team> children = dataManager.load(Team.class)
                 .query("select e from Team e where e.parent = :parent")
                 .parameter("parent", team)
+                .fetchPlan("teams")
                 .list();
         for (Team child: children) {
-            propagateFullName(child);
+            HierarchicalData(child);
         }
+    }
+    public void setHierarchy() {
+        List<Team> teams = dataManager.load(Team.class).query("select e from Team e where e.level = 0").list();
+        int i = 0;
+        SaveContext sc = new SaveContext();
+        do {
+            System.out.println(i + " starting with " + teams.size() + " items");
+            for (Team team: teams) {
+                switch(i) {
+                    case 0:
+                        team.setTLine(team.getName());
+                        team.setTDiv("");
+                        team.setTDomain("");
+                        break;
+                    case 1:
+                        team.setTLine(team.getParent().getTLine());
+                        team.setTDiv(team.getName());
+                        team.setTDomain("");
+                        break;
+                    case 2:
+                        team.setTLine(team.getParent().getTLine());
+                        team.setTDiv(team.getParent().getTDiv());
+                        team.setTDomain(team.getName());
+                        break;
+                    default:
+                        team.setTLine(team.getParent().getTLine());
+                        team.setTDiv(team.getParent().getTDiv());
+                        team.setTDomain(team.getParent().getTDomain());
+                        break;
+                }
+                sc.saving(team);
+            }
+            dataManager.save(sc);
+            System.out.println("rank " + i  + " passed");
+            i++;
+            teams = dataManager.load(Team.class).query("select e from Team e where e.level = " + i).list();
+        } while (teams.size()>0);
     }
 
 }

@@ -3,4 +3,16 @@
         <property name="parent" fetchPlan="_base">
         </property>
     </fetchPlan>
+    <fetchPlan entity="Detail" name="details" extends="_base">
+        <property name="team" fetchPlan="_instance_name">
+            <property name="name"/>
+            <property name="tLine"/>
+            <property name="tDiv"/>
+            <property name="tDomain"/>
+        </property>
+        <property name="demand" fetchPlan="_base">
+            <property name="iprb" fetchPlan="_base"/>
+            <property name="budget" fetchPlan="_base"/>
+        </property>
+    </fetchPlan>
 </fetchPlans>

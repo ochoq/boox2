@@ -60,7 +60,7 @@ public class ParentChooser extends Screen {
             SaveContext sc = new SaveContext();
             for (Team team: teamList) {
                 team.setParent(cmbParent.getValue());
-                utilBean.propagateFullName(team);
+                utilBean.HierarchicalData(team);
                 sc.saving(team);
             }
             dataManager.save(sc);

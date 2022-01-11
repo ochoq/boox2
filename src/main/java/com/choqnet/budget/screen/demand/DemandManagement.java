@@ -55,6 +55,36 @@ public class DemandManagement extends Screen {
     private FetchPlans fetchPlans;
     @Autowired
     private Button btnUpload;
+    @Autowired
+    private CollectionLoader<Detail> detailsDl;
+    @Autowired
+    private TabSheet screen;
+
+    private boolean demandToUpdate = false;
+    private boolean detailsToUpdate = false;
+    // todo setup the loading of Detail/Demand data only when opening a tab and only if required
+    /*
+    RESTE A FAIRE:
+    Quand le budget change:
+        si onglet actif = demand (par default)
+            mettre demand à jour
+            mettre demandToUpdate à faux
+            mettre detailToUpdate à vrai
+        sinon
+            mettre details à jour
+            mettre detailToUpdate à faux
+        mettre demandToUpdate à vrai
+
+    Quand un onglet change:
+        si c'est demand
+            si demandToUpdate
+                mettre demand à jour
+                mettre demandToUpdate à faux
+        sinon
+            si detailToUpdate
+                mettre detail à jour
+                mettre detailToUpdate à faux
+     */
 
     // *** init & decoration functions
     @Subscribe
@@ -83,7 +113,6 @@ public class DemandManagement extends Screen {
         }
         demandsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
         demandsTable.getColumn("euroAmount").setStyleProvider(e -> "rightCell");
-
     }
 
     // add details / euroDemand buttons
@@ -143,14 +172,58 @@ public class DemandManagement extends Screen {
 
     @Subscribe("cmbBudget")
     public void onCmbBudgetValueChange(HasValue.ValueChangeEvent event) {
-        // loads the capacity records when the budget changes
-        if (cmbBudget.getValue()!=null) {
-            demandsDl.setQuery("select e from Demand e where e.budget = :budget order by e.iprb.reference asc");
-            demandsDl.setParameter("budget", cmbBudget.getValue());
-            demandsDl.load();
+        if (screen.getSelectedTab()!=null) {
             budget = cmbBudget.getValue();
+            switch (screen.getSelectedTab().getName()) {
+                case "summary":
+                    log.info("Budget changes, demand refreshed " + screen.getSelectedTab().getName());
+                    demandsDl.setQuery("select e from Demand e where e.budget = :budget order by e.iprb.reference asc");
+                    demandsDl.setParameter("budget", cmbBudget.getValue());
+                    demandsDl.load();
+                    demandToUpdate = false;
+                    detailsToUpdate = true;
+                    demandsTable.sort("iprb", DataGrid.SortDirection.ASCENDING);
+                    break;
+                default:
+                    log.info("Budget changes, detail refreshed " + screen.getSelectedTab().getName());
+                    detailsDl.setQuery("select e from Detail e where e.demand.budget = :budget order by e.demand.iprb.reference asc");
+                    detailsDl.setParameter("budget", cmbBudget.getValue());
+                    detailsDl.load();
+                    demandToUpdate = true;
+                    detailsToUpdate = false;
+                    break;
+            }
+        } else {
+            // this doesn't happen
         }
-        demandsTable.sort("iprb", DataGrid.SortDirection.ASCENDING);
+    }
+
+    @Subscribe("screen")
+    public void onScreenSelectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+        switch(event.getSelectedTab().getName()) {
+            case "summary":
+                if (demandToUpdate) {
+                    log.info("summary open and data refreshed");
+                    demandsDl.setQuery("select e from Demand e where e.budget = :budget order by e.iprb.reference asc");
+                    demandsDl.setParameter("budget", cmbBudget.getValue());
+                    demandsDl.load();
+                    demandToUpdate = false;
+                } else {
+                    log.info("summary open and data not refreshed");
+                }
+                break;
+            default:
+                if (detailsToUpdate) {
+                    log.info("detail / pivot open and data refreshed");
+                    detailsDl.setQuery("select e from Detail e where e.demand.budget = :budget order by e.demand.iprb.reference asc");
+                    detailsDl.setParameter("budget", cmbBudget.getValue());
+                    detailsDl.load();
+                    detailsToUpdate = false;
+                } else {
+                    log.info("detail / pivot open and data not refreshed");
+                }
+                break;
+        }
     }
 
     @Subscribe("demandsTable")
@@ -250,6 +323,18 @@ public class DemandManagement extends Screen {
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
     }
+
+    @Subscribe("detailsTable")
+    public void onDetailsTableSelection(Table.SelectionEvent<Detail> event) {
+        Detail detail = event.getSource().getSingleSelected();
+        log.info(detail.getTFullName());
+        log.info(detail.getTeam().getFullName());
+        log.info(detail.getTeam().getParent().getFullName());
+        log.info("");
+    }
+
+
+
 
 
 }

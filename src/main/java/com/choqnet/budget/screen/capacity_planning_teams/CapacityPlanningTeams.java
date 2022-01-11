@@ -6,7 +6,7 @@ import com.choqnet.budget.entity.CPTeam;
 import com.choqnet.budget.entity.Capacity;
 import com.choqnet.budget.entity.Detail;
 import com.choqnet.budget.entity.datalists.Priority;
-import com.choqnet.budget.screen.popups.capacityteamdetails.CapacityTeamDetails;
+import com.choqnet.budget.screen.popups.capacity_team_details.CapacityTeamDetails;
 import io.jmix.core.DataManager;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
@@ -14,7 +14,6 @@ import io.jmix.ui.UiComponents;
 import io.jmix.ui.component.*;
 import io.jmix.ui.icon.JmixIcon;
 import io.jmix.ui.model.CollectionContainer;
-import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +52,8 @@ public class CapacityPlanningTeams extends Screen {
     private ScreenBuilders screenBuilders;
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private TextField<String> txtFilter;
 
     // *** Initializations
 
@@ -132,6 +133,7 @@ public class CapacityPlanningTeams extends Screen {
                             .withPosition(Notifications.Position.BOTTOM_RIGHT)
                             .show();
                     updateCapacityPlanningData();
+
                 })
                 .build();
         ctd.setContext(item, budget);
@@ -210,6 +212,7 @@ public class CapacityPlanningTeams extends Screen {
                         .reduce(Double::sum).orElse(0.0));
                 cpTeams.add(cpTeam);
             }
+            // filterTeams();
             cPTeamsDc.setItems(cpTeams);
             cPTeamsTable.repaint();
             if (cPTeamsDc.getItems().size() != 0) {

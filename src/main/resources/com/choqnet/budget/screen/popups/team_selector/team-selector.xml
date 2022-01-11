@@ -17,9 +17,6 @@
                   width="100%"
                   dataContainer="teamsDc">
             <columns>
-                <column id="gbl" property="gbl"/>
-                <column id="gbd" property="gbd"/>
-                <column id="domain" property="domain"/>
                 <column id="fullName" property="fullName"/>
             </columns>
         </dataGrid>

@@ -1,4 +1,4 @@
-package com.choqnet.budget.screen.popups.capacityteamdetails;
+package com.choqnet.budget.screen.popups.capacity_team_details;
 
 import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.entity.*;
@@ -16,13 +16,11 @@ import io.jmix.ui.data.impl.ListDataProvider;
 import io.jmix.ui.data.impl.MapDataItem;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
-import liquibase.pro.packaged.D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @UiController("CapacityTeamDetails")

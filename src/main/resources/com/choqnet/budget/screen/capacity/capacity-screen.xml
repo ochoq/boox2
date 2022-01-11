@@ -5,9 +5,6 @@
         <collection id="capacitiesDc" class="com.choqnet.budget.entity.Capacity">
             <fetchPlan extends="_base">
                 <property fetchPlan="_base" name="team">
-                    <property name="gbl"/>
-                    <property name="gbd"/>
-                    <property name="domain"/>
                     <property fetchPlan="_base" name="parent">
                         <property name="parent" fetchPlan="_base"/>
                     </property>
@@ -37,11 +34,15 @@
         <buttonsPanel>
             <button id="btnAdd" caption="Add Teams" icon="USER_PLUS"/>
             <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
+            <button id="capacitiesTableExcelExportBtn" action="capacitiesTable.excelExport"/>
         </buttonsPanel>
         <dataGrid id="capacitiesTable" width="100%"
                   editorEnabled="true"
                   editorBuffered="true"
                   dataContainer="capacitiesDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
             <columns>
                 <column id="team" property="team.fullName" editable="false"/>
                 <column id="nbWorkingDays" property="nbWorkingDays"/>

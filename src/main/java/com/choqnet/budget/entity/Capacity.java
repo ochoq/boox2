@@ -66,7 +66,8 @@ public class Capacity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Budget budget;
 
-    @NumberFormat(pattern = "# ##0.00", groupingSeparator = ",")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    //@NumberFormat(pattern = "0.00")
     @Transient
     @JmixProperty
     public Double getMdY() {
@@ -89,28 +90,28 @@ public class Capacity {
         }
     }
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
     @Transient
     @JmixProperty
     public Double getMdQ4() {
         return this.fteQ4 * nbWorkingDays / 4;
     }
 
-    @NumberFormat(pattern = "# ##0.00")
+    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
     @Transient
     @JmixProperty
     public Double getMdQ3() {
         return this.fteQ3 * nbWorkingDays / 4;
     }
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
     @Transient
     @JmixProperty
     public Double getMdQ2() {
         return this.fteQ2 * nbWorkingDays / 4;
     }
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
     @Transient
     @JmixProperty
     public Double getMdQ1() {

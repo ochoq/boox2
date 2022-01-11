@@ -30,20 +30,20 @@ dependencies {
     implementation 'io.jmix.security:jmix-security-data-starter'
     implementation 'io.jmix.localfs:jmix-localfs-starter'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
     implementation(platform("org.apache.logging.log4j:log4j-bom:2.15.0"))
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test:2.6.1') {
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.6.2') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     implementation("io.jmix.datatools:jmix-datatools-starter")
     implementation("io.jmix.datatools:jmix-datatools-ui-starter")
 
     // Quartz scheduler
-    implementation 'org.springframework.boot:spring-boot-starter-quartz:2.6.1'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz:2.6.2'
     // Excel reading
-    implementation 'org.apache.poi:poi:5.0.0'
-    implementation 'org.apache.poi:poi-ooxml:5.0.0'
+    implementation 'org.apache.poi:poi'
+    implementation 'org.apache.poi:poi-ooxml'
 
     themes("io.jmix.ui:jmix-ui-themes")
     implementation("io.jmix.ui:jmix-ui-themes")
@@ -55,6 +55,9 @@ dependencies {
     widgets("io.jmix.ui:jmix-ui-widgets")
     implementation("io.jmix.email:jmix-email-starter")
     implementation("io.jmix.email:jmix-email-ui-starter")
+    implementation("io.jmix.ui:jmix-ui-export-starter")
+    implementation("io.jmix.ui:jmix-pivot-table-starter")
+    widgets("io.jmix.ui:jmix-pivot-table-widgets")
 }
 
 test {
