@@ -62,30 +62,6 @@ public class DemandManagement extends Screen {
 
     private boolean demandToUpdate = false;
     private boolean detailsToUpdate = false;
-    // todo setup the loading of Detail/Demand data only when opening a tab and only if required
-    /*
-    RESTE A FAIRE:
-    Quand le budget change:
-        si onglet actif = demand (par default)
-            mettre demand à jour
-            mettre demandToUpdate à faux
-            mettre detailToUpdate à vrai
-        sinon
-            mettre details à jour
-            mettre detailToUpdate à faux
-        mettre demandToUpdate à vrai
-
-    Quand un onglet change:
-        si c'est demand
-            si demandToUpdate
-                mettre demand à jour
-                mettre demandToUpdate à faux
-        sinon
-            si detailToUpdate
-                mettre detail à jour
-                mettre detailToUpdate à faux
-     */
-
     // *** init & decoration functions
     @Subscribe
     public void onInit(InitEvent event) {
@@ -102,17 +78,17 @@ public class DemandManagement extends Screen {
         filter.setExpanded(false);
         btnRemove.setEnabled(false);
         // style if the table
-        demandsTable.getHeaderRow(0).getCell("mdY").setStyleName("boldCell");
-        demandsTable.getHeaderRow(0).getCell("mdQ1").setStyleName("boldCell");
-        demandsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("boldCell");
-        demandsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("boldCell");
-        demandsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("boldCell");
-        demandsTable.getHeaderRow(0).getCell("euroAmount").setStyleName("boldCell");
+        demandsTable.getHeaderRow(0).getCell("mdY").setStyleName("h1r");
+        demandsTable.getHeaderRow(0).getCell("mdQ1").setStyleName("h1r");
+        demandsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("h1r");
+        demandsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("h1r");
+        demandsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("h1r");
+        demandsTable.getHeaderRow(0).getCell("euroAmount").setStyleName("h1r");
         for (int i=1; i<5; i++) {
-            demandsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "rightCell");
+            demandsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "ce1r");
         }
-        demandsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
-        demandsTable.getColumn("euroAmount").setStyleProvider(e -> "rightCell");
+        demandsTable.getColumn("mdY").setStyleProvider(e -> "crotr");
+        demandsTable.getColumn("euroAmount").setStyleProvider(e -> "ce2r");
     }
 
     // add details / euroDemand buttons

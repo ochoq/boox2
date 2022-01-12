@@ -34,8 +34,7 @@
       }
 
       .v-grid-cell.boldCell {
-          background-color: #637497;
-          color: #ffffff;
+          background-color: #d2ccec;
           font-weight: bold;
           text-align: right;
       }
@@ -64,7 +63,7 @@
 
       .v-grid-cell.readonly {
           color: #ffffff;
-          background-color: #888888;
+          background-color: #bbbbbb;
           text-align: right;
       }
 
@@ -98,6 +97,31 @@
             color: black;
             text-align: right;
        }
+
+
+       .v-grid-cell.h1r {
+            font-weight: bold;
+            text-align: right;
+       }
+       .v-grid-cell.ce1r {
+            text-align: right;
+       }
+       .v-grid-cell.ce2r {
+            //background-color: #F2F2F2;
+            color: #46BEAA;
+            text-align: right;
+       }
+       .v-grid-cell.cror {
+            font-style: italic;
+            text-align: right;
+            color: #888888;
+       }
+       .v-grid-cell.crotr {
+            font-weight: bold;
+            text-align: right;
+            color: #F08791;
+       }
+
 
   }
 

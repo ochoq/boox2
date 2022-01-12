@@ -10,6 +10,8 @@ import io.jmix.core.DataManager;
 import io.jmix.core.querycondition.PropertyCondition;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
+import io.jmix.ui.action.list.BulkEditAction;
+import io.jmix.ui.app.bulk.ColumnsMode;
 import io.jmix.ui.component.*;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
@@ -20,6 +22,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.inject.Named;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,6 +50,8 @@ public class CapacityScreen extends Screen {
     private Budget budget;
     @Autowired
     private Button btnUpload;
+    @Named("capacitiesTable.bulkEdit")
+    private BulkEditAction capacitiesTableBulkEdit;
 
     // *** init & decoration functions
     @Subscribe
@@ -62,32 +67,46 @@ public class CapacityScreen extends Screen {
         prefBudget.ifPresent(value -> cmbBudget.setValue(value));
         // folds the filter
         filter.setExpanded(false);
-
+        capacitiesTableBulkEdit.setColumnsMode(ColumnsMode.TWO_COLUMNS);
 
         // columns' style
         capacitiesTable.getColumn("mdY")
                 .setStyleProvider(capacity -> {
-                    return "readonlytotal";
+                    return "crotr";
                 });
         Objects.requireNonNull(capacitiesTable.getColumn("nbWorkingDays"))
                 .setStyleProvider(capacity -> {
-                    return "boldCell";
+                    return "ce2r";
+                });
+        capacitiesTable.getColumn("rateY")
+                .setStyleProvider(capacity -> {
+                    return "ce2r";
                 });
         for (int i =1; i < 5; i++) {
             capacitiesTable.getColumn("mdQ" + i)
                     .setStyleProvider(capacity -> {
-                        return "readonly";
+                        return "ce1r";
                     });
-            capacitiesTable.getColumn("rateQ" + i)
-                    .setStyleProvider(capacity -> {
-                        return "boldCell";
+            capacitiesTable.getColumn("fteQ" + i)
+                    .setStyleProvider(ce1r -> {
+                        return "rightCell";
                     });
             capacitiesTable.getColumn("fteQ" + i)
                     .setStyleProvider(capacity -> {
-                        return "basicCell";
+                        return "ce1r";
                     });
         }
-
+        capacitiesTable.getHeaderRow(0).getCell("nbWorkingDays").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("fteQ1").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("fteQ2").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("fteQ3").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("fteQ4").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("mdY").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("mdQ1").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("mdQ2").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("mdQ3").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("mdQ4").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("rateY").setStyleName("h1r");
     }
 
     // *** UI functions
@@ -118,7 +137,7 @@ public class CapacityScreen extends Screen {
 
     @Subscribe("capacitiesTable")
     public void onCapacitiesTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Capacity> event) {
-        dataManager.save(capacitiesTable.getSingleSelected());
+        dataManager.save(event.getItem());
         //capacitiesDl.load();
     }
 

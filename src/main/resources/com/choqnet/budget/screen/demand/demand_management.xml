@@ -95,11 +95,9 @@
                 <groupTable id="detailsTable" height="100%" width="100%" dataContainer="detailsDc">
                     <actions>
                         <action id="excelExport" type="excelExport"/>
-                        <action id="showPivot" type="showPivot"/>
                     </actions>
                     <buttonsPanel spacing="true">
                         <button id="detailsTableExcelExportBtn" action="detailsTable.excelExport"/>
-                        <button id="detailsTableShowPivotBtn" action="detailsTable.showPivot"/>
                     </buttonsPanel>
                     <columns>
                         <column id="team.name"/>

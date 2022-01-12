@@ -50,16 +50,16 @@ public class EditDetails extends Screen {
         filter.setExpanded(false);
         btnRemove.setEnabled(false);
         // style if the table
-        detailsTable.getHeaderRow(0).getCell("mdY").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ1").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("boldCell");
-        detailsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("boldCell");
+        detailsTable.getHeaderRow(0).getCell("mdY").setStyleName("h1r");
+        detailsTable.getHeaderRow(0).getCell("mdQ1").setStyleName("h1r");
+        detailsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("h1r");
+        detailsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("h1r");
+        detailsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("h1r");
         for (int i=1; i<5; i++) {
-            detailsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "rightCell");
+            detailsTable.getColumn("mdQ"+ i).setStyleProvider(e -> "ce1r");
         }
-        detailsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
-        detailsTable.getColumn("jira").setStyleProvider(e -> "rightCell");
+        detailsTable.getColumn("mdY").setStyleProvider(e -> "crotr");
+        detailsTable.getColumn("jira").setStyleProvider(e -> "ce1r");
     }
 
     public void setContext(Demand demand)  {

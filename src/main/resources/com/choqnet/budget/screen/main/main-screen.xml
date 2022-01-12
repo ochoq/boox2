@@ -41,18 +41,34 @@
             <workArea id="workArea"
                       stylename="jmix-workarea"
                       height="100%">
-                <initialLayout spacing="true" margin="true" >
-                    <textArea
-                            width="80%"
-                            height="AUTO"
-                            align="MIDDLE_CENTER"
-                            id="mainScreen"
-                            stylename="warning"
-                    />
-                    <link caption="Online Documentation"
-                          align="MIDDLE_CENTER"
-                          icon="QUESTION_CIRCLE"
-                          url="https://www.notion.so/choqnet/User-Documentation-14361ceea9d643caa421a9655bbf2b60"/>
+                <initialLayout spacing="true" margin="true" expand="box" >
+                    <hbox spacing="true" width="100%" height="100%" id="box" expand="mainScreen">
+                        <image width="150px" align="MIDDLE_CENTER">
+                            <resource>
+                                <theme path="boox01.svg"/>
+                            </resource>
+                        </image>
+                        <textArea
+                                width="80%"
+                                height="AUTO"
+                                align="MIDDLE_CENTER"
+                                id="mainScreen"
+                                stylename="warning"
+                        />
+                    </hbox>
+
+                    <hbox spacing="true" width="100%" height="250px">
+
+                        <link caption="Development tracking"
+                              align="MIDDLE_CENTER"
+                              icon="EXCLAMATION_TRIANGLE"
+                              url="https://jira.techno.ingenico.com/secure/RapidBoard.jspa?rapidView=9839"/>
+                        <link caption="Online Documentation"
+                              align="MIDDLE_CENTER"
+                              icon="QUESTION_CIRCLE"
+                              url="https://www.notion.so/choqnet/User-Documentation-14361ceea9d643caa421a9655bbf2b60"/>
+                    </hbox>
+
                 </initialLayout>
             </workArea>
         </cssLayout>

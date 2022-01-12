@@ -30,23 +30,23 @@ public class Demand {
     @OneToMany(mappedBy = "demand")
     private List<Detail> details;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "0", groupingSeparator = " ")
     @Column(name = "MD_Y")
     private Double mdY = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "0", groupingSeparator = " ")
     @Column(name = "MD_Q1")
     private Double mdQ1 = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "0", groupingSeparator = " ")
     @Column(name = "MD_Q2")
     private Double mdQ2 = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "0", groupingSeparator = " ")
     @Column(name = "MD_Q3")
     private Double mdQ3 = 0.0;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "0", groupingSeparator = " ")
     @Column(name = "MD_Q4")
     private Double mdQ4 = 0.0;
 
@@ -54,7 +54,7 @@ public class Demand {
     @OneToMany(mappedBy = "demand")
     private List<Expense> expenses;
 
-    @NumberFormat(pattern = "0.00")
+    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
     @Column(name = "EURO_AMOUNT")
     private Double euroAmount;
 

@@ -34,14 +34,24 @@
         <buttonsPanel>
             <button id="btnAdd" caption="Add Teams" icon="USER_PLUS"/>
             <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
+            <button id="capacitiesTableBulkEditBtn" action="capacitiesTable.bulkEdit"/>
             <button id="capacitiesTableExcelExportBtn" action="capacitiesTable.excelExport"/>
+            <button id="capacitiesTableRefreshBtn" action="capacitiesTable.refresh"/>
         </buttonsPanel>
         <dataGrid id="capacitiesTable" width="100%"
                   editorEnabled="true"
                   editorBuffered="true"
+                  selectionMode="MULTI"
                   dataContainer="capacitiesDc">
             <actions>
                 <action id="excelExport" type="excelExport"/>
+                <action id="refresh" type="refresh"/>
+                <action id="bulkEdit" type="bulkEdit">
+                    <properties>
+                        <property name="includeProperties" value="fteQ1,fteQ2,fteQ3,fteQ4,rateY,mdQ1,mdQ2,mdQ3,mdQ4"/>
+                        <property name="columnsMode" value="TWO_COLUMNS"/>
+                    </properties>
+                </action>
             </actions>
             <columns>
                 <column id="team" property="team.fullName" editable="false"/>
@@ -51,14 +61,11 @@
                 <column id="fteQ3" property="fteQ3"/>
                 <column id="fteQ4" property="fteQ4"/>
                 <column id="mdY" property="mdY" editable="false"/>
-                <column id="mdQ1" property="mdQ1" editable="false"/>
-                <column id="mdQ2" property="mdQ2" editable="false"/>
-                <column id="mdQ3" property="mdQ3" editable="false"/>
-                <column id="mdQ4" property="mdQ4" editable="false"/>
-                <column id="rateQ1" property="rateQ1"/>
-                <column id="rateQ2" property="rateQ2"/>
-                <column id="rateQ3" property="rateQ3"/>
-                <column id="rateQ4" property="rateQ4"/>
+                <column id="mdQ1" property="mdQ1"/>
+                <column id="mdQ2" property="mdQ2"/>
+                <column id="mdQ3" property="mdQ3"/>
+                <column id="mdQ4" property="mdQ4"/>
+                <column id="rateY" property="rateY"/>
             </columns>
         </dataGrid>
     </layout>
