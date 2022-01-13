@@ -90,8 +90,17 @@
                     </columns>
                 </dataGrid>
             </tab>
-            <tab caption="Details" id="detail" spacing="true">
+            <tab caption="Details" id="detail" spacing="true" expand="detailsTable">
+                <filter id="detailsFilter" columnsCount="3" dataLoader="detailsDl">
+                    <properties include=".*"/>
+                    <configurations>
+                        <configuration id="IPRBs" name="IPRBs">
+                            <propertyFilter property="demand.iprb.activityType" operation="IN_LIST" caption="Activity Type"/>
+                            <propertyFilter property="demand.iprb.legalEntity" operation="IN_LIST" caption="Legal Entity"/>
 
+                        </configuration>
+                    </configurations>
+                </filter>
                 <groupTable id="detailsTable" height="100%" width="100%" dataContainer="detailsDc">
                     <actions>
                         <action id="excelExport" type="excelExport"/>
@@ -125,6 +134,7 @@
                         <column id="jira"/>
                     </columns>
                 </groupTable>
+
             </tab>
             <tab id="pivot" caption="Pivot Table" spacing="true">
                 <pivot:pivotTable

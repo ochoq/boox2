@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'org.springframework.boot'
 
 jmix {
-    bomVersion = '1.1.1'
+    bomVersion = '1.1.2'
 }
 
 group = 'com.company'
@@ -70,3 +70,4 @@ compileWidgets {
     generate "com.choqnet.budget.widgets.CustomWidgetSet"
     includePaths("**/io/jmix/**/widget/**", "**/com/choqnet/budget/widgets/**")
 }
+

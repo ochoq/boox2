@@ -62,6 +62,9 @@ public class DemandManagement extends Screen {
 
     private boolean demandToUpdate = false;
     private boolean detailsToUpdate = false;
+    @Autowired
+    private Filter detailsFilter;
+
     // *** init & decoration functions
     @Subscribe
     public void onInit(InitEvent event) {
@@ -76,6 +79,7 @@ public class DemandManagement extends Screen {
         prefBudget.ifPresent(value -> cmbBudget.setValue(value));
         // folds the filter
         filter.setExpanded(false);
+        detailsFilter.setExpanded(false);
         btnRemove.setEnabled(false);
         // style if the table
         demandsTable.getHeaderRow(0).getCell("mdY").setStyleName("h1r");
