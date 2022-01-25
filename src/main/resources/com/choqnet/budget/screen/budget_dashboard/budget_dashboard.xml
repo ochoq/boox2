@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://budgetDashboard.caption">
+    <data>
+        <collection id="bDashboardsDc" class="com.choqnet.budget.entity.BDashboard">
+            <fetchPlan extends="_base"/>
+            <loader id="bDashboardsDl">
+                <query>
+                    <![CDATA[select e from BDashboard e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="screen">
+        <hbox spacing="true" width="100%">
+            <label stylename="h1" value="Budget Dashboard" align="MIDDLE_LEFT"/>
+            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+        </hbox>
+        <vbox width="100%"
+              id="screen"
+              expand="table"
+              spacing="true">
+
+            <vbox id="table" spacing="true"
+                  align="MIDDLE_CENTER" width="100%" expand="dTable">
+                <hbox expand="spacer" spacing="true">
+                    <button id="dTableExcelExportBtn" action="dTable.excelExport"/>
+                    <vbox width="50px"/>
+                    <checkBox id="chkD" caption="Demand"/>
+                    <checkBox id="chkB" caption="Budget"/>
+                    <checkBox id="chkC" caption="Capacity"/>
+                    <vbox width="50px"/>
+                    <checkBox id="chkMD" caption="Man-days"/>
+                    <checkBox id="chkEuro" caption="Euros" description="&lt;!&gt; Demand is not displayed in Euro"/>
+                    <vbox width="50px"/>
+                    <checkBox id="chkT" caption="Project Type" description="&lt;!&gt; Capacity is not displayed by project types"/>
+                    <checkBox id="chkQ" caption="Quarters" description="&lt;!&gt; Capacity is not available by quarter here"/>
+                    <checkBox id="chkY" caption="Year"/>
+                    <label id="spacer"/>
+                </hbox>
+                <dataGrid id="dTable"
+                          width="100%" height="100%"
+                          aggregatable="true"
+                          stylename="no-horizontal-lines"
+                          aggregationPosition="BOTTOM"
+                          dataContainer="bDashboardsDc">
+                    <actions>
+                        <action id="excelExport" type="excelExport"/>
+                    </actions>
+                    <columns>
+                        <column id="domain"  property="domain2Display" width="100px"/>
+                        <column id="platform" property="platform" width="250px"/>
+
+                        <column id="demandUMP" property="demandUMP"><aggregation type="SUM"/></column>
+                        <column id="demandBAU" property="demandBAU"><aggregation type="SUM"/></column>
+                        <column id="demandRUN" property="demandRUN"><aggregation type="SUM"/></column>
+                        <column id="demandQ1" property="demandQ1"><aggregation type="SUM"/></column>
+                        <column id="demandQ2" property="demandQ2"><aggregation type="SUM"/></column>
+                        <column id="demandQ3" property="demandQ3"><aggregation type="SUM"/></column>
+                        <column id="demandQ4" property="demandQ4"><aggregation type="SUM"/></column>
+                        <column id="demand" property="demand"><aggregation type="SUM"/></column>
+
+                        <column id="budgetUMP" property="budgetUMP"><aggregation type="SUM" /></column>
+                        <column id="budgetBAU" property="budgetBAU"><aggregation type="SUM" /></column>
+                        <column id="budgetRUN" property="budgetRUN"><aggregation type="SUM" /></column>
+                        <column id="budgetQ1" property="budgetQ1"><aggregation type="SUM" /></column>
+                        <column id="budgetQ2" property="budgetQ2"><aggregation type="SUM" /></column>
+                        <column id="budgetQ3" property="budgetQ3"><aggregation type="SUM" /></column>
+                        <column id="budgetQ4" property="budgetQ4"><aggregation type="SUM" /></column>
+
+                        <column id="budget" property="budget"><aggregation type="SUM" /></column>
+
+                        <column id="kEurUMP" property="kEurUMP"><aggregation type="SUM" /></column>
+                        <column id="kEurBAU" property="kEurBAU"><aggregation type="SUM" /></column>
+                        <column id="kEurRUN" property="kEurRUN"><aggregation type="SUM" /></column>
+                        <column id="kEurQ1" property="kEurQ1"><aggregation type="SUM"/></column>
+                        <column id="kEurQ2" property="kEurQ2"><aggregation type="SUM"/></column>
+                        <column id="kEurQ3" property="kEurQ3"><aggregation type="SUM"/></column>
+                        <column id="kEurQ4" property="kEurQ4"><aggregation type="SUM"/></column>
+                        <column id="kEurY" property="kEurY"><aggregation type="SUM" /></column>
+
+                        <column id="capacity" property="capacity"/>
+                        <column id="kEurCapacity" property="kEurCapacity"/>
+
+                    </columns>
+                </dataGrid>
+            </vbox>
+        </vbox>
+        <label value="End of Screen"/>
+    </layout>
+</window>

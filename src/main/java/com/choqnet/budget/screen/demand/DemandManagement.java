@@ -9,6 +9,7 @@ import com.choqnet.budget.screen.popups.upload_demand.UploadDemand;
 import io.jmix.core.DataManager;
 import io.jmix.core.FetchPlan;
 import io.jmix.core.FetchPlans;
+import io.jmix.core.metamodel.model.MetaPropertyPath;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.UiComponents;
@@ -23,6 +24,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +67,15 @@ public class DemandManagement extends Screen {
     @Autowired
     private Filter detailsFilter;
 
+    // *** test @ lab
+    @Install(to = "detailsFilter", subject = "propertiesFilterPredicate")
+    private boolean filterCustom(MetaPropertyPath mpp) {
+//        List<String> excluded = Arrays.asList("id","demand");
+        List<String> excluded = Arrays.asList("id");
+        return !excluded.contains(mpp.getMetaProperty().getName());
+    }
+
+
     // *** init & decoration functions
     @Subscribe
     public void onInit(InitEvent event) {
@@ -80,6 +91,8 @@ public class DemandManagement extends Screen {
         // folds the filter
         filter.setExpanded(false);
         detailsFilter.setExpanded(false);
+
+
         btnRemove.setEnabled(false);
         // style if the table
         demandsTable.getHeaderRow(0).getCell("mdY").setStyleName("h1r");

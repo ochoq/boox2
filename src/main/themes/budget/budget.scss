@@ -122,6 +122,84 @@
             color: #F08791;
        }
 
+        // Dashboard styles
+
+        // --- GSV
+        .v-grid-cell.dg1 {
+           text-align: right;
+           color: #FFFFFF;
+           font-family: "Arial Black";
+           background-color: #5F8CA0;
+        }
+        .v-grid-cell.dg2 {
+           text-align: right;
+           background-color: #BFD1D9;
+        }
+        .v-grid-cell.dg3 {
+           text-align: right;
+           background-color: #DFE8EC;
+        }
+        // --- ECOM
+        .v-grid-cell.de1 {
+           text-align: right;
+           color: #FFFFFF;
+           font-family: "Arial Black";
+           background-color: #F5AF82;
+        }
+        .v-grid-cell.de2 {
+           text-align: right;
+           background-color: #FBDFCC;
+        }
+        .v-grid-cell.de3 {
+           text-align: right;
+           background-color: #FDEFE6;
+        }
+        // --- ONLINE
+        .v-grid-cell.do1 {
+           text-align: right;
+           color: #FFFFFF;
+           font-family: "Arial Black";
+           background-color: #D74B8C;
+        }
+        .v-grid-cell.do2 {
+           text-align: right;
+           background-color: #EFB6D1;
+        }
+        .v-grid-cell.do3 {
+           text-align: right;
+           background-color: #F7DBE8;
+        }
+        // --- OMNICHANNEL
+        .v-grid-cell.dc1 {
+           text-align: right;
+           color: #FFFFFF;
+           font-family: "Arial Black";
+           background-color: #46B8A6;
+        }
+        .v-grid-cell.dc2 {
+           text-align: right;
+           background-color: #B5E3DC;
+        }
+        .v-grid-cell.dc3 {
+           text-align: right;
+           background-color: #DAF1EE;
+        }
+        // --- other
+        .v-grid-cell.dt1 {
+           text-align: right;
+           color: #FFFFFF;
+           font-family: "Arial Black";
+           background-color: #898989;
+        }
+        .v-grid-cell.dt2 {
+           text-align: right;
+           background-color: #D8D8D8;
+        }
+        .v-grid-cell.dt3 {
+           text-align: right;
+           background-color: #F2F2F2;
+        }
+
 
   }
 

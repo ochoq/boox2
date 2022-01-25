@@ -113,5 +113,31 @@ public class UtilBean {
             teams = dataManager.load(Team.class).query("select e from Team e where e.level = " + i).list();
         } while (teams.size()>0);
     }
+    public String renamePlatform(String rootName) {
+        if (rootName==null) {
+            return "";
+        }
+        switch(rootName) {
+            case "BO BB":
+                return "Back-Office Bambora";
+            case "BO MCH":
+                return "Back-Office Multi Channel";
+            case "BOL":
+                return "Bambora OnLine";
+            case "BB Samport":
+                return "Bambora In-Store";
+            case "Cnx":
+                return "Conexflow";
+            case "ARM":
+                return "Armenia";
+            case "CMA":
+                return "Operations";
+            case "BELCCSWL":
+            case "CHECCSSPS":
+                return "COO CS";
+            default:
+                return rootName;
+        }
+    }
 
 }

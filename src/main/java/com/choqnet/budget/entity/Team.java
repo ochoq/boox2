@@ -69,6 +69,37 @@ public class Team {
     @Column(name = "T_DOMAIN")
     private String tDomain;
 
+    @Column(name = "SIMPLE_DOMAIN")
+    private String simpleDomain;
+
+    @Column(name = "SIMPLE_PLATFORM")
+    private String simplePlatform;
+
+    public String getSimplePlatform() {
+        if (icTarget==null) {
+            return "Not assigned";
+        }
+        return icTarget;
+    }
+
+    public String getSimpleDomain() {
+        if (tDomain==null) {
+            return "OTHER";
+        }
+        switch(tDomain.toUpperCase()) {
+            case "IN-STORE":
+                return "GSV";
+            case "OMNICHANNEL":
+                return "OCH";
+            case "ONLINE":
+                return "ONLINE";
+            case "ECOMMERCE":
+                return "ECOM";
+            default:
+                return "OTHER";
+        }
+    }
+
     public String getTDomain() {
         return tDomain;
     }

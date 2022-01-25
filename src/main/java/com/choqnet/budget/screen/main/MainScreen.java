@@ -38,7 +38,7 @@ public class MainScreen extends Screen implements Window.HasWorkArea {
 
     @Subscribe
     public void onInit(InitEvent event) {
-        mainScreen.setValue("Test Version.\n\nYou can do what you want,\nit's a sandbox.\nSee below for documentation");
+        mainScreen.setValue("About launch.\n\nData refreshed.\n\nSee below for documentation");
     }
 
 

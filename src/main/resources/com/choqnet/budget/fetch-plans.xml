@@ -9,10 +9,15 @@
             <property name="tLine"/>
             <property name="tDiv"/>
             <property name="tDomain"/>
+            <property name="icTarget"/>
         </property>
         <property name="demand" fetchPlan="_base">
             <property name="iprb" fetchPlan="_base"/>
             <property name="budget" fetchPlan="_base"/>
         </property>
+    </fetchPlan>
+    <fetchPlan entity="Capacity" name="capacities" extends="_base">
+        <property name="team" fetchPlan="_base"/>
+        <property name="mdY"/>
     </fetchPlan>
 </fetchPlans>

@@ -42,19 +42,27 @@
                       stylename="jmix-workarea"
                       height="100%">
                 <initialLayout spacing="true" margin="true" expand="box" >
-                    <hbox spacing="true" width="100%" height="100%" id="box" expand="mainScreen">
-                        <image width="150px" align="MIDDLE_CENTER">
-                            <resource>
-                                <theme path="boox01.svg"/>
-                            </resource>
-                        </image>
-                        <textArea
-                                width="80%"
-                                height="AUTO"
-                                align="MIDDLE_CENTER"
-                                id="mainScreen"
-                                stylename="warning"
-                        />
+                    <hbox spacing="true" width="100%" height="100%" id="box" expand="screen">
+                        <hbox height="AUTO" width="200px" align="MIDDLE_CENTER">
+                            <image width="80%" align="MIDDLE_CENTER">
+                                <resource>
+                                    <theme path="boox01.svg"/>
+                                </resource>
+                            </image>
+                        </hbox>
+                        <vbox height="AUTO"
+                              expand="mainScreen"
+                              align="MIDDLE_CENTER"
+                              id="screen">
+                            <textArea
+                                    width="100%"
+                                    align="MIDDLE_CENTER"
+                                    id="mainScreen"
+                                    stylename="warning"
+                            />
+                        </vbox>
+                        <vbox width="200px"/>
+
                     </hbox>
 
                     <hbox spacing="true" width="100%" height="250px">

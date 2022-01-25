@@ -158,7 +158,7 @@ public class UploadDemand extends Screen {
                     .orElse(null);
             if (demand == null) {
                 Optional<IPRB> iprb = iprbs.stream()
-                        .filter(e -> iprbRef.equals(e.getReference()))
+                        .filter(e -> iprbRef.toUpperCase().equals(e.getReference().toUpperCase()))
                         .findFirst();
                 if (iprb.isPresent()) {
                     demand = dataManager.create(Demand.class);
@@ -177,7 +177,7 @@ public class UploadDemand extends Screen {
             detail.setDetail(readCell(row.getCell(3)));
             String teamName = readCell(row.getCell(4));
             Team team = teams.stream()
-                    .filter(e -> teamName.equals(e.getName()))
+                    .filter(e -> teamName.toUpperCase().equals(e.getName().toUpperCase()))
                     .findFirst()
                     .orElse(null);
             detail.setTeam(team);
@@ -190,12 +190,6 @@ public class UploadDemand extends Screen {
             double effort2 = getDouble(readCell(row.getCell(10)));
             double effort3 = getDouble(readCell(row.getCell(11)));
             double effort4 = getDouble(readCell(row.getCell(12)));
-            // debug
-            if ("ACC - 0113".equals(iprbRef)) {
-                log.info(readCell(row.getCell(6)));
-                log.info("fpound");
-            }
-
             switch (size) {
                 case "XXXL":
                     targetTS= (TShirt.XXXL);

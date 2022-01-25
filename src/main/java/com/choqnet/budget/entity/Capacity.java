@@ -134,7 +134,7 @@ public class Capacity {
     private Double rateQ4 = 0.0;
 
     public Double getRateY() {
-        return rateY;
+        return rateY==null ? 0.0 : rateY;
     }
     public void setRateY(Double rateY) {
         this.rateY = rateY;
@@ -147,28 +147,28 @@ public class Capacity {
     }
 
     public Double getRateQ4() {
-        return rateQ4;
+        return rateQ4==null ? 0.0 : rateQ4;
     }
     public void setRateQ4(Double rateQ4) {
         this.rateQ4 = rateQ4;
     }
 
     public Double getRateQ3() {
-        return rateQ3;
+        return rateQ3==null ?0.0 : rateQ3;
     }
     public void setRateQ3(Double rateQ3) {
         this.rateQ3 = rateQ3;
     }
 
     public Double getRateQ2() {
-        return rateQ2;
+        return rateQ2 == null ? 0.0 : rateQ2;
     }
     public void setRateQ2(Double rateQ2) {
         this.rateQ2 = rateQ2;
     }
 
     public Double getRateQ1() {
-        return rateQ1;
+        return rateQ1 == null ? 0.0 : rateQ1;
     }
     public void setRateQ1(Double rateQ1) {
         this.rateQ1 = rateQ1;

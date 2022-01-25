@@ -212,6 +212,8 @@ public class CapacityPlanningTeams extends Screen {
                         .reduce(Double::sum).orElse(0.0));
                 cpTeams.add(cpTeam);
             }
+            // todo : insert here a loop to calculate CapaCons and DemandCons
+            //
             // filterTeams();
             cPTeamsDc.setItems(cpTeams);
             cPTeamsTable.repaint();

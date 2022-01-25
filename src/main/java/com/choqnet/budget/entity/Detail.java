@@ -40,23 +40,23 @@ public class Detail {
     @Column(name = "T_SHIRT")
     private Integer tShirt;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "MD_Y")
     private Double mdY = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "MD_Q1")
     private Double mdQ1 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "MD_Q2")
     private Double mdQ2 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "MD_Q3")
     private Double mdQ3 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "MD_Q4")
     private Double mdQ4 = 0.0;
 
@@ -82,6 +82,59 @@ public class Detail {
 
     @Column(name = "T_LINE")
     private String tLine;
+
+    @Column(name = "SIMPLE_DOMAIN")
+    private String simpleDomain;
+
+    @Column(name = "SIMPLE_PLATFORM")
+    private String simplePlatform;
+
+    @Column(name = "INCLUDED")
+    private Boolean included;
+
+    @Column(name = "TYPE_")
+    private String type;
+
+    public String getType() {
+        if (demand==null || demand.getIprb()==null || demand.getIprb().getStrategicProgram()==null) {
+            return "BAU";
+        }
+        switch(demand.getIprb().getStrategicProgram().toString()) {
+            case "RUN":
+                return "RUN";
+            case "UNI":
+            case "M_P":
+                return "UMP";
+            default:
+                return "BAU";
+        }
+    }
+
+    public String getSimplePlatform() {
+        if (team==null || team.getIcTarget()==null) {
+            return "Not assigned";
+        }
+        return team.getSimplePlatform();
+    }
+
+    public String getSimpleDomain() {
+        if (team==null || team.getTDomain()==null) {
+            return "OTHER";
+        }
+        return team.getSimpleDomain();
+    }
+
+    public Boolean getIncluded() {
+        // is included in the budget if:
+        // - there is a team connected
+        // - priority is equal or less than the budget's threshold
+        // - the IPRB is not out Budget
+        boolean bTeam = team!=null;
+        boolean bPrio = getPriority().isLessOrEqual(demand.getBudget().getPrioThreshold());
+        boolean bIPRB = !demand.getIprb().getOutBudget();
+        included = (team!=null) && (getPriority().isLessOrEqual(demand.getBudget().getPrioThreshold())) && (!demand.getIprb().getOutBudget());
+        return included;
+    }
 
     public String getTLine() {
         return team==null ? "" : team.getTLine();

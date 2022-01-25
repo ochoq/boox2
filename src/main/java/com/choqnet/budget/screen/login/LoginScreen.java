@@ -93,7 +93,7 @@ public class LoginScreen extends Screen {
     private void onInit(InitEvent event) {
         usernameField.focus();
         initLocalesField();
-        initDefaultCredentials();
+        // initDefaultCredentials();
         // sets the role's radioButtonGroup's items
         List<String> list = new ArrayList<>();
         list.add("Viewer");

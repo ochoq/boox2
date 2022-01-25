@@ -33,16 +33,18 @@
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
         </hbox>
         <tabSheet id="screen">
-            <tab caption="Summary" id="summary" spacing="true" expand="demandsTable">
+            <tab caption="Summary" id="summary" spacing="true" expand="demandsTable" margin="true,false,false,false">
                 <hbox spacing="true" width="100%" expand="filter">
                     <filter id="filter" columnsCount="3" dataLoader="demandsDl">
                         <properties include=".*"/>
                         <configurations>
                             <configuration id="fltOnDemand" name="Demands filter" default="true">
-                                <propertyFilter property="iprb.reference" caption="IPRB Reference" operation="CONTAINS"/>
+                                <propertyFilter property="iprb.reference" caption="IPRB Reference"
+                                                operation="CONTAINS"/>
                                 <propertyFilter property="iprb.name" caption="IPRB Name" operation="CONTAINS"/>
                                 <propertyFilter property="iprb.owner" caption="IPRB Owner" operation="CONTAINS"/>
-                                <propertyFilter property="iprb.groupOffering" caption="Group Offering" operation="IN_LIST"/>
+                                <propertyFilter property="iprb.groupOffering" caption="Group Offering"
+                                                operation="IN_LIST"/>
                             </configuration>
                         </configurations>
                     </filter>
@@ -65,9 +67,9 @@
                     </pagination>
                 </hbox>
                 <dataGrid id="demandsTable"
-                                  selectionMode="MULTI"
-                                  width="100%"
-                                  dataContainer="demandsDc">
+                          selectionMode="MULTI"
+                          width="100%"
+                          dataContainer="demandsDc">
                     <actions>
                         <action id="refresh" type="refresh"/>
                         <action id="excelExport" type="excelExport"/>
@@ -90,13 +92,26 @@
                     </columns>
                 </dataGrid>
             </tab>
-            <tab caption="Details" id="detail" spacing="true" expand="detailsTable">
+            <tab caption="Details" id="detail" spacing="true" expand="detailsTable" margin="true,false,false,false">
                 <filter id="detailsFilter" columnsCount="3" dataLoader="detailsDl">
+                    <!-- <properties include=".*" excludeProperties="id,mdQ1,mdQ2,mdQ3,mdQ4,demand.id,demand.budget,demand.unicity,team.id"/>-->
                     <properties include=".*"/>
                     <configurations>
                         <configuration id="IPRBs" name="IPRBs">
-                            <propertyFilter property="demand.iprb.activityType" operation="IN_LIST" caption="Activity Type"/>
-                            <propertyFilter property="demand.iprb.legalEntity" operation="IN_LIST" caption="Legal Entity"/>
+                            <propertyFilter property="demand.iprb.activityType" operation="IN_LIST"
+                                            caption="Activity Type"/>
+                            <propertyFilter property="demand.iprb.legalEntity" operation="IN_LIST"
+                                            caption="Legal Entity"/>
+                            <propertyFilter property="demand.iprb.owner" operation="CONTAINS" caption="IPRB Owner"/>
+                            <propertyFilter property="demand.iprb.portfolioClassification" operation="IN_LIST"
+                                            caption="Portfolio Classification"/>
+                            <propertyFilter property="demand.iprb.groupOffering" operation="IN_LIST"
+                                            caption="Group Offering"/>
+                            <propertyFilter property="demand.iprb.reference" operation="IN_LIST" caption="Reference"/>
+                            <propertyFilter property="demand.iprb.strategicProgram" operation="IN_LIST"
+                                            caption="Strategic Program"/>
+                            <propertyFilter property="demand.iprb.name" operation="IN_LIST" caption="Name"/>
+
 
                         </configuration>
                     </configurations>
@@ -132,11 +147,14 @@
                         <column id="demand.iprb.activityType"/>
                         <column id="demand.iprb.portfolioClassification"/>
                         <column id="jira"/>
+                        <column id="included"/>
+                        <column id="simpleDomain" caption="Dash"/>
+                        <column id="simplePlatform" caption="Platform"/>
                     </columns>
                 </groupTable>
 
             </tab>
-            <tab id="pivot" caption="Pivot Table" spacing="true">
+            <tab id="pivot" caption="Pivot Table" spacing="true" margin="true,false,false,false">
                 <pivot:pivotTable
                         dataContainer="detailsDc"
                         height="100%" width="100%"
@@ -158,11 +176,11 @@
                     </pivot:aggregations>
                     <pivot:properties>
                         <pivot:property name="team"/>
-<!--                        <pivot:property name="team.tLine"/>-->
+                        <!--                        <pivot:property name="team.tLine"/>-->
                         <pivot:property name="tFullName"/>
                         <pivot:property name="roadmap"/>
-<!--                        <pivot:property name="tLine"/>-->
-<!--                        <pivot:property name="team.tLine"/>-->
+                        <!--                        <pivot:property name="tLine"/>-->
+                        <!--                        <pivot:property name="team.tLine"/>-->
                         <!--<pivot:property name="team.gbd"/>
                         <pivot:property name="team.domain"/>-->
                         <pivot:property name="category"/>

@@ -3,12 +3,16 @@
 
     <menu id="application" caption="msg://com.choqnet.budget/menu.application" insertBefore="administration">
         <item screen="BudgetScreen" caption="msg://com.choqnet.budget.screen.budget/budgetScreen.caption"/>
+        <item screen="BudgetDashboard"
+              caption="msg://com.choqnet.budget.screen.budget_dashboard/budgetDashboard.caption"/>
         <item screen="CapacityScreen" caption="msg://com.choqnet.budget.screen.capacity/capacityScreen.caption"/>
         <item screen="CapacityPlanningTeams"
               caption="msg://com.choqnet.budget.screen.capacity_planning_teams/capacityPlanningTeams.caption"/>
         <item screen="DemandManagement" caption="msg://com.choqnet.budget.screen.demand/demandManagement.caption"/>
         <item screen="IprbScreen" caption="msg://com.choqnet.budget.screen.iprb/iprbScreen.caption"/>
         <item screen="Teams" caption="msg://com.choqnet.budget.screen.teams/teams.caption"/>
+
+
     </menu>
     <menu id="back-office" caption="msg://com.choqnet.budget/menu_config.back-office" insertBefore="administration">
         <item screen="User.browse" caption="msg://com.choqnet.budget.screen.user/UserBrowse.caption"/>
@@ -17,6 +21,7 @@
         <item screen="ControlTower" caption="msg://com.choqnet.budget.screen.control_tower/controlTower.caption"/>
         <item screen="Mapping.browse" caption="msg://com.choqnet.budget.screen.mapping/mappingBrowse.menu"/>
         <item screen="Template.browse" caption="msg://com.choqnet.budget.screen.template/templateBrowse.menu"/>
+        <item screen="ChangePassword" caption="msg://com.choqnet.budget.screen.change_password/changePassword.caption"/>
     </menu>
 
 </menu-config>

@@ -7,8 +7,12 @@ import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Budget;
 import com.choqnet.budget.entity.Team;
 import com.choqnet.budget.entity.Template;
+import com.choqnet.budget.entity.User;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
+import io.jmix.core.SaveContext;
+import io.jmix.core.security.PasswordNotMatchException;
+import io.jmix.core.security.UserManager;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.component.Button;
@@ -18,14 +22,15 @@ import io.jmix.ui.download.Downloader;
 import io.jmix.ui.screen.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @UiController("ControlTower")
 @UiDescriptor("control-tower.xml")
@@ -114,6 +119,28 @@ public class ControlTower extends Screen {
         }
     }
 
+   /* @Subscribe("createPeople")
+    public void onCreatePeopleClick(Button.ClickEvent event) {
+        String input = "amaury;kervyn;akervyn;amaury.kervyn@ingenico.comµPierre-Olivier;CHAPLAIN;pchaplain;Pierre-Olivier.CHAPLAIN@ingenico.comµmartin;sunnerstig;msunnerstig;martin.sunnerstig@worldline.comµJerker;lundberg;jlundberg;Jerker.lundberg@bambora.comµSylvain;MARION;smarion;Sylvain.MARION@ingenico.comµolivier;blerot;oblerot;olivier.blerot@worldline.comµMinh-Tuan;Pham;mpham;Minh-Tuan.Pham@ingenico.comµmike;ohalloran;mohalloran;mike.ohalloran@bambora.comµGilles;RAYMOND;graymond;Gilles.RAYMOND@ingenico.comµAnne-Claude;TICHAUER;atichauer;Anne-Claude.TICHAUER@ingenico.comµMourad;BEJAR;mbejar;Mourad.BEJAR@ingenico.comµRui;Nunes;rnunes;Rui.Nunes@epay.ingenico.comµTeun;Boer;tboer;Teun.Boer@ingenico.comµEric;PICOU;epicou;Eric.PICOU@ingenico.comµCharam;VAZIRI;cvaziri;Charam.VAZIRI@ingenico.comµArvind;Singh;asingh;Arvind.Singh@ingenico.comµMohamed;LACHGUER;mlachguer;Mohamed.LACHGUER@ingenico.comµIsmael;JAAFAR;ijaafar;Ismael.JAAFAR@ingenico.comµMarco;Hauff;mhauff;Marco.Hauff@ingenico.comµMartin;TOMKINS;mtomkins;Martin.TOMKINS@ingenico.comµNicolas;Postal;npostal;Nicolas.Postal@ingenico.comµeline;blomme;eblomme;eline.blomme@worldline.comµGeoffroy;GUEULETTE;ggueulette;Geoffroy.GUEULETTE@ingenico.comµJorge;TARLEA;jtarlea;Jorge.TARLEA@ingenico.comµSebastien;Fantone;sfantone;Sebastien.Fantone@ingenico.comµPaul;Taylor;ptaylor;Paul.Taylor1@ingenico.comµchrista;hediger;chediger;christa.hediger@worldline.comµPierre;RIAT;priat;Pierre.RIAT@ingenico.comµjens;stenvall;jstenvall;jens.stenvall@worldline.comµOhad;SOMJEN;osomjen;Ohad.SOMJEN@ingenico.comµmartin;boulanger;mboulanger;martin.boulanger@equensworldline.comµThejus;Philip;tphilip;Thejus.Philip@ingenico.comµDenis;Simonet;dsimonet;Denis.Simonet@ingenico.comµMichael;AMSELLEM;mamsellem;Michael.AMSELLEM@ingenico.comµShekhar;Kachole;skachole;Shekhar.Kachole@epay.ingenico.comµRik;vantHof;rvanthof;Rik.vantHof@epay.ingenico.comµchloe;tiberghien;ctiberghien;chloe.tiberghien@ingenico.comµroman;eugster;reugster;roman.eugster@worldline.comµCedric;Donckels;cdonckels;Cedric.Donckels@ingenico.comµlefras;coetzee;lcoetzee;lefras.coetzee@worldline.comµSebastien;LETNIOWSKI;sletniowski;Sebastien.LETNIOWSKI@ingenico.comµPierre;SALIGNAT;psalignat;Pierre.SALIGNAT@ingenico.comµZlatko;Bralic;zbralic;Zlatko.Bralic@ingenico.comµKaivalya;Paluskar;kpaluskar;Kaivalya.Paluskar@epay.ingenico.comµkhalil;kammoun;kkammoun;khalil.kammoun@six-group.comµJagdish;Kumar;jkumar;Jagdish.Kumar@ingenico.comµThierry;FORTUNE;tfortune;Thierry.FORTUNE@ingenico.comµmariehelene;liegeois;mliegeois;mariehelene.liegeois@worldline.comµpernilla;grabner;pgrabner;pernilla.grabner@bambora.comµAlexandre;DURET;aduret;Alexandre.DURET@ingenico.comµSimone;vanSchaik;svanschaik;Simone.vanSchaik@ingenico.comµanders;ohlander;aohlander;anders.ohlander@worldline.comµcamile;telles;ctelles;camile.telles@worldline.comµrickard;schoultz;rschoultz;rickard.schoultz@worldline.comµFederico;deTogni;fdetogni;Federico.deTogni@epay.ingenico.comµniklas;rosvall;nrosvall;niklas.rosvall@worldline.comµPetra;Steenstra;psteenstra;Petra.Steenstra@ingenico.comµstefaan;degeest;sdegeest;stefaan.degeest@worldline.comµmichael;huffman;mhuffman;michael.huffman@bambora.comµDavy;LESPAGNOL;dlespagnol;Davy.LESPAGNOL@ingenico.comµemilia;sandahl;esandahl;emilia.sandahl@bambora.comµLaurent;LEBOEUF;lleboeuf;Laurent.LEBOEUF@ingenico.comµStanley;Macnack;smacnack;Stanley.Macnack@ingenico.comµbernd;hingst;bhingst;bernd.hingst@six-group.comµWilly;DeReymaeker;wdereymaeker;Willy.DeReymaeker@ingenico.comµAriana;delRosario;adelrosario;Ariana.delRosario@ingenico.comµPaula;Costa;pcosta;Paula.Costa@epay.ingenico.comµsarah;lamarque;slamarque;sarah.lamarque@ingenico.comµFabrizio;Leonardo;fleonardo;Fabrizio.Leonardo@ingenico.comµpeter;tellram;ptellram;peter.tellram@bambora.comµkoenraad;vanmelkebeke;kvanmelkebeke;koenraad.vanmelkebeke@worldline.comµGuido;Hendrickx;ghendrickx;Guido.Hendrickx@ingenico.comµnils;herloffpetersen;nherloffpetersen;nils.herloffpetersen.external@worldline.comµStephan;VanGulck;svangulck;Stephan.VanGulck@ingenico.comµsofia;albertsson;salbertsson;sofia.albertsson@bambora.comµpatrik;osterling;posterling;patrik.osterling@worldline.comµArni;Smit;asmit;Arni.Smit@epay.ingenico.comµCharlotte;PERRAUDIN;cperraudin;Charlotte.PERRAUDIN@ingenico.comµ";
+        String[] lines = input.split("µ");
+        SaveContext saveContext = new SaveContext();
+        for (String line: lines) {
+            String[] userProps = line.split(";");
+            User user = dataManager.create(User.class);
+            user.setFirstName(userProps[0]);
+            user.setActive(true);
+            user.setLastName(userProps[1]);
+            user.setPassword("boox");
+            user.setUsername(userProps[2]);
+            user.setEmail(userProps[3]);
+            saveContext.saving(user);
+        }
+        dataManager.save(saveContext);
+        notifications.create()
+                .withDescription("Users created")
+                .show();
+    }*/
+
 
 
     /*
@@ -137,8 +164,6 @@ public class ControlTower extends Screen {
     }
 
      */
-
-
 
 
 }
