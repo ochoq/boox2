@@ -12,7 +12,8 @@
                            stylename="app-icon"
                            scaleMode="SCALE_DOWN">
                         <resource>
-                            <theme path="branding/app-icon-menu.svg"/>
+<!--                            <theme path="branding/app-icon-menu.svg"/>-->
+                            <theme path="boox01.svg"/>
                         </resource>
                     </image>
                     <label id="appTitleLabel"
@@ -42,30 +43,15 @@
                       stylename="jmix-workarea"
                       height="100%">
                 <initialLayout spacing="true" margin="true" expand="box" >
-                    <hbox spacing="true" width="100%" height="100%" id="box" expand="screen">
-                        <hbox height="AUTO" width="200px" align="MIDDLE_CENTER">
-                            <image width="80%" align="MIDDLE_CENTER">
-                                <resource>
-                                    <theme path="boox01.svg"/>
-                                </resource>
-                            </image>
-                        </hbox>
-                        <vbox height="AUTO"
-                              expand="mainScreen"
-                              align="MIDDLE_CENTER"
-                              id="screen">
-                            <textArea
-                                    width="100%"
-                                    align="MIDDLE_CENTER"
-                                    id="mainScreen"
-                                    stylename="warning"
-                            />
+                    <vbox spacing="true" width="100%" height="100%" id="box" expand="spacer">
+                        <vbox height="100px" spacing="true">
+                            <label stylename="h1" value="Acceptance Capacity Planning &amp; Budget" align="MIDDLE_CENTER"/>
                         </vbox>
-                        <vbox width="200px"/>
+                        <richTextArea width="600px" height="250px" align="MIDDLE_CENTER" id="screen" editable="false"/>
+                        <label id="spacer"/>
+                    </vbox>
 
-                    </hbox>
-
-                    <hbox spacing="true" width="100%" height="250px">
+                    <hbox spacing="true" width="100%" height="100px">
 
                         <link caption="Development tracking"
                               align="MIDDLE_CENTER"

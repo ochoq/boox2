@@ -75,6 +75,17 @@ public class Team {
     @Column(name = "SIMPLE_PLATFORM")
     private String simplePlatform;
 
+    @Column(name = "IN_BUDGET")
+    private Boolean inBudget = false;
+
+    public Boolean getInBudget() {
+        return inBudget==null ? false : inBudget;
+    }
+
+    public void setInBudget(Boolean inBudget) {
+        this.inBudget = inBudget;
+    }
+
     public String getSimplePlatform() {
         if (icTarget==null) {
             return "Not assigned";

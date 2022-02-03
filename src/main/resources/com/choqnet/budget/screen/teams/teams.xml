@@ -39,7 +39,7 @@
             <actions>
                 <action id="bulkEdit" type="bulkEdit">
                     <properties>
-                        <property name="includeProperties" value="selectable,mainGTM,enabled,source,icTarget"/>
+                        <property name="includeProperties" value="inBudget,selectable,mainGTM,enabled,source,icTarget"/>
                     </properties>
                 </action>
                 <action id="refresh" type="refresh"/>
@@ -62,12 +62,14 @@
                 <column id="name" property="name"/>
                 <column id="parent" property="parent"/>
                 <column id="source" property="source"/>
+<!--                <column id="inBudget" property="inBudget"/>-->
                 <column id="sourceName" property="sourceName"/>
                 <column id="sourceID" property="sourceID"/>
                 <column id="mainGTM" property="mainGTM"/>
                 <column id="icTarget" property="icTarget"/>
                 <column id="enabled" property="enabled"/>
                 <column id="selectable" property="selectable"/>
+                <column id="inBudget" property="inBudget"/>
                 <column id="updated" property="updated" editable="false"/>
                 <column id="fullName" property="fullName" editable="false"/>
                 <column id="tLine" property="tLine" editable="false"/>

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @JmixEntity
 @Table(name = "IPRB")
-@Entity
+@Entity(name="IPRB")
 public class IPRB {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)

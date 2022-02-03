@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://capacityBrowse.caption"
+        focusComponent="capacitiesTable">
+    <data readOnly="true">
+        <collection id="capacitiesDc"
+                    class="com.choqnet.budget.entity.Capacity">
+            <fetchPlan extends="_base"/>
+            <loader id="capacitiesDl">
+                <query>
+                    <![CDATA[select e from Capacity e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="capacitiesTable" spacing="true">
+        <filter id="filter"
+                dataLoader="capacitiesDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="capacitiesTable"
+                  width="100%"
+                  dataContainer="capacitiesDc">
+            <actions>
+            </actions>
+            <columns>
+                <column property="nbWorkingDays" id="nbWorkingDays"/>
+                <column property="fteQ1" id="fteQ1"/>
+                <column property="fteQ2" id="fteQ2"/>
+                <column property="fteQ3" id="fteQ3"/>
+                <column property="fteQ4" id="fteQ4"/>
+                <column property="rateY" id="rateY"/>
+                <column property="rateQ1" id="rateQ1"/>
+                <column property="rateQ2" id="rateQ2"/>
+                <column property="rateQ3" id="rateQ3"/>
+                <column property="rateQ4" id="rateQ4"/>
+                <column property="mdQ1" id="mdQ1"/>
+                <column property="mdQ2" id="mdQ2"/>
+                <column property="mdQ3" id="mdQ3"/>
+                <column property="mdQ4" id="mdQ4"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+            </buttonsPanel>
+        </dataGrid>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

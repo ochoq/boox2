@@ -213,6 +213,4 @@ public class Teams extends Screen {
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
     }
-
-
 }

@@ -1,9 +1,11 @@
 package com.choqnet.budget.screen.budget_dashboard;
 
 import com.choqnet.budget.UtilBean;
+import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.Priority;
 import io.jmix.core.DataManager;
+import io.jmix.ui.Notifications;
 import io.jmix.ui.component.CheckBox;
 import io.jmix.ui.component.ComboBox;
 import io.jmix.ui.component.DataGrid;
@@ -14,11 +16,9 @@ import io.jmix.ui.screen.Subscribe;
 import io.jmix.ui.screen.UiController;
 import io.jmix.ui.screen.UiDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @UiController("BudgetDashboard")
@@ -56,6 +56,8 @@ public class BudgetDashboard extends Screen {
     @Autowired
     private CheckBox chkQ;
     boolean firstLine;
+    @Autowired
+    private Notifications notifications;
 
 
     // *** initializations
@@ -139,6 +141,7 @@ public class BudgetDashboard extends Screen {
 
             dTable.getColumn("capacity").setStyleProvider(e -> "d" + getCode(e.getDomain()) + "3");
             dTable.getColumn("kEurCapacity").setStyleProvider(e -> "d" + getCode(e.getDomain()) + "3");
+
         } catch (Exception e) {
             System.out.println("BudgetDashboard: error in setAllStyles()");
             e.printStackTrace();
@@ -381,5 +384,16 @@ public class BudgetDashboard extends Screen {
         return dashboardData;
     }
 
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">>" + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
+    }
 
 }

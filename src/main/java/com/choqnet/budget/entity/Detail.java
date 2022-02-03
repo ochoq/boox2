@@ -40,7 +40,7 @@ public class Detail {
     @Column(name = "T_SHIRT")
     private Integer tShirt;
 
-    @NumberFormat(pattern = "#,##0")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Y")
     private Double mdY = 0.0;
 

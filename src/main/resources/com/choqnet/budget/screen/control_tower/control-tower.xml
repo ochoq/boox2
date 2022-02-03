@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://jmix.io/schema/ui/window"
         caption="msg://controlTower.caption">
+    <data>
+        <collection id="tokensDc" class="com.choqnet.budget.entity.Token">
+            <fetchPlan extends="_base"/>
+            <loader id="tokensDl">
+                <query>
+                    <![CDATA[select e from Token e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
     <layout
             spacing="true"
             expand="spacer">
@@ -8,7 +18,7 @@
 
         <label stylename="h2" value="Send message to connected users"/>
         <label value="Type your message here ..."/>
-        <textArea id="txtMessage"/>
+        <textArea id="txtMessage" width="600px"/>
         <button id="btnSendMessage" caption="Send"/>
         <label/>
 
@@ -18,9 +28,32 @@
             <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>
         </hbox>
         <label/>
+        <label stylename="h2" value="JIRA connection token"/>
+        <dataGrid
+                editorEnabled="true"
+                editorBuffered="true"
+                width="600px" height="100px"
+                dataContainer="tokensDc"
+                id="tokTable">
+            <columns>
+                <column id="token" property="token" editable="true"></column>
+            </columns>
+        </dataGrid>
+        <label/>
+        <label stylename="h2" value="Home Page Message"/>
+
+
+        <richTextArea
+                editable="true"
+                buffered="true"
+                width="600px" height="250px" id="rtf"/>
+        <label stylename="h2" value="Technical Processes"/>
+        <hbox spacing="true" stylename="card" >
+            <button caption="Get JIRA teams" id="btnTeams"/>
+            <button id="cleanTeams" caption="Clean Teams Hierarchy"/>
+        </hbox>
 
         <label id="spacer"/>
-        <button id="cleanTeams" caption="Clean Teams" />
 
         <label stylename="h2" value="Boox by ChoqNet"/>
     </layout>

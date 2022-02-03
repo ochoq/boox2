@@ -24,6 +24,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.inject.Named;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -106,6 +107,7 @@ public class DemandManagement extends Screen {
         }
         demandsTable.getColumn("mdY").setStyleProvider(e -> "crotr");
         demandsTable.getColumn("euroAmount").setStyleProvider(e -> "ce2r");
+
     }
 
     // add details / euroDemand buttons
@@ -316,18 +318,5 @@ public class DemandManagement extends Screen {
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
     }
-
-    @Subscribe("detailsTable")
-    public void onDetailsTableSelection(Table.SelectionEvent<Detail> event) {
-        Detail detail = event.getSource().getSingleSelected();
-        log.info(detail.getTFullName());
-        log.info(detail.getTeam().getFullName());
-        log.info(detail.getTeam().getParent().getFullName());
-        log.info("");
-    }
-
-
-
-
 
 }

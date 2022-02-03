@@ -40,7 +40,8 @@
                 </hbox>
                 <dataGrid id="dTable"
                           width="100%" height="100%"
-                          aggregatable="true"
+
+                          footerVisible="true"
                           stylename="no-horizontal-lines"
                           aggregationPosition="BOTTOM"
                           dataContainer="bDashboardsDc">
@@ -51,41 +52,42 @@
                         <column id="domain"  property="domain2Display" width="100px"/>
                         <column id="platform" property="platform" width="250px"/>
 
-                        <column id="demandUMP" property="demandUMP"><aggregation type="SUM"/></column>
-                        <column id="demandBAU" property="demandBAU"><aggregation type="SUM"/></column>
-                        <column id="demandRUN" property="demandRUN"><aggregation type="SUM"/></column>
-                        <column id="demandQ1" property="demandQ1"><aggregation type="SUM"/></column>
-                        <column id="demandQ2" property="demandQ2"><aggregation type="SUM"/></column>
-                        <column id="demandQ3" property="demandQ3"><aggregation type="SUM"/></column>
-                        <column id="demandQ4" property="demandQ4"><aggregation type="SUM"/></column>
-                        <column id="demand" property="demand"><aggregation type="SUM"/></column>
+                        <column id="demandUMP" property="demandUMP"></column>
+                        <column id="demandBAU" property="demandBAU"></column>
+                        <column id="demandRUN" property="demandRUN"></column>
+                        <column id="demandQ1" property="demandQ1"></column>
+                        <column id="demandQ2" property="demandQ2"></column>
+                        <column id="demandQ3" property="demandQ3"></column>
+                        <column id="demandQ4" property="demandQ4"></column>
+                        <column id="demand" property="demand"></column>
 
-                        <column id="budgetUMP" property="budgetUMP"><aggregation type="SUM" /></column>
-                        <column id="budgetBAU" property="budgetBAU"><aggregation type="SUM" /></column>
-                        <column id="budgetRUN" property="budgetRUN"><aggregation type="SUM" /></column>
-                        <column id="budgetQ1" property="budgetQ1"><aggregation type="SUM" /></column>
-                        <column id="budgetQ2" property="budgetQ2"><aggregation type="SUM" /></column>
-                        <column id="budgetQ3" property="budgetQ3"><aggregation type="SUM" /></column>
-                        <column id="budgetQ4" property="budgetQ4"><aggregation type="SUM" /></column>
+                        <column id="budgetUMP" property="budgetUMP"></column>
+                        <column id="budgetBAU" property="budgetBAU"></column>
+                        <column id="budgetRUN" property="budgetRUN"></column>
+                        <column id="budgetQ1" property="budgetQ1"></column>
+                        <column id="budgetQ2" property="budgetQ2"></column>
+                        <column id="budgetQ3" property="budgetQ3"></column>
+                        <column id="budgetQ4" property="budgetQ4"></column>
 
-                        <column id="budget" property="budget"><aggregation type="SUM" /></column>
+                        <column id="budget" property="budget"></column>
 
-                        <column id="kEurUMP" property="kEurUMP"><aggregation type="SUM" /></column>
-                        <column id="kEurBAU" property="kEurBAU"><aggregation type="SUM" /></column>
-                        <column id="kEurRUN" property="kEurRUN"><aggregation type="SUM" /></column>
-                        <column id="kEurQ1" property="kEurQ1"><aggregation type="SUM"/></column>
-                        <column id="kEurQ2" property="kEurQ2"><aggregation type="SUM"/></column>
-                        <column id="kEurQ3" property="kEurQ3"><aggregation type="SUM"/></column>
-                        <column id="kEurQ4" property="kEurQ4"><aggregation type="SUM"/></column>
-                        <column id="kEurY" property="kEurY"><aggregation type="SUM" /></column>
+                        <column id="kEurUMP" property="kEurUMP"></column>
+                        <column id="kEurBAU" property="kEurBAU"></column>
+                        <column id="kEurRUN" property="kEurRUN"></column>
+                        <column id="kEurQ1" property="kEurQ1"></column>
+                        <column id="kEurQ2" property="kEurQ2"></column>
+                        <column id="kEurQ3" property="kEurQ3"></column>
+                        <column id="kEurQ4" property="kEurQ4"></column>
+                        <column id="kEurY" property="kEurY"></column>
 
-                        <column id="capacity" property="capacity"/>
-                        <column id="kEurCapacity" property="kEurCapacity"/>
+                        <column id="capacity" property="capacity"></column>
+                        <column id="kEurCapacity" property="kEurCapacity"></column>
 
                     </columns>
+
                 </dataGrid>
             </vbox>
         </vbox>
-        <label value="End of Screen"/>
+
     </layout>
 </window>

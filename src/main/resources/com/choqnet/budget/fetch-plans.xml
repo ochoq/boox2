@@ -20,4 +20,8 @@
         <property name="team" fetchPlan="_base"/>
         <property name="mdY"/>
     </fetchPlan>
+    <fetchPlan entity="Detail" name="detail-fetch-plan" extends="details">
+        <property name="team">
+        </property>
+    </fetchPlan>
 </fetchPlans>

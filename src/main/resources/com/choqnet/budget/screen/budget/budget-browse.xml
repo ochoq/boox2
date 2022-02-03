@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://budgetBrowse.caption"
+        focusComponent="budgetsTable">
+    <data readOnly="true">
+        <collection id="budgetsDc"
+                    class="com.choqnet.budget.entity.Budget">
+            <fetchPlan extends="_base"/>
+            <loader id="budgetsDl">
+                <query>
+                    <![CDATA[select e from Budget e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="budgetsTable" spacing="true">
+        <filter id="filter"
+                dataLoader="budgetsDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="budgetsTable"
+                  width="100%"
+                  dataContainer="budgetsDc">
+            <actions>
+            </actions>
+            <columns>
+                <column property="name" id="name"/>
+                <column property="year" id="year"/>
+                <column property="closeQ1" id="closeQ1"/>
+                <column property="closeQ2" id="closeQ2"/>
+                <column property="closeQ3" id="closeQ3"/>
+                <column property="closeQ4" id="closeQ4"/>
+                <column property="frozen" id="frozen"/>
+                <column property="prioThreshold" id="prioThreshold"/>
+                <column property="preferred" id="preferred"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+            </buttonsPanel>
+        </dataGrid>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

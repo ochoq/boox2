@@ -2,12 +2,10 @@ package com.choqnet.budget.screen.control_tower;
 
 import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.XLUtils;
+import com.choqnet.budget.app.MainProcessBean;
 import com.choqnet.budget.app.UMsgBean;
 import com.choqnet.budget.communications.UserNotification;
-import com.choqnet.budget.entity.Budget;
-import com.choqnet.budget.entity.Team;
-import com.choqnet.budget.entity.Template;
-import com.choqnet.budget.entity.User;
+import com.choqnet.budget.entity.*;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
 import io.jmix.core.SaveContext;
@@ -15,14 +13,15 @@ import io.jmix.core.security.PasswordNotMatchException;
 import io.jmix.core.security.UserManager;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
-import io.jmix.ui.component.Button;
-import io.jmix.ui.component.ComboBox;
-import io.jmix.ui.component.TextArea;
+import io.jmix.ui.component.*;
 import io.jmix.ui.download.Downloader;
+import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -49,6 +48,9 @@ public class ControlTower extends Screen {
     private ComboBox<Budget> cmbBudget;
     @Autowired
     private FileStorage fileStorage;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     private XSSFWorkbook wb;
     @Autowired
@@ -57,6 +59,12 @@ public class ControlTower extends Screen {
     private Downloader downloader;
     @Autowired
     private UtilBean utilBean;
+    @Autowired
+    private CollectionLoader<Token> tokensDl;
+    @Autowired
+    private MainProcessBean mainProcessBean;
+    @Autowired
+    private RichTextArea rtf;
 
 
     // *** Initialisations
@@ -68,6 +76,10 @@ public class ControlTower extends Screen {
         cmbBudget.setOptionsList(budgets);
         Optional<Budget> prefBudget = budgets.stream().filter(Budget::getPreferred).findFirst();
         prefBudget.ifPresent(value -> cmbBudget.setValue(value));
+        // loads token
+        tokensDl.load();
+        // loads message for edition
+        rtf.setValue(dataManager.load(Token.class).query("select e from Token e").one().getMessage());
     }
 
 
@@ -86,7 +98,6 @@ public class ControlTower extends Screen {
         Template template = dataManager.load(Template.class)
                 .query("select e from Template e where e.code = 'MSBUDGET'")
                 .list().get(0);
-
         try {
             wb = new XSSFWorkbook(fileStorage.openStream(template.getFile()));
             wb = xLUtils.processFile(wb, cmbBudget.getValue());
@@ -119,18 +130,26 @@ public class ControlTower extends Screen {
         }
     }
 
-   /* @Subscribe("createPeople")
-    public void onCreatePeopleClick(Button.ClickEvent event) {
-        String input = "amaury;kervyn;akervyn;amaury.kervyn@ingenico.comµPierre-Olivier;CHAPLAIN;pchaplain;Pierre-Olivier.CHAPLAIN@ingenico.comµmartin;sunnerstig;msunnerstig;martin.sunnerstig@worldline.comµJerker;lundberg;jlundberg;Jerker.lundberg@bambora.comµSylvain;MARION;smarion;Sylvain.MARION@ingenico.comµolivier;blerot;oblerot;olivier.blerot@worldline.comµMinh-Tuan;Pham;mpham;Minh-Tuan.Pham@ingenico.comµmike;ohalloran;mohalloran;mike.ohalloran@bambora.comµGilles;RAYMOND;graymond;Gilles.RAYMOND@ingenico.comµAnne-Claude;TICHAUER;atichauer;Anne-Claude.TICHAUER@ingenico.comµMourad;BEJAR;mbejar;Mourad.BEJAR@ingenico.comµRui;Nunes;rnunes;Rui.Nunes@epay.ingenico.comµTeun;Boer;tboer;Teun.Boer@ingenico.comµEric;PICOU;epicou;Eric.PICOU@ingenico.comµCharam;VAZIRI;cvaziri;Charam.VAZIRI@ingenico.comµArvind;Singh;asingh;Arvind.Singh@ingenico.comµMohamed;LACHGUER;mlachguer;Mohamed.LACHGUER@ingenico.comµIsmael;JAAFAR;ijaafar;Ismael.JAAFAR@ingenico.comµMarco;Hauff;mhauff;Marco.Hauff@ingenico.comµMartin;TOMKINS;mtomkins;Martin.TOMKINS@ingenico.comµNicolas;Postal;npostal;Nicolas.Postal@ingenico.comµeline;blomme;eblomme;eline.blomme@worldline.comµGeoffroy;GUEULETTE;ggueulette;Geoffroy.GUEULETTE@ingenico.comµJorge;TARLEA;jtarlea;Jorge.TARLEA@ingenico.comµSebastien;Fantone;sfantone;Sebastien.Fantone@ingenico.comµPaul;Taylor;ptaylor;Paul.Taylor1@ingenico.comµchrista;hediger;chediger;christa.hediger@worldline.comµPierre;RIAT;priat;Pierre.RIAT@ingenico.comµjens;stenvall;jstenvall;jens.stenvall@worldline.comµOhad;SOMJEN;osomjen;Ohad.SOMJEN@ingenico.comµmartin;boulanger;mboulanger;martin.boulanger@equensworldline.comµThejus;Philip;tphilip;Thejus.Philip@ingenico.comµDenis;Simonet;dsimonet;Denis.Simonet@ingenico.comµMichael;AMSELLEM;mamsellem;Michael.AMSELLEM@ingenico.comµShekhar;Kachole;skachole;Shekhar.Kachole@epay.ingenico.comµRik;vantHof;rvanthof;Rik.vantHof@epay.ingenico.comµchloe;tiberghien;ctiberghien;chloe.tiberghien@ingenico.comµroman;eugster;reugster;roman.eugster@worldline.comµCedric;Donckels;cdonckels;Cedric.Donckels@ingenico.comµlefras;coetzee;lcoetzee;lefras.coetzee@worldline.comµSebastien;LETNIOWSKI;sletniowski;Sebastien.LETNIOWSKI@ingenico.comµPierre;SALIGNAT;psalignat;Pierre.SALIGNAT@ingenico.comµZlatko;Bralic;zbralic;Zlatko.Bralic@ingenico.comµKaivalya;Paluskar;kpaluskar;Kaivalya.Paluskar@epay.ingenico.comµkhalil;kammoun;kkammoun;khalil.kammoun@six-group.comµJagdish;Kumar;jkumar;Jagdish.Kumar@ingenico.comµThierry;FORTUNE;tfortune;Thierry.FORTUNE@ingenico.comµmariehelene;liegeois;mliegeois;mariehelene.liegeois@worldline.comµpernilla;grabner;pgrabner;pernilla.grabner@bambora.comµAlexandre;DURET;aduret;Alexandre.DURET@ingenico.comµSimone;vanSchaik;svanschaik;Simone.vanSchaik@ingenico.comµanders;ohlander;aohlander;anders.ohlander@worldline.comµcamile;telles;ctelles;camile.telles@worldline.comµrickard;schoultz;rschoultz;rickard.schoultz@worldline.comµFederico;deTogni;fdetogni;Federico.deTogni@epay.ingenico.comµniklas;rosvall;nrosvall;niklas.rosvall@worldline.comµPetra;Steenstra;psteenstra;Petra.Steenstra@ingenico.comµstefaan;degeest;sdegeest;stefaan.degeest@worldline.comµmichael;huffman;mhuffman;michael.huffman@bambora.comµDavy;LESPAGNOL;dlespagnol;Davy.LESPAGNOL@ingenico.comµemilia;sandahl;esandahl;emilia.sandahl@bambora.comµLaurent;LEBOEUF;lleboeuf;Laurent.LEBOEUF@ingenico.comµStanley;Macnack;smacnack;Stanley.Macnack@ingenico.comµbernd;hingst;bhingst;bernd.hingst@six-group.comµWilly;DeReymaeker;wdereymaeker;Willy.DeReymaeker@ingenico.comµAriana;delRosario;adelrosario;Ariana.delRosario@ingenico.comµPaula;Costa;pcosta;Paula.Costa@epay.ingenico.comµsarah;lamarque;slamarque;sarah.lamarque@ingenico.comµFabrizio;Leonardo;fleonardo;Fabrizio.Leonardo@ingenico.comµpeter;tellram;ptellram;peter.tellram@bambora.comµkoenraad;vanmelkebeke;kvanmelkebeke;koenraad.vanmelkebeke@worldline.comµGuido;Hendrickx;ghendrickx;Guido.Hendrickx@ingenico.comµnils;herloffpetersen;nherloffpetersen;nils.herloffpetersen.external@worldline.comµStephan;VanGulck;svangulck;Stephan.VanGulck@ingenico.comµsofia;albertsson;salbertsson;sofia.albertsson@bambora.comµpatrik;osterling;posterling;patrik.osterling@worldline.comµArni;Smit;asmit;Arni.Smit@epay.ingenico.comµCharlotte;PERRAUDIN;cperraudin;Charlotte.PERRAUDIN@ingenico.comµ";
+    @Subscribe("btnTeams")
+    public void onBtnTeamsClick(Button.ClickEvent event) {
+        mainProcessBean.getJiraTeams();
+        notifications.create().withDescription("Teams imported.").show();
+
+    }
+
+    public void createPeople() {
+        String input = "amaury;kervyn;akervyn;amaury.kervyn@ingenico.comµanders;ohlander;aohlander;anders.ohlander@worldline.comµArvind;Singh;asingh;Arvind.Singh@ingenico.comµArni;Smit;asmit;Arni.Smit@epay.ingenico.comµAnne-Claude;TICHAUER;atichauer;Anne-Claude.TICHAUER@ingenico.comµbernd;hingst;bhingst;bernd.hingst@six-group.comµCedric;Donckels;cdonckels;Cedric.Donckels@ingenico.comµchrista;hediger;chediger;christa.hediger@worldline.comµcamile;telles;ctelles;camile.telles@worldline.comµchloe;tiberghien;ctiberghien;chloe.tiberghien@ingenico.comµCharam;VAZIRI;cvaziri;Charam.VAZIRI@ingenico.comµDavy;LESPAGNOL;dlespagnol;Davy.LESPAGNOL@ingenico.comµDenis;Simonet;dsimonet;Denis.Simonet@ingenico.comµeline;blomme;eblomme;eline.blomme@worldline.comµEric;PICOU;epicou;Eric.PICOU@ingenico.comµemilia;sandahl;esandahl;emilia.sandahl@bambora.comµFederico;deTogni;fdetogni;Federico.deTogni@epay.ingenico.comµFabrizio;Leonardo;fleonardo;Fabrizio.Leonardo@ingenico.comµGeoffroy;GUEULETTE;ggueulette;Geoffroy.GUEULETTE@ingenico.comµGuido;Hendrickx;ghendrickx;Guido.Hendrickx@ingenico.comµGilles;RAYMOND;graymond;Gilles.RAYMOND@ingenico.comµJagdish;Kumar;jkumar;Jagdish.Kumar@ingenico.comµJerker;lundberg;jlundberg;Jerker.lundberg@bambora.comµjens;stenvall;jstenvall;jens.stenvall@worldline.comµkhalil;kammoun;kkammoun;khalil.kammoun@six-group.comµKaivalya;Paluskar;kpaluskar;Kaivalya.Paluskar@epay.ingenico.comµkoenraad;vanmelkebeke;kvanmelkebeke;koenraad.vanmelkebeke@worldline.comµlefras;coetzee;lcoetzee;lefras.coetzee@worldline.comµLaurent;LEBOEUF;lleboeuf;Laurent.LEBOEUF@ingenico.comµMourad;BEJAR;mbejar;Mourad.BEJAR@ingenico.comµmartin;boulanger;mboulanger;martin.boulanger@equensworldline.comµMarco;Hauff;mhauff;Marco.Hauff@ingenico.comµmichael;huffman;mhuffman;michael.huffman@bambora.comµMohamed;LACHGUER;mlachguer;Mohamed.LACHGUER@ingenico.comµmariehelene;liegeois;mliegeois;mariehelene.liegeois@worldline.comµmike;ohalloran;mohalloran;mike.ohalloran@bambora.comµMinh-Tuan;Pham;mpham;Minh-Tuan.Pham@ingenico.comµmartin;sunnerstig;msunnerstig;martin.sunnerstig@worldline.comµnils;herloffpetersen;nherloffpetersen;nils.herloffpetersen.external@worldline.comµNicolas;Postal;npostal;Nicolas.Postal@ingenico.comµniklas;rosvall;nrosvall;niklas.rosvall@worldline.comµolivier;blerot;oblerot;olivier.blerot@worldline.comµOhad;SOMJEN;osomjen;Ohad.SOMJEN@ingenico.comµPierre-Olivier;CHAPLAIN;pchaplain;Pierre-Olivier.CHAPLAIN@ingenico.comµPaula;Costa;pcosta;Paula.Costa@epay.ingenico.comµpernilla;grabner;pgrabner;pernilla.grabner@bambora.comµpatrik;osterling;posterling;patrik.osterling@worldline.comµPierre;RIAT;priat;Pierre.RIAT@ingenico.comµPierre;SALIGNAT;psalignat;Pierre.SALIGNAT@ingenico.comµPetra;Steenstra;psteenstra;Petra.Steenstra@ingenico.comµPaul;Taylor;ptaylor;Paul.Taylor1@ingenico.comµpeter;tellram;ptellram;peter.tellram@bambora.comµroman;eugster;reugster;roman.eugster@worldline.comµRui;Nunes;rnunes;Rui.Nunes@epay.ingenico.comµrickard;schoultz;rschoultz;rickard.schoultz@worldline.comµRik;vantHof;rvanthof;Rik.vantHof@epay.ingenico.comµsofia;albertsson;salbertsson;sofia.albertsson@bambora.comµstefaan;degeest;sdegeest;stefaan.degeest@worldline.comµSebastien;Fantone;sfantone;Sebastien.Fantone@ingenico.comµShekhar;Kachole;skachole;Shekhar.Kachole@epay.ingenico.comµsarah;lamarque;slamarque;sarah.lamarque@ingenico.comµSebastien;LETNIOWSKI;sletniowski;Sebastien.LETNIOWSKI@ingenico.comµStanley;Macnack;smacnack;Stanley.Macnack@ingenico.comµStephan;VanGulck;svangulck;Stephan.VanGulck@ingenico.comµSimone;vanSchaik;svanschaik;Simone.vanSchaik@ingenico.comµTeun;Boer;tboer;Teun.Boer@ingenico.comµThejus;Philip;tphilip;Thejus.Philip@ingenico.comµWilly;DeReymaeker;wdereymaeker;Willy.DeReymaeker@ingenico.comµZlatko;Bralic;zbralic;Zlatko.Bralic@ingenico.comµ";
+        //String input = "Ariana;delRosario;adelrosario;Ariana.delRosario@ingenico.comµAlexandre;DURET;aduret;Alexandre.DURET@ingenico.comµ";
         String[] lines = input.split("µ");
         SaveContext saveContext = new SaveContext();
+
         for (String line: lines) {
             String[] userProps = line.split(";");
             User user = dataManager.create(User.class);
             user.setFirstName(userProps[0]);
             user.setActive(true);
             user.setLastName(userProps[1]);
-            user.setPassword("boox");
+            user.setPassword(passwordEncoder.encode("boox"));
             user.setUsername(userProps[2]);
             user.setEmail(userProps[3]);
             saveContext.saving(user);
@@ -139,8 +158,14 @@ public class ControlTower extends Screen {
         notifications.create()
                 .withDescription("Users created")
                 .show();
-    }*/
+    }
 
+    @Subscribe("rtf")
+    public void onRtfValueChange(HasValue.ValueChangeEvent<String> event) {
+        Token token = dataManager.load(Token.class).query("select e from Token e").one();
+        token.setMessage(event.getValue());
+        dataManager.save(token);
+    }
 
 
     /*
@@ -164,6 +189,9 @@ public class ControlTower extends Screen {
     }
 
      */
+
+    // *** actual saving of changes made in message
+
 
 
 }

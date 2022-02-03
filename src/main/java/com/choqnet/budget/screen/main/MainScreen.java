@@ -1,5 +1,7 @@
 package com.choqnet.budget.screen.main;
 
+import com.choqnet.budget.entity.Token;
+import io.jmix.core.DataManager;
 import io.jmix.ui.ScreenTools;
 import io.jmix.ui.component.*;
 import io.jmix.ui.component.mainwindow.Drawer;
@@ -27,18 +29,20 @@ public class MainScreen extends Screen implements Window.HasWorkArea {
     @Autowired
     private Button collapseDrawerButton;
 
+    @Autowired
+    private DataManager dataManager;
+    @Autowired
+    private RichTextArea screen;
 
     @Override
     public AppWorkArea getWorkArea() {
         return workArea;
     }
 
-    @Autowired
-    private TextArea mainScreen;
 
     @Subscribe
     public void onInit(InitEvent event) {
-        mainScreen.setValue("About launch.\n\nData refreshed.\n\nSee below for documentation");
+        screen.setValue(dataManager.load(Token.class).query("select e from Token e").one().getMessage());
     }
 
 

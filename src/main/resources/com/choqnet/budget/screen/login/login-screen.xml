@@ -54,6 +54,7 @@
                     <label/>
                     <linkButton caption="Not registered already? Request access"
                                 id="lnkRegister"
+                                stylename="visible"
                                 align="BOTTOM_RIGHT"
                                 icon="ARROW_CIRCLE_RIGHT"/>
                 </vbox>

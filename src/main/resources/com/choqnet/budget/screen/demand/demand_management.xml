@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<window xmlns="http://jmix.io/schema/ui/window"
-        xmlns:pivot="http://jmix.io/schema/ui/pivot-table"
+<window xmlns:pivot="http://jmix.io/schema/ui/pivot-table"
+        xmlns="http://jmix.io/schema/ui/window"
         caption="msg://demandManagement.caption">
     <data>
         <collection id="demandsDc" class="com.choqnet.budget.entity.Demand">
@@ -86,7 +86,7 @@
                         <column id="details" width="75px">
                             <componentRenderer/>
                         </column>
-                        <column id="services" caption="Non Labor" width="75px">
+                        <column id="services" caption="Exp" width="75px">
                             <componentRenderer/>
                         </column>
                     </columns>
@@ -124,40 +124,48 @@
                         <button id="detailsTableExcelExportBtn" action="detailsTable.excelExport"/>
                     </buttonsPanel>
                     <columns>
-                        <column id="team.name"/>
-                        <column id="team.tLine"/>
-                        <column id="team.tDiv"/>
-                        <column id="team.tDomain"/>
-                        <column id="topic"/>
+                        <column id="demand.iprb.name"/>
+                        <column id="demand.iprb.reference"/>
                         <column id="roadmap"/>
                         <column id="detail"/>
+                        <column id="team.name" caption="Team"/>
                         <column id="tShirt"/>
                         <column id="mdY"/>
                         <column id="mdQ1"/>
                         <column id="mdQ2"/>
                         <column id="mdQ3"/>
                         <column id="mdQ4"/>
-                        <column id="category"/>
                         <column id="priority"/>
-                        <column id="demand.iprb.reference"/>
-                        <column id="demand.iprb.name"/>
+                        <column id="topic"/>
+                        <column id="category"/>
+                        <column id="onePager"/>
+                        <column id="team.tLine"/>
+                        <column id="team.tDiv"/>
+                        <column id="team.tDomain"/>
+
                         <column id="demand.iprb.groupOffering"/>
                         <column id="demand.iprb.outBudget"/>
                         <column id="demand.iprb.legalEntity"/>
                         <column id="demand.iprb.activityType"/>
                         <column id="demand.iprb.portfolioClassification"/>
+                        <column id="demand.iprb.strategicProgram"/>
+
                         <column id="jira"/>
                         <column id="included"/>
                         <column id="simpleDomain" caption="Dash"/>
-                        <column id="simplePlatform" caption="Platform"/>
+                        <!--                        <column id="simplePlatform" caption="Platform"/>-->
                     </columns>
                 </groupTable>
 
             </tab>
-            <tab id="pivot" caption="Pivot Table" spacing="true" margin="true,false,false,false">
+            <tab id="pivot"
+
+                 caption="Pivot Table"
+                 spacing="true" margin="true,false,false,false">
                 <pivot:pivotTable
                         dataContainer="detailsDc"
                         height="100%" width="100%"
+                        autoSortUnusedProperties="true"
                         renderer="TABLE"
                         editable="true"
                         id="pivotTable">
@@ -174,29 +182,64 @@
                         <pivot:aggregation mode="SUM_AS_FRACTION_OF_ROWS"/>
                         <pivot:aggregation mode="SUM_AS_FRACTION_OF_TOTAL"/>
                     </pivot:aggregations>
-                    <pivot:properties>
-                        <pivot:property name="team"/>
-                        <!--                        <pivot:property name="team.tLine"/>-->
-                        <pivot:property name="tFullName"/>
+                    <pivot:hiddenFromAggregations>
+                        
+                        <pivot:property name="team.fullName"/>
                         <pivot:property name="roadmap"/>
-                        <!--                        <pivot:property name="tLine"/>-->
-                        <!--                        <pivot:property name="team.tLine"/>-->
-                        <!--<pivot:property name="team.gbd"/>
-                        <pivot:property name="team.domain"/>-->
+                        <pivot:property name="team.tDiv"/>
+                        <pivot:property name="team.tLine"/>
+                        <pivot:property name="team.tDomain"/>
+                        <pivot:property name="team.simplePlatform"/>
+                        <pivot:property name="team.inBudget"/>
                         <pivot:property name="category"/>
-                        <pivot:property name="mdY"/>
                         <pivot:property name="onePager"/>
                         <pivot:property name="priority"/>
-                        <!--<pivot:property name="demand.iprb.reference"/>
+                        <pivot:property name="demand.iprb.reference"/>
                         <pivot:property name="demand.iprb.name"/>
                         <pivot:property name="demand.iprb.groupOffering"/>
                         <pivot:property name="demand.iprb.outBudget"/>
                         <pivot:property name="demand.iprb.legalEntity"/>
                         <pivot:property name="demand.iprb.activityType"/>
-                        <pivot:property name="demand.iprb.portfolioClassification"/>-->
+                        <pivot:property name="demand.iprb.portfolioClassification"/>
+                    </pivot:hiddenFromAggregations>
+
+                    <pivot:properties>
+
+                        <pivot:property name="roadmap" localizedName="Demand Roadmap"/>
+                        <pivot:property name="team.fullName" localizedName="Team Full Name"/>
+                        <pivot:property name="team.tDiv" localizedName="Team GBD"/>
+                        <pivot:property name="team.tLine" localizedName="Team GBL"/>
+                        <pivot:property name="team.tDomain" localizedName="Team Domain"/>
+                        <pivot:property name="team.inBudget" localizedName="Team in Budget"/>
+                        <pivot:property name="team.simplePlatform" localizedName="Team Plaform"/>
+                        <pivot:property name="category" localizedName="Demand Category"/>
+                        <pivot:property name="mdY" localizedName="MD Year"/>
+                        <pivot:property name="onePager" localizedName="Demand One Pager"/>
+                        <pivot:property name="priority" localizedName="Demand Priority"/>
+                        <pivot:property name="demand.iprb.reference" localizedName="IPRB Ref."/>
+                        <pivot:property name="demand.iprb.name" localizedName="IPRB Name"/>
+                        <pivot:property name="demand.iprb.groupOffering" localizedName="IPRB Gr Offer"/>
+                        <pivot:property name="demand.iprb.outBudget" localizedName="IPRB Out Budget"/>
+                        <pivot:property name="demand.iprb.legalEntity" localizedName="IPRB Owning Entity"/>
+                        <pivot:property name="demand.iprb.activityType" localizedName="IPRB Act. Type"/>
+                        <pivot:property name="demand.iprb.portfolioClassification" localizedName="IPRB Portfolio"/>
+                        <pivot:property name="mdQ1"/>
+                        <pivot:property name="mdQ2"/>
+                        <pivot:property name="mdQ3"/>
+                        <pivot:property name="mdQ4"/>
                     </pivot:properties>
+                    <pivot:hiddenProperties>
+                        <pivot:property name="mdQ1"/>
+                        <pivot:property name="mdQ2"/>
+                        <pivot:property name="mdQ3"/>
+                        <pivot:property name="mdQ4"/>
+                    </pivot:hiddenProperties>
                     <pivot:aggregation mode="SUM">
                         <pivot:property name="mdY"/>
+                        <pivot:property name="mdQ1"/>
+                        <pivot:property name="mdQ2"/>
+                        <pivot:property name="mdQ3"/>
+                        <pivot:property name="mdQ4"/>
                     </pivot:aggregation>
                 </pivot:pivotTable>
             </tab>

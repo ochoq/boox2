@@ -62,7 +62,7 @@
                 <column id="portfolioClassification" property="portfolioClassification"/>
                 <column id="legalEntity" property="legalEntity"/>
                 <column id="strategicProgram" property="strategicProgram"/>
-                <column id="aType" property="activityType"/>
+                <column id="activityType" property="activityType"/>
                 <column id="newProductIndicator" property="newProductIndicator"/>
                 <column id="groupOffering" property="groupOffering"/>
                 <column id="owner" property="owner"/>
