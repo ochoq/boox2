@@ -4,6 +4,7 @@ import com.choqnet.budget.entity.User;
 import com.choqnet.budget.entity.UserAuthenticationLog;
 import io.jmix.core.UnconstrainedDataManager;
 import io.jmix.core.security.ClientDetails;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.authentication.event.LogoutSuccessEvent;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Component
 public class AuthenticationEventListener implements HttpSessionListener {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AuthenticationEventListener.class);
     @Autowired
     private UnconstrainedDataManager dataManager;
 
@@ -35,7 +37,12 @@ public class AuthenticationEventListener implements HttpSessionListener {
     @EventListener
     public void onLogoutSuccess(LogoutSuccessEvent event) {
         // we use session ID to find matching login record
-        String sessionId = ((ClientDetails) event.getAuthentication().getDetails()).getSessionId();
+        String sessionId = null;
+        try {
+            sessionId = ((ClientDetails) event.getAuthentication().getDetails()).getSessionId();
+        } catch (Exception e) {
+            log.info("Harsh application quit: no authentication");
+        }
         UserAuthenticationLog logItem = getLogOptional(sessionId)
                 .orElseGet(() -> {
                     UserAuthenticationLog newLogItem = dataManager.create(UserAuthenticationLog.class);

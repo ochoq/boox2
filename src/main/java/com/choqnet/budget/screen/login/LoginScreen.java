@@ -1,6 +1,7 @@
 package com.choqnet.budget.screen.login;
 
 import com.choqnet.budget.entity.Token;
+import com.choqnet.budget.screen._public.userregistration.UserRegistration;
 import io.jmix.core.DataManager;
 import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
@@ -13,6 +14,7 @@ import io.jmix.securityui.authentication.AuthDetails;
 import io.jmix.securityui.authentication.LoginScreenSupport;
 import io.jmix.ui.JmixApp;
 import io.jmix.ui.Notifications;
+import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.action.Action;
 import io.jmix.ui.component.*;
 import io.jmix.ui.navigation.Route;
@@ -69,42 +71,13 @@ public class LoginScreen extends Screen {
 
     private final Logger log = LoggerFactory.getLogger(LoginScreen.class);
     @Autowired
-    private VBoxLayout loginWrapper;
-    @Autowired
-    private VBoxLayout registerForm;
-    @Autowired
-    private VBoxLayout loginMainBox;
-    @Autowired
-    private RadioButtonGroup<String> rdgRole;
-    @Autowired
-    private TextField<String> txtFirstName;
-    @Autowired
-    private TextField<String> txtLastName;
-    @Autowired
-    private TextField<String> txtEmail;
-    @Autowired
-    private Emailer emailer;
-    @Autowired
-    private VBoxLayout congratsPanel;
-    @Autowired
-    private TextArea<String> txtCongrats;
-    @Autowired
-    private TextArea txtComment;
-
+    private ScreenBuilders screenBuilders;
 
     @Subscribe
     private void onInit(InitEvent event) {
         usernameField.focus();
         initLocalesField();
-        // initDefaultCredentials();
-        // sets the role's radioButtonGroup's items
-        List<String> list = new ArrayList<>();
-        list.add("Viewer");
-        list.add("Product Owner");
-        list.add("Product Manager");
-        list.add("Delivery Manager");
-        rdgRole.setOptionsList(list);
-        rdgRole.setValue("Viewer");
+        //initDefaultCredentials();
     }
 
     private void initLocalesField() {
@@ -167,51 +140,13 @@ public class LoginScreen extends Screen {
         }
     }
 
-
-
-    // *** Custom Part
-    @Subscribe("lnkRegister")
-    public void onLnkRegisterClick(Button.ClickEvent event) {
-        loginMainBox.setVisible(false);
-        registerForm.setVisible(true);
-    }
-
-    @Subscribe("btnCancel")
-    public void onBtnCancelClick(Button.ClickEvent event) {
-        loginMainBox.setVisible(true);
-        registerForm.setVisible(false);
-    }
-
-    @Subscribe("btnRegister")
-    public void onBtnRegisterClick(Button.ClickEvent event) {
-        try {
-            txtFirstName.validate();
-            txtLastName.validate();
-            txtEmail.validate();
-        } catch (ValidationException e) {
-            return;
-        }
-
-        if (txtFirstName.isValid() && txtLastName.isValid() && txtEmail.isValid()) {
-            String recipients = "olivier.choquet@ingenico.com,choqnet@gmail.com";
-            // no direct access to the dataManager here
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:MM");
-            String msg = "Boox Registration request from:\n\n"+ txtFirstName.getValue() + "\n" + txtLastName.getValue() + "\n" + txtEmail.getValue() + "\n" + rdgRole.getValue() + "\n\nComment:\n" + txtComment.getValue() + "\n\n" + LocalDateTime.now().format(dtf);
-            EmailInfo emailInfo = EmailInfoBuilder.create(recipients,"Boox : Account creation request", msg)
-                    .build();
-            try {
-                emailer.sendEmail(emailInfo);
-                registerForm.setVisible(false);
-                congratsPanel.setVisible(true);
-                txtCongrats.setValue("Your request is sent and will be managed shortly.\n\nThanks for you interest in Boox.");
-            } catch (EmailException e) {
-                notifications.create()
-                        .withDescription("Error while sending the request")
-                        .withType(Notifications.NotificationType.ERROR)
-                        .show();
-            }
-        }
+    @Subscribe("registration")
+    public void onRegistrationClick(Button.ClickEvent event) {
+        screenBuilders.screen(this)
+                .withScreenClass(UserRegistration.class)
+                .withOpenMode(OpenMode.ROOT)
+                .build()
+                .show();
 
     }
-
 }

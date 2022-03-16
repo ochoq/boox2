@@ -53,6 +53,9 @@
                 <column id="firstName"/>
                 <column id="lastName"/>
                 <column id="email"/>
+                <column id="activationToken"/>
+                <column id="needsActivation"/>
+                <column id="requestedRole"/>
                 <column id="timeZoneId"/>
                 <column id="active"/>
             </columns>

@@ -56,8 +56,41 @@ public class User implements JmixUserDetails, HasTimeZone {
     @Column(name = "TIME_ZONE_ID")
     protected String timeZoneId;
 
+    @Column(name = "NEEDS_ACTIVATION")
+    private Boolean needsActivation;
+
+    @Column(name = "ACTIVATION_TOKEN")
+    private String activationToken;
+
+    @Column(name = "REQUESTED_ROLE")
+    private String requestedRole;
+
     @Transient
     protected Collection<? extends GrantedAuthority> authorities;
+
+    public String getRequestedRole() {
+        return requestedRole;
+    }
+
+    public void setRequestedRole(String requestedRole) {
+        this.requestedRole = requestedRole;
+    }
+
+    public void setNeedsActivation(Boolean needsActivation) {
+        this.needsActivation = needsActivation;
+    }
+
+    public Boolean getNeedsActivation() {
+        return needsActivation;
+    }
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
+    }
 
     public UUID getId() {
         return id;

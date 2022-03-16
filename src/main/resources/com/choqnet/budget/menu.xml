@@ -21,7 +21,7 @@
     </menu>
     <menu id="back-office" caption="msg://com.choqnet.budget/menu_config.back-office" insertBefore="administration">
         <item screen="ControlTower" caption="msg://com.choqnet.budget.screen.control_tower/controlTower.caption"/>
-        <item screen="User.browse" caption="msg://com.choqnet.budget.screen.user/UserBrowse.caption"/>
+        <item screen="User.browse" caption="msg://com.choqnet.budget.screen.user/UserBrowse.caption"/>+
         <item screen="OnePager.browse" caption="msg://com.choqnet.budget.screen.one_pager/onePagerBrowse.menu"/>
         <item screen="themeSettingsScreen" caption="msg://io.jmix.ui.app.themesettings/themeSettings.caption"/>
 

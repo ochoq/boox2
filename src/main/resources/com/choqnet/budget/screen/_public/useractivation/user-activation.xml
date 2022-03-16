@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://userActivation.caption">
+    <layout stylename="jmix-login-main-layout">
+        <vbox id="loginWrapper" height="100%" width="100%">
+            <vbox id="loginMainBox"
+                  align="MIDDLE_CENTER"
+                  margin="true"
+                  spacing="true"
+                  stylename="jmix-login-panel"
+                  width="600px">
+                <hbox id="loginTitleBox"
+                      align="MIDDLE_CENTER"
+                      spacing="true"
+                      stylename="jmix-login-title">
+
+                    <label id="notFoundLabel" value="User Not Found" align="MIDDLE_LEFT" stylename="failure"/>
+
+                    <label id="welcomeLabel"
+                           align="MIDDLE_LEFT"
+                           width="100%"
+                           stylename="jmix-login-caption"
+                           value="Welcome !"/>
+                </hbox>
+                <label/>
+                <linkButton id="returnToLoginScreen" caption="Back to Login"/>
+                <hbox spacing="true">
+                    <label id="lblInfo" stylename="jmix-login-caption"/>
+                    <label/>
+                </hbox>
+
+                <vbox id="loginForm"
+                      spacing="true"
+                      width="100%"
+                      stylename="jmix-login-form">
+                    <form stylename="jmix-login-credentials" id="form" width="100%">
+                        <passwordField id="passwordField" required="true" caption="Choose your Password" width="100%">
+                            <validators>
+                                <size message="Password too short" min="4"/>
+                            </validators>
+                        </passwordField>
+                    </form>
+                    <button id="activateButton"
+                            icon="font-icon:CHECK"
+                            align="MIDDLE_CENTER"
+                            stylename="jmix-login-submit-button" caption="Active Me"/>
+                </vbox>
+            </vbox>
+        </vbox>
+    </layout>
+</window>
