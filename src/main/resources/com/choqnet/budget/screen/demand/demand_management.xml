@@ -129,6 +129,8 @@
                         <column id="roadmap"/>
                         <column id="detail"/>
                         <column id="team.name" caption="Team"/>
+                        <column id="team.fullName" caption="Full Name"/>
+                        <column id="team.icTarget" caption="Platform"/>
                         <column id="tShirt"/>
                         <column id="mdY"/>
                         <column id="mdQ1"/>
@@ -207,18 +209,18 @@
 
                         <pivot:property name="roadmap" localizedName="Demand Roadmap"/>
                         <pivot:property name="team.fullName" localizedName="Team Full Name"/>
-                        <pivot:property name="team.tDiv" localizedName="Team GBD"/>
-                        <pivot:property name="team.tLine" localizedName="Team GBL"/>
-                        <pivot:property name="team.tDomain" localizedName="Team Domain"/>
-                        <pivot:property name="team.inBudget" localizedName="Team in Budget"/>
-                        <pivot:property name="team.simplePlatform" localizedName="Team Plaform"/>
+                        <pivot:property name="team.tDiv" localizedName="Team 2. GBD"/>
+                        <pivot:property name="team.tLine" localizedName="Team 1. GBL"/>
+                        <pivot:property name="team.tDomain" localizedName="Team 3. Domain"/>
+                        <pivot:property name="team.inBudget" localizedName="Team in Budget?"/>
+                        <pivot:property name="team.simplePlatform" localizedName="Team 4. Platform"/>
                         <pivot:property name="category" localizedName="Demand Category"/>
                         <pivot:property name="mdY" localizedName="MD Year"/>
                         <pivot:property name="onePager" localizedName="Demand One Pager"/>
                         <pivot:property name="priority" localizedName="Demand Priority"/>
                         <pivot:property name="demand.iprb.reference" localizedName="IPRB Ref."/>
                         <pivot:property name="demand.iprb.name" localizedName="IPRB Name"/>
-                        <pivot:property name="demand.iprb.groupOffering" localizedName="IPRB Gr Offer"/>
+                        <pivot:property name="demand.iprb.groupOffering" localizedName="IPRB Group Offer"/>
                         <pivot:property name="demand.iprb.outBudget" localizedName="IPRB Out Budget"/>
                         <pivot:property name="demand.iprb.legalEntity" localizedName="IPRB Owning Entity"/>
                         <pivot:property name="demand.iprb.activityType" localizedName="IPRB Act. Type"/>
@@ -229,11 +231,15 @@
                         <pivot:property name="mdQ4"/>
                     </pivot:properties>
                     <pivot:hiddenProperties>
+
+                    </pivot:hiddenProperties>
+                    <pivot:hiddenFromDragDrop>
+                        <pivot:property name="mdY"/>
                         <pivot:property name="mdQ1"/>
                         <pivot:property name="mdQ2"/>
                         <pivot:property name="mdQ3"/>
                         <pivot:property name="mdQ4"/>
-                    </pivot:hiddenProperties>
+                    </pivot:hiddenFromDragDrop>
                     <pivot:aggregation mode="SUM">
                         <pivot:property name="mdY"/>
                         <pivot:property name="mdQ1"/>

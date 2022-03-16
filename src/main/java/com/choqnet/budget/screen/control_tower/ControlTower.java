@@ -9,31 +9,37 @@ import com.choqnet.budget.entity.*;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
 import io.jmix.core.SaveContext;
-import io.jmix.core.security.PasswordNotMatchException;
-import io.jmix.core.security.UserManager;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.component.*;
 import io.jmix.ui.download.Downloader;
 import io.jmix.ui.model.CollectionLoader;
-import io.jmix.ui.screen.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import io.jmix.ui.screen.Screen;
+import io.jmix.ui.screen.Subscribe;
+import io.jmix.ui.screen.UiController;
+import io.jmix.ui.screen.UiDescriptor;
+import org.apache.poi.ss.util.AreaReference;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 @UiController("ControlTower")
 @UiDescriptor("control-tower.xml")
 public class ControlTower extends Screen {
+    private static final Logger log = LoggerFactory.getLogger(ControlTower.class);
     @Autowired
     private UMsgBean umb;
     @Autowired
@@ -42,8 +48,6 @@ public class ControlTower extends Screen {
     private Notifications notifications;
     @Autowired
     private DataManager dataManager;
-    @Autowired
-    private ScreenBuilders screenBuilders;
     @Autowired
     private ComboBox<Budget> cmbBudget;
     @Autowired
@@ -65,6 +69,12 @@ public class ControlTower extends Screen {
     private MainProcessBean mainProcessBean;
     @Autowired
     private RichTextArea rtf;
+    @Autowired
+    private CollectionLoader<Command> commandsDl;
+    @Autowired
+    private CollectionLoader<LogApp> logAppsDl;
+    @Autowired
+    private Label lblTitre;
 
 
     // *** Initialisations
@@ -81,6 +91,40 @@ public class ControlTower extends Screen {
         // loads message for edition
         rtf.setValue(dataManager.load(Token.class).query("select e from Token e").one().getMessage());
     }
+
+
+    // *** UI
+    @Subscribe("screen")
+    public void onScreenSelectedTabChange(TabSheet.SelectedTabChangeEvent event) {
+        switch(event.getSelectedTab().getName()) {
+            case "control":
+                commandsDl.setQuery("select e from Command e");
+                commandsDl.load();
+                break;
+            case "logApp":
+                logAppsDl.setQuery("select e from LogApp e");
+                logAppsDl.load();
+            default:
+                break;
+        }
+    }
+
+    @Subscribe("commandsTable")
+    public void onCommandsTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Command> event) {
+        dataManager.save(event.getItem());
+    }
+
+    @Subscribe("tokTable")
+    public void onTokTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Token> event) {
+        dataManager.save(event.getItem());
+    }
+
+    @Subscribe("mailTable")
+    public void onMailTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Token> event) {
+        dataManager.save(event.getItem());
+    }
+
+
 
 
     // *** communications
@@ -166,6 +210,142 @@ public class ControlTower extends Screen {
         token.setMessage(event.getValue());
         dataManager.save(token);
     }
+
+
+    // TEMP FUNCTIONS FOR TEST
+
+    @Subscribe("btnDumbo")
+    public void onTestClick(Button.ClickEvent event) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd MM yyyy, hh:mm:ss");
+        log.info("Starting Manual Dumbo import " + LocalDateTime.now().format(dtf));
+        lblTitre.setValue("Running...");
+        mainProcessBean.getDumboData();
+        log.info("Finishing Manual Dumbo import " + LocalDateTime.now().format(dtf));
+        lblTitre.setValue("Interfaces with Jira & Dumbo");
+        notifications.create().withDescription("Dumbo import completed").show();
+    }
+
+    @Subscribe("btnJira")
+    public void onBtnJiraClick(Button.ClickEvent event) {
+        mainProcessBean.getJiraTeams();
+        notifications.create().withDescription("JIRA's teams import completed").show();
+    }
+
+    @Subscribe("btnFireLogs")
+    public void onBtnFireLogsClick(Button.ClickEvent event) {
+        mainProcessBean.fireLogs();
+        notifications.create().withDescription("Logs fired and flushed").show();
+    }
+
+    // temp
+    @Subscribe("testExporftXL")
+    public void onTestExporftXLClick(Button.ClickEvent event) {
+        try {
+            wb = new XSSFWorkbook();
+
+            XSSFSheet sheet = (XSSFSheet) wb.createSheet();
+
+            int nbRow = 10;
+            int nbCol = 10;
+            String tempFileName = "tmp\\tmp_test.xlsx";
+            // Set which area the table should be placed in
+            AreaReference reference = wb.getCreationHelper().createAreaReference(
+                    new CellReference(0, 0), new CellReference(nbRow-1, nbCol-1));
+            // Create
+            XSSFTable table = sheet.createTable(reference);
+            // fix references
+            for (int i=1; i<nbRow; i++ ) {
+                table.getCTTable().getTableColumns().getTableColumnArray(i).setId(i+1);
+            }
+            table.setName("IPRB");
+            table.setDisplayName("Test_IPRB");
+
+            // For now, create the initial style in a low-level way
+            table.getCTTable().addNewTableStyleInfo();
+            table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
+
+            // Style the table
+            XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
+            style.setName("TableStyleMedium2");
+            style.setShowColumnStripes(false);
+            style.setShowRowStripes(true);
+            style.setFirstColumn(true);
+            style.setLastColumn(false);
+            style.setShowRowStripes(true);
+            style.setShowColumnStripes(false);
+
+            // Set the values for the table
+            XSSFRow row;
+            XSSFCell cell;
+            for (int i = 0; i < nbRow; i++) {
+                // Create row
+                row = sheet.createRow(i);
+                for (int j = 0; j < nbCol; j++) {
+                    // Create cell
+                    cell = row.createCell(j);
+                    if (i == 0) {
+                        cell.setCellValue("Column" + (j + 1));
+
+                    } else {
+                        if (j==0) {
+                            cell.setCellFormula(getSumFormula(i,0,i,nbCol-2));
+                        } else {
+                            cell.setCellValue((i + 1.0) * (j + 1.0));
+                        }
+                    }
+                }
+            }
+
+
+            File directory = new File("tmp");
+            directory.mkdir();
+            FileOutputStream outFile = new FileOutputStream(tempFileName);
+            wb.write(outFile);
+            outFile.close();
+
+            String filePath = tempFileName;
+            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+            // file to byte[], File -> Path
+            File file2 = new File(filePath);
+            byte[] bytes2 = Files.readAllBytes(file2.toPath());
+            downloader.download(bytes2, "Test File.xlsx");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getSumFormula(int rStart, int cStart, int rEnd, int cEnd) {
+        return "SUM(" + xCell(rStart, cStart) + ":" + xCell(rEnd, cEnd) + ")";
+    }
+
+    private String xCell(int row, int col) {
+        //M transforms JAVA coordinates (e.g. 0,0) into Excel coordinates (e.g. A1)
+        return CellReference.convertNumToColString(col + 1) + (row + 1);
+    }
+    /*
+    // temp function to delete all 2022's demand
+    @Subscribe("btnDel2022")
+    public void onBtnDel2022Click(Button.ClickEvent event) {
+        int nbDetails = 0;
+        int nbExpenses = 0;
+        Budget bud22 = dataManager.load(Budget.class).query("select e from Budget e where e.name = 'Budget 2022'").one();
+        // get all the attached demands
+        List<Demand> demands = dataManager.load(Demand.class).query("select e from Demand e where e.budget = :budget").parameter("budget", bud22).fetchPlan("demands").list();
+        System.out.println("--> " + demands.size() + " items top delete");
+        for (Demand demand: demands) {
+            List<Detail> details = dataManager.load(Detail.class).query("select e from Detail e where e.demand = :demand").parameter("demand", demand).fetchPlan("details").list();
+            nbDetails = nbDetails + details.size();
+            dataManager.remove(details);
+            List<Expense> expenses = dataManager.load(Expense.class).query("select e from Expense e where e.demand = :demand").parameter("demand", demand).fetchPlan("expenses").list();
+            nbExpenses = nbExpenses + expenses.size();
+            dataManager.remove(expenses);
+        }
+        demands = dataManager.load(Demand.class).query("select e from Demand e where e.budget = :budget").parameter("budget", bud22).fetchPlan("demands").list();
+        dataManager.remove(demands);
+        System.out.println("deleted: " + nbDetails + " details and " + nbExpenses + " expenses");
+        notifications.create().withDescription("deleted: " + nbDetails + " details and " + nbExpenses + " expenses").show();
+    }
+     */
 
 
     /*

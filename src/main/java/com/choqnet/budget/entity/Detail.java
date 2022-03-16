@@ -40,7 +40,7 @@ public class Detail {
     @Column(name = "T_SHIRT")
     private Integer tShirt;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "MD_Y")
     private Double mdY = 0.0;
 
@@ -291,6 +291,6 @@ public class Detail {
     @InstanceName
     @DependsOnProperties({"roadmap", "team"})
     public String getInstanceName() {
-        return String.format("<i> %s - %s", roadmap, team.getName());
+        return String.format("<i> %s - %s", roadmap==null ? "" : roadmap, team==null ? "" : team.getName());
     }
 }

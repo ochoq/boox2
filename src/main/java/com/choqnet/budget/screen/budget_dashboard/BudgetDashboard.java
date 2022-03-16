@@ -79,6 +79,8 @@ public class BudgetDashboard extends Screen {
     private void setAllStyles() {
         // UI styles
         try {
+            dTable.getHeaderRow(0).getCell("domain").setStyleName("h1r");
+            dTable.getHeaderRow(0).getCell("platform").setStyleName("h1r");
             dTable.getHeaderRow(0).getCell("demandUMP").setStyleName("h1r");
             dTable.getHeaderRow(0).getCell("demandBAU").setStyleName("h1r");
             dTable.getHeaderRow(0).getCell("demandRUN").setStyleName("h1r");
@@ -150,7 +152,7 @@ public class BudgetDashboard extends Screen {
     }
     private String getCode(String domain) {
         switch (domain.toUpperCase())  {
-            case "GSV":
+            case "IN-STORE":
                 return "g";
             case "ECOM":
                 return "e";

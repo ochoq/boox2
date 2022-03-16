@@ -86,6 +86,9 @@ public class XLUtils {
             if (iprb.getProjectType() == null) {
                 // log the error - temp way
                 log.info(iprb.getReference() + " doesn't get a valid type");
+                writeAllMetaData(iNP, iprb, np);
+                writeEfforts(iNP, iprb, np);
+                iNP++;
             } else {
                 switch (iprb.getProjectType().getId()) {
                     case "New Project":
@@ -150,7 +153,7 @@ public class XLUtils {
     }
 
     private void writeAllMetaData(int iRow, IPRB iprb, XSSFSheet sheet) {
-        writeMetaData(iRow, 2, iprb.getReference(), sheet);
+        writeMetaData(iRow, 2, iprb.getReference().replace(" ",""), sheet);
         writeMetaData(iRow, 3, iprb.getName(), sheet);
         writeMetaData(iRow, 4, iprb.getPortfolioClassification() == null ? "" : iprb.getPortfolioClassification().getId(), sheet);
         writeMetaData(iRow, 5, iprb.getLegalEntity() == null ? "" : iprb.getLegalEntity().getId(), sheet);
@@ -292,6 +295,7 @@ public class XLUtils {
     }
 
     private void setAllRowSum() {
+        /*
         for (int i = 6; i < 400; i++) {
             setRowSum(16, 42, i); // ACC
             setRowSum(43, 47, i); // CACQ
@@ -317,6 +321,8 @@ public class XLUtils {
             // setRowSum(150, 154, i); // NON MS
 
         }
+
+         */
     }
 
     private void setRowSum(int colSum, int colEnd, int row) {
@@ -325,9 +331,15 @@ public class XLUtils {
             int xStart = xSum + 1;
             int xEnd = offset(colEnd, sheet);
             Cell cell = sheet.getRow(row).getCell(xSum);
-            cell.removeFormula();
-            cell.setCellFormula(getSumFormula(row, xStart - 1, row, xEnd - 1));
-            evaluator.evaluate(cell);
+            try {
+                if (cell.getCellFormula()!=null) cell.removeFormula();
+                cell.setCellFormula(getSumFormula(row, xStart - 1, row, xEnd - 1));
+                evaluator.evaluate(cell);
+            } catch (Exception e) {
+
+            }
+
+
         }
     }
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <addColumn tableName="WORKLOG">
+            <column name="IPRB_ID" type="UUID"/>
+            <column name="TEAM_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <addForeignKeyConstraint baseColumnNames="IPRB_ID" baseTableName="WORKLOG" constraintName="FK_WORKLOG_ON_IPRB"
+                                 referencedColumnNames="ID" referencedTableName="IPRB"/>
+
+        <createIndex indexName="IDX_WORKLOG_IPRB_ID" tableName="WORKLOG">
+            <column name="IPRB_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="3" author="boox">
+        <addForeignKeyConstraint baseColumnNames="TEAM_ID" baseTableName="WORKLOG" constraintName="FK_WORKLOG_ON_TEAM"
+                                 referencedColumnNames="ID" referencedTableName="TEAM"/>
+
+        <createIndex indexName="IDX_WORKLOG_TEAM_ID" tableName="WORKLOG">
+            <column name="TEAM_ID"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

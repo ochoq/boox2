@@ -2,6 +2,11 @@
 <menu-config xmlns="http://jmix.io/schema/ui/menu">
 
     <menu id="application" caption="msg://com.choqnet.budget/menu.application" insertBefore="administration">
+        <menu id="actuals" caption="msg://com.choqnet.budget/menu_config.actuals">
+            <item screen="Worklogs" caption="msg://com.choqnet.budget/menu_config.Worklogs"/>
+            <item screen="WorklogSummary"
+                  caption="msg://com.choqnet.budget.screen.worklog_summary/worklogSummary.caption"/>
+        </menu>
         <item screen="BudgetScreen" caption="msg://com.choqnet.budget.screen.budget/budgetScreen.caption"/>
         <item screen="BudgetDashboard"
               caption="msg://com.choqnet.budget.screen.budget_dashboard/budgetDashboard.caption"/>

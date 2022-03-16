@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <addColumn tableName="ACTUAL">
+            <column name="JIRA_TEAM_ID" type="UUID"/>
+            <column name="JIRA_TEAM_REF" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <addForeignKeyConstraint baseColumnNames="JIRA_TEAM_ID" baseTableName="ACTUAL"
+                                 constraintName="FK_ACTUAL_ON_JIRA_TEAM" referencedColumnNames="ID"
+                                 referencedTableName="TEAM"/>
+
+        <createIndex indexName="IDX_ACTUAL_JIRA_TEAM_ID" tableName="ACTUAL">
+            <column name="JIRA_TEAM_ID"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

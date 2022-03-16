@@ -99,7 +99,7 @@ public class Team {
         }
         switch(tDomain.toUpperCase()) {
             case "IN-STORE":
-                return "GSV";
+                return "IN-STORE";
             case "OMNICHANNEL":
                 return "OCH";
             case "ONLINE":
@@ -188,7 +188,7 @@ public class Team {
     }
 
     public String getSourceID() {
-        return sourceID;
+        return sourceID==null ? "" : sourceID;
     }
 
     public void setSourceID(String sourceID) {

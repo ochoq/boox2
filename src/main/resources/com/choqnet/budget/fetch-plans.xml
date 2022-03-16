@@ -24,4 +24,58 @@
         <property name="team">
         </property>
     </fetchPlan>
+    <fetchPlan entity="Demand" name="demands" extends="_base">
+        <property name="iprb" fetchPlan="_base"/>
+        <property name="details" fetchPlan="_base"/>
+        <property name="expenses" fetchPlan="_base"/>
+        <property name="budget" fetchPlan="_base"/>
+    </fetchPlan>
+    <fetchPlan entity="Expense" name="expenses" extends="_base">
+        <property name="demand" fetchPlan="_base">
+            <property name="iprb" fetchPlan="_base"/>
+            <property name="budget" fetchPlan="_base"/>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="Actual" name="actuals">
+        <property name="iprb">
+            <property name="reference"/>
+            <property name="name"/>
+            <property name="portfolioClassification"/>
+            <property name="legalEntity"/>
+            <property name="strategicProgram"/>
+            <property name="newProductIndicator"/>
+            <property name="groupOffering"/>
+            <property name="activityType"/>
+            <property name="owner"/>
+            <property name="estCAPI"/>
+            <property name="estOOI"/>
+            <property name="endDate"/>
+            <property name="startDate"/>
+            <property name="projectType"/>
+            <property name="firstMonthOff"/>
+        </property>
+        <property name="team">
+            <property name="fullName"/>
+            <property name="name"/>
+            <property name="sourceID"/>
+            <property name="mainGTM"/>
+            <property name="icTarget"/>
+            <property name="tDiv"/>
+            <property name="tDomain"/>
+            <property name="tLine"/>
+            <property name="simpleDomain"/>
+            <property name="simplePlatform"/>
+        </property>
+        <property name="finMonth"/>
+        <property name="iprbRef"/>
+        <property name="initRef"/>
+        <property name="initName"/>
+        <property name="initCategory"/>
+        <property name="jiraProject"/>
+        <property name="jiraProjectDomain"/>
+        <property name="jiraProjectPlatform"/>
+        <property name="costCenter"/>
+        <property name="effort"/>
+        <property name="jiraTeamRef"/>
+    </fetchPlan>
 </fetchPlans>

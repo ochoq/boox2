@@ -10,51 +10,167 @@
                 </query>
             </loader>
         </collection>
+        <collection id="commandsDc" class="com.choqnet.budget.entity.Command">
+            <fetchPlan extends="_base"/>
+            <loader id="commandsDl">
+                <query>
+                    <![CDATA[select e from Command e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="logAppsDc" class="com.choqnet.budget.entity.LogApp">
+            <fetchPlan extends="_base"/>
+            <loader id="logAppsDl">
+                <query>
+                    <![CDATA[select e from LogApp e]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <layout
             spacing="true"
-            expand="spacer">
+            responsive="true"
+            expand="screen">
         <label stylename="h1" value="Control Tower"/>
 
-        <label stylename="h2" value="Send message to connected users"/>
-        <label value="Type your message here ..."/>
-        <textArea id="txtMessage" width="600px"/>
-        <button id="btnSendMessage" caption="Send"/>
-        <label/>
+        <tabSheet id="screen" responsive="true">
+            <tab caption="General Tools" id="misc" spacing="true" margin="true,false,false,false">
+                <flowBox  spacing="true" width="100%" height="100%">
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Send message to connected users"/>
+                        <label value="Type your message here ..."/>
+                        <textArea id="txtMessage" width="100%"/>
+                        <button id="btnSendMessage" caption="Send"/>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px" >
+                        <label stylename="h2" value="Home Page Message"/>
+                        <richTextArea
+                                editable="true"
+                                buffered="true"
+                                width="100%" height="250px" id="rtf"/>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="JIRA connection token"/>
+                        <dataGrid
+                                editorEnabled="true"
+                                editorBuffered="true"
+                                width="100%" height="100px"
+                                dataContainer="tokensDc"
+                                id="tokTable">
+                            <columns>
+                                <column id="token" property="token" editable="true"></column>
+                            </columns>
+                        </dataGrid>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Email recipients"/>
+                        <dataGrid
+                                editorEnabled="true"
+                                editorBuffered="true"
+                                width="100%" height="100px"
+                                dataContainer="tokensDc"
+                                id="mailTable">
+                            <columns>
+                                <column id="recipients" property="recipients" editable="true"></column>
+                            </columns>
+                        </dataGrid>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Export budget" />
+                        <hbox spacing="true" stylename="card" margin="true" width="100%">
+                            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_LEFT"/>
+                            <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>
+                            <button id="testExporftXL" caption="(temp) Test XL"/>
+                        </hbox>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Technical Processes"/>
+                        <hbox spacing="true" stylename="card" margin="true" width="100%">
+                            <button caption="Get JIRA teams" id="btnTeams"/>
+                            <button id="cleanTeams" caption="Clean Teams Hierarchy"/>
+                        </hbox>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label id="lblTitre" stylename="h2" value="Interfaces with Jira &amp; Dumbo"/>
+                        <hbox spacing="true" stylename="card" margin="true" width="100%">
+                            <button id="btnJira" caption="Get Teams from JIRA"/>
+                            <button id="btnDumbo" caption="Get Actuals from Dumbo"/>
+                            <button id="btnFireLogs" caption="Fire logs"/>
+                        </hbox>
+                        <label/>
+                    </vbox>
+                </flowBox>
+            </tab>
+            <tab caption="Message Board" id="logApp"
+                 expand="logAppsTable"
+                 spacing="true" margin="true,false,false,false">
+                <label stylename="h2" value="Application Feedback Log"/>
+                <dataGrid id="logAppsTable"
+                          selectionMode="MULTI"
+                          width="98%"
+                          dataContainer="logAppsDc">
+                    <actions>
+                        <action id="excelExport" type="excelExport"/>
+                        <action id="refresh" type="refresh"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <buttonsPanel alwaysVisible="true">
+                        <button id="logAppsTableExcelExportBtn" action="logAppsTable.excelExport"/>
+                        <button id="logAppsTableRefreshBtn" action="logAppsTable.refresh"/>
+                        <button id="logAppsTableRemoveBtn" action="logAppsTable.remove"/>
+                    </buttonsPanel>
+                    <columns>
+                        <column id="context" property="context"/>
+                        <column id="typeMsg" property="typeMsg"/>
+                        <column id="message" property="message"/>
+                        <column id="values" property="values"/>
+                        <column id="timeStamp" property="timeStamp"/>
+                    </columns>
+                </dataGrid>
+            </tab>
+            <tab caption="Operations Controller"
+                 id="control" spacing="true"
+                 expand="commandsTable"
+                 margin="true,false,false,false">
+                <label stylename="h2" value="Pending Operations"/>
+                <dataGrid id="commandsTable"
+                          editorEnabled="true"
+                          editorBuffered="true"
+                          selectionMode="MULTI"
+                          width="98%"
+                          dataContainer="commandsDc">
+                    <actions>
 
-        <label stylename="h2" value="Export budget"/>
-        <hbox spacing="true">
-            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_LEFT"/>
-            <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>
-        </hbox>
-        <label/>
-        <label stylename="h2" value="JIRA connection token"/>
-        <dataGrid
-                editorEnabled="true"
-                editorBuffered="true"
-                width="600px" height="100px"
-                dataContainer="tokensDc"
-                id="tokTable">
-            <columns>
-                <column id="token" property="token" editable="true"></column>
-            </columns>
-        </dataGrid>
-        <label/>
-        <label stylename="h2" value="Home Page Message"/>
+                        <action id="edit" type="edit"/>
+                        <action id="refresh" type="refresh"/>
+                        <action id="remove" type="remove"/>
+                        <action id="create" type="create"/>
+                    </actions>
+                    <buttonsPanel alwaysVisible="true">
+                        <button id="commandsTableCreateBtn" action="commandsTable.create"/>
+                        <button id="commandsTableEditBtn" action="commandsTable.edit"/>
+                        <button id="commandsTableRefreshBtn" action="commandsTable.refresh"/>
+                        <button id="commandsTableRemoveBtn" action="commandsTable.remove"/>
+
+                    </buttonsPanel>
+                    <columns>
+                        <column id="operation" property="operation"/>
+                        <column id="value" property="value"/>
+                    </columns>
+                </dataGrid>
+
+            </tab>
+        </tabSheet>
 
 
-        <richTextArea
-                editable="true"
-                buffered="true"
-                width="600px" height="250px" id="rtf"/>
-        <label stylename="h2" value="Technical Processes"/>
-        <hbox spacing="true" stylename="card" >
-            <button caption="Get JIRA teams" id="btnTeams"/>
-            <button id="cleanTeams" caption="Clean Teams Hierarchy"/>
-        </hbox>
-
-        <label id="spacer"/>
 
         <label stylename="h2" value="Boox by ChoqNet"/>
+
     </layout>
 </window>

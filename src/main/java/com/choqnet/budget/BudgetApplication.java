@@ -65,7 +65,7 @@ public class BudgetApplication extends SpringBootServletInitializer {
         return TriggerBuilder.newTrigger()
                 .forJob(buildMainJob())
                 .startNow()
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 20 * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 1 * * ?"))
                 .build();
     }
 

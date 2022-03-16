@@ -46,10 +46,15 @@ public class UtilBean {
             switch(level) {
                 case 1:
                     line = parent.getTLine();
-                    div = team.getName();
+                    div =  "";
                     domain = "";
                     break;
                 case 2:
+                    line = parent.getTLine();
+                    div = team.getName();
+                    domain = "";
+                    break;
+                case 3:
                     line = parent.getTLine();
                     div = parent.getTDiv();
                     domain = team.getName();
@@ -83,6 +88,7 @@ public class UtilBean {
         do {
             System.out.println(i + " starting with " + teams.size() + " items");
             for (Team team: teams) {
+
                 switch(i) {
                     case 0:
                         team.setTLine(team.getName());
@@ -91,10 +97,15 @@ public class UtilBean {
                         break;
                     case 1:
                         team.setTLine(team.getParent().getTLine());
-                        team.setTDiv(team.getName());
+                        team.setTDiv("");
                         team.setTDomain("");
                         break;
                     case 2:
+                        team.setTLine(team.getParent().getTLine());
+                        team.setTDiv(team.getName());
+                        team.setTDomain("");
+                        break;
+                    case 3:
                         team.setTLine(team.getParent().getTLine());
                         team.setTDiv(team.getParent().getTDiv());
                         team.setTDomain(team.getName());

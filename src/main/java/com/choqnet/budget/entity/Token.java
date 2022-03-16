@@ -22,6 +22,17 @@ public class Token {
     @Column(name = "TOKEN")
     private String token;
 
+    @Column(name = "RECIPIENTS")
+    private String recipients;
+
+    public String getRecipients() {
+        return recipients;
+    }
+
+    public void setRecipients(String recipients) {
+        this.recipients = recipients;
+    }
+
     public String getMessage() {
         return message;
     }

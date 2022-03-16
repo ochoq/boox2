@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://worklogSummary.caption">
+    <data>
+        <collection id="actualsDc" class="com.choqnet.budget.entity.Actual" fetchPlan="actuals">
+            <loader id="actualsDl">
+                <query>
+                    <![CDATA[select e from Actual e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="actualsTable">
+        <label stylename="h1" value="Tempo Worklogs : summary per Team x Initiative"/>
+        <hbox spacing="true">
+            <label value="Years to display:"/>
+            <hbox spacing="true" align="MIDDLE_CENTER">
+                <label value="2021" align="MIDDLE_CENTER"/>
+                <checkBox id="chk2021" align="MIDDLE_CENTER"/>
+            </hbox>
+            <hbox spacing="true" align="MIDDLE_CENTER">
+                <label value="2022" align="MIDDLE_CENTER"/>
+                <checkBox id="chk2022" align="MIDDLE_CENTER"/>
+            </hbox>
+        </hbox>
+        <dataGrid id="actualsTable" height="100%" width="100%" dataContainer="actualsDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="actualsTableExcelExportBtn" action="actualsTable.excelExport"/>
+            </buttonsPanel>
+            <columns>
+                <column id="finMonth" property="finMonth"/>
+                <column id="iprbRef" property="iprbRef"/>
+                <column id="iprb" property="iprb"/>
+                <column id="jiraTeamRef" property="jiraTeamRef"/>
+                <column id="team" property="team"/>
+                <column id="initRef" property="initRef"/>
+                <column id="initName" property="initName"/>
+                <column id="initCategory" property="initCategory"/>
+                <column id="jiraProject" property="jiraProject"/>
+                <column id="jiraProjectDomain" property="jiraProjectDomain"/>
+                <column id="jiraProjectPlatform" property="jiraProjectPlatform"/>
+                <column id="costCenter" property="costCenter"/>
+                <column id="effort" property="effort"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

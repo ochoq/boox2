@@ -30,17 +30,17 @@ dependencies {
     implementation 'io.jmix.security:jmix-security-data-starter'
     implementation 'io.jmix.localfs:jmix-localfs-starter'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.4'
     implementation(platform("org.apache.logging.log4j:log4j-bom:2.15.0"))
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test:2.6.2') {
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.6.4') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     implementation("io.jmix.datatools:jmix-datatools-starter")
     implementation("io.jmix.datatools:jmix-datatools-ui-starter")
 
     // Quartz scheduler
-    implementation 'org.springframework.boot:spring-boot-starter-quartz:2.6.2'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz:2.6.4'
     // Excel reading
     implementation 'org.apache.poi:poi'
     implementation 'org.apache.poi:poi-ooxml'
@@ -72,5 +72,3 @@ compileWidgets {
     generate "com.choqnet.budget.widgets.CustomWidgetSet"
     includePaths("**/io/jmix/**/widget/**", "**/com/choqnet/budget/widgets/**")
 }
-
-version = '1'

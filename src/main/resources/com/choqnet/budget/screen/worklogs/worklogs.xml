@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://worklogs.caption">
+    <data>
+        <collection id="worklogsDc" class="com.choqnet.budget.entity.Worklog">
+            <fetchPlan extends="_base">
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="team" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="worklogsDl">
+                <query>
+                    <![CDATA[select e from Worklog e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="worklogsTable">
+        <label stylename="h1" value="Tempo Worklogs"/>
+        <hbox spacing="true">
+            <label value="Years to display:"/>
+            <hbox spacing="true" align="MIDDLE_CENTER">
+                <label value="2021" align="MIDDLE_CENTER"/>
+                <checkBox id="chk2021" align="MIDDLE_CENTER"/>
+            </hbox>
+            <hbox spacing="true" align="MIDDLE_CENTER">
+                <label value="2022" align="MIDDLE_CENTER"/>
+                <checkBox id="chk2022" align="MIDDLE_CENTER"/>
+            </hbox>
+        </hbox>
+        <filter id="filter" columnsCount="3" dataLoader="worklogsDl">
+            <properties include=".*"/>
+        </filter>
+        <pagination itemsPerPageDefaultValue="100" itemsPerPageOptions="100, 500, 1000, 5000, 10000, 50000"
+                    itemsPerPageVisible="true" id="pagination">
+            <loaderProvider loaderId="worklogsDl"/>
+        </pagination>
+        <dataGrid id="worklogsTable"
+                  width="100%"
+                  dataContainer="worklogsDc">
+
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="worklogsTableExcelExportBtn" action="worklogsTable.excelExport"/>
+
+            </buttonsPanel>
+            <columns>
+                <column id="key" property="key"/>
+                <column id="initiative" property="initiative"/>
+                <column id="category" property="category"/>
+                <column id="iprbRef" property="iprbRef"/>
+                <column id="iprb.name" property="iprb.name"/>
+                <column id="iprb.legalEntity" property="iprb.legalEntity"/>
+                <column id="iprb.strategicProgram" property="iprb.strategicProgram"/>
+                <column id="iprb.activityType" property="iprb.activityType"/>
+                <column id="iprb.groupOffering" property="iprb.groupOffering"/>
+                <column id="iprb.portfolioClassification" property="iprb.portfolioClassification"/>
+                <column id="iprb.owner" property="iprb.owner"/>
+                <column id="iprb.firstMonthOff" property="iprb.firstMonthOff"/>
+                <column id="iprb.newProductIndicator" property="iprb.newProductIndicator"/>
+                <column id="teamRef" property="teamRef"/>
+                <column id="team.fullName" property="team.fullName"/>
+                <column id="team.tLine" property="team.tLine"/>
+                <column id="team.tDiv" property="team.tDiv"/>
+                <column id="team.tDomain" property="team.tDomain"/>
+                <column id="effort" property="effort"/>
+                <column id="date" property="date"/>
+                <column id="finMonth" property="finMonth"/>
+                <column id="userRef" property="userRef"/>
+            </columns>
+        </dataGrid>
+
+    </layout>
+</window>

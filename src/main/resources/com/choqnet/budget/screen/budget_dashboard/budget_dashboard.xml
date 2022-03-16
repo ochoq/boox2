@@ -23,7 +23,7 @@
 
             <vbox id="table" spacing="true"
                   align="MIDDLE_CENTER" width="100%" expand="dTable">
-                <hbox expand="spacer" spacing="true">
+                <hbox expand="spacer" spacing="true" width="100%">
                     <button id="dTableExcelExportBtn" action="dTable.excelExport"/>
                     <vbox width="50px"/>
                     <checkBox id="chkD" caption="Demand"/>
@@ -39,7 +39,7 @@
                     <label id="spacer"/>
                 </hbox>
                 <dataGrid id="dTable"
-                          width="100%" height="100%"
+                          width="100%"
 
                           footerVisible="true"
                           stylename="no-horizontal-lines"
@@ -49,7 +49,7 @@
                         <action id="excelExport" type="excelExport"/>
                     </actions>
                     <columns>
-                        <column id="domain"  property="domain2Display" width="100px"/>
+                        <column id="domain"  property="domain2Display" width="120px"/>
                         <column id="platform" property="platform" width="250px"/>
 
                         <column id="demandUMP" property="demandUMP"></column>
@@ -57,7 +57,7 @@
                         <column id="demandRUN" property="demandRUN"></column>
                         <column id="demandQ1" property="demandQ1"></column>
                         <column id="demandQ2" property="demandQ2"></column>
-                        <column id="demandQ3" property="demandQ3"></column>
+                        <column id="demandQ3" property="demandQ3"/>
                         <column id="demandQ4" property="demandQ4"></column>
                         <column id="demand" property="demand"></column>
 

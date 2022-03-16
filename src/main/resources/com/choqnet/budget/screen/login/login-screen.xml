@@ -19,7 +19,7 @@
                 <label id="welcomeLabel"
                        align="MIDDLE_CENTER"
                        stylename="jmix-login-caption"
-                       value="msg://welcomeLabel"/>
+                       value="Acceptance Capacity Planning &amp; Budget"/>
 
                 <vbox id="loginForm"
                       spacing="true"
@@ -40,6 +40,7 @@
                           stylename="jmix-login-remember-locales">
                         <checkBox id="rememberMeCheckBox"
                                   caption="msg://loginScreen.rememberMe"
+                                  enable="false"
                                   stylename="jmix-login-remember-me"/>
                         <comboBox id="localesField"
                                   nullOptionVisible="false"

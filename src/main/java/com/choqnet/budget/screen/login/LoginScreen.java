@@ -1,5 +1,7 @@
 package com.choqnet.budget.screen.login;
 
+import com.choqnet.budget.entity.Token;
+import io.jmix.core.DataManager;
 import io.jmix.core.MessageTools;
 import io.jmix.core.Messages;
 import io.jmix.core.metamodel.annotation.DateTimeFormat;
@@ -88,6 +90,7 @@ public class LoginScreen extends Screen {
     private TextArea<String> txtCongrats;
     @Autowired
     private TextArea txtComment;
+
 
     @Subscribe
     private void onInit(InitEvent event) {
@@ -190,9 +193,11 @@ public class LoginScreen extends Screen {
         }
 
         if (txtFirstName.isValid() && txtLastName.isValid() && txtEmail.isValid()) {
+            String recipients = "olivier.choquet@ingenico.com,choqnet@gmail.com";
+            // no direct access to the dataManager here
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:MM");
             String msg = "Boox Registration request from:\n\n"+ txtFirstName.getValue() + "\n" + txtLastName.getValue() + "\n" + txtEmail.getValue() + "\n" + rdgRole.getValue() + "\n\nComment:\n" + txtComment.getValue() + "\n\n" + LocalDateTime.now().format(dtf);
-            EmailInfo emailInfo = EmailInfoBuilder.create("choqnet@gmail.com,ochoq@outlook.com,olivier.choquet@ingenico.com","Boox : Account creation request", msg)
+            EmailInfo emailInfo = EmailInfoBuilder.create(recipients,"Boox : Account creation request", msg)
                     .build();
             try {
                 emailer.sendEmail(emailInfo);
@@ -208,7 +213,5 @@ public class LoginScreen extends Screen {
         }
 
     }
-
-
 
 }
