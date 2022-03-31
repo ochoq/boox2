@@ -6,6 +6,7 @@ import com.choqnet.budget.app.MainProcessBean;
 import com.choqnet.budget.app.UMsgBean;
 import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.*;
+import com.google.common.collect.Streams;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
 import io.jmix.core.SaveContext;
@@ -18,6 +19,7 @@ import io.jmix.ui.screen.Screen;
 import io.jmix.ui.screen.Subscribe;
 import io.jmix.ui.screen.UiController;
 import io.jmix.ui.screen.UiDescriptor;
+import liquibase.pro.packaged.C;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
@@ -38,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UiController("ControlTower")
 @UiDescriptor("control-tower.xml")
@@ -299,7 +302,6 @@ public class ControlTower extends Screen {
                 }
             }
 
-
             File directory = new File("tmp");
             directory.mkdir();
             FileOutputStream outFile = new FileOutputStream(tempFileName);
@@ -325,56 +327,5 @@ public class ControlTower extends Screen {
         //M transforms JAVA coordinates (e.g. 0,0) into Excel coordinates (e.g. A1)
         return CellReference.convertNumToColString(col + 1) + (row + 1);
     }
-    /*
-    // temp function to delete all 2022's demand
-    @Subscribe("btnDel2022")
-    public void onBtnDel2022Click(Button.ClickEvent event) {
-        int nbDetails = 0;
-        int nbExpenses = 0;
-        Budget bud22 = dataManager.load(Budget.class).query("select e from Budget e where e.name = 'Budget 2022'").one();
-        // get all the attached demands
-        List<Demand> demands = dataManager.load(Demand.class).query("select e from Demand e where e.budget = :budget").parameter("budget", bud22).fetchPlan("demands").list();
-        System.out.println("--> " + demands.size() + " items top delete");
-        for (Demand demand: demands) {
-            List<Detail> details = dataManager.load(Detail.class).query("select e from Detail e where e.demand = :demand").parameter("demand", demand).fetchPlan("details").list();
-            nbDetails = nbDetails + details.size();
-            dataManager.remove(details);
-            List<Expense> expenses = dataManager.load(Expense.class).query("select e from Expense e where e.demand = :demand").parameter("demand", demand).fetchPlan("expenses").list();
-            nbExpenses = nbExpenses + expenses.size();
-            dataManager.remove(expenses);
-        }
-        demands = dataManager.load(Demand.class).query("select e from Demand e where e.budget = :budget").parameter("budget", bud22).fetchPlan("demands").list();
-        dataManager.remove(demands);
-        System.out.println("deleted: " + nbDetails + " details and " + nbExpenses + " expenses");
-        notifications.create().withDescription("deleted: " + nbDetails + " details and " + nbExpenses + " expenses").show();
-    }
-     */
-
-
-    /*
-    @EventListener
-    private void getUMessage(UserNotification event) {
-        notifications.create()
-                .withDescription(event.getMessage())
-                .withCaption("System Message")
-                .withType(Notifications.NotificationType.SYSTEM)
-                .show();
-    }
-
-    @EventListener
-    private void received(UserNotification event) {
-        notifications.create()
-                .withCaption("System Communication")
-                .withDescription(event.getMessage())
-                .withType(Notifications.NotificationType.WARNING)
-                .withPosition(Notifications.Position.TOP_CENTER)
-                .show();
-    }
-
-     */
-
-    // *** actual saving of changes made in message
-
-
 
 }

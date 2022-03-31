@@ -1,6 +1,8 @@
 package com.choqnet.budget.entity;
 
+import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.annotation.NumberFormat;
@@ -9,7 +11,11 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "EXPENSE")
+@Table(name = "EXPENSE", indexes = {
+        @Index(name = "IDX_EXPENSE_BUDGET_ID", columnList = "BUDGET_ID"),
+        @Index(name = "IDX_EXPENSE_IPRB_ID", columnList = "IPRB_ID"),
+        @Index(name = "IDX_EXPENSE_PROGRESS_ID", columnList = "PROGRESS_ID")
+})
 @Entity
 public class Expense {
     @JmixGeneratedValue
@@ -31,16 +37,42 @@ public class Expense {
     @Column(name = "ACCEPTED")
     private Boolean accepted = true;
 
-    @JoinColumn(name = "DEMAND_ID", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Demand demand;
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "BUDGET_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Budget budget;
 
-    public Demand getDemand() {
-        return demand;
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "IPRB_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private IPRB iprb;
+
+    @JoinColumn(name = "PROGRESS_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Progress progress;
+
+    public Progress getProgress() {
+        return progress;
     }
 
-    public void setDemand(Demand demand) {
-        this.demand = demand;
+    public void setProgress(Progress progress) {
+        this.progress = progress;
+    }
+
+    public IPRB getIprb() {
+        return iprb;
+    }
+
+    public void setIprb(IPRB iprb) {
+        this.iprb = iprb;
+    }
+
+    public Budget getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Budget budget) {
+        this.budget = budget;
     }
 
     public Boolean getAccepted() {

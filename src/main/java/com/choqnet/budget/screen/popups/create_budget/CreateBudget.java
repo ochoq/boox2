@@ -119,10 +119,14 @@ public class CreateBudget extends Screen {
                     .parameter("date", budgetDate)
                     .list();
             for (IPRB iprb: iprbs)  {
-                Demand demand = dataManager.create(Demand.class);
-                demand.setIprb(iprb);
-                demand.setBudget(budget);
-                sc.saving(demand);
+                Progress progress = dataManager.create(Progress.class);
+                progress.setIprb(iprb);
+                progress.setBudget(budget);
+                sc.saving(progress);
+//                Demand demand = dataManager.create(Demand.class);
+//                demand.setIprb(iprb);
+//                demand.setBudget(budget);
+//                sc.saving(demand);
             }
         }
         dataManager.save(sc);

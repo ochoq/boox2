@@ -1,10 +1,9 @@
 package com.choqnet.budget.screen.popups.iprb_selector;
 
 import com.choqnet.budget.entity.Budget;
-import com.choqnet.budget.entity.Demand;
 import com.choqnet.budget.entity.IPRB;
+import com.choqnet.budget.entity.Progress;
 import io.jmix.core.DataManager;
-import io.jmix.core.SaveContext;
 import io.jmix.ui.component.Button;
 import io.jmix.ui.component.DataGrid;
 import io.jmix.ui.model.CollectionContainer;
@@ -43,16 +42,12 @@ public class IprbSelector extends Screen {
 
     @Subscribe("btnAdd")
     public void onBtnAddClick(Button.ClickEvent event) {
-        SaveContext sc = new SaveContext();
         for (IPRB iprb: iPRBsTable.getSelected()) {
-            Demand demand = dataManager.create(Demand.class);
-            demand.setIprb(iprb);
-            demand.setBudget(budget);
-            log.info("Saving demand for " + iprb.getReference());
-            dataManager.save(demand);
-            //sc.saving(demand);
+            Progress progress = dataManager.create(Progress.class);
+            progress.setIprb(iprb);
+            progress.setBudget(budget);
+            dataManager.save(progress);
         }
-        //dataManager.save(sc);
         closeWithDefaultAction();
     }
 

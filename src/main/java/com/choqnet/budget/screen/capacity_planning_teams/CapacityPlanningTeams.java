@@ -59,7 +59,6 @@ public class CapacityPlanningTeams extends Screen {
 
     @Subscribe
     public void onInit(InitEvent event) {
-
         // populates the list of budget
         List<Budget> budgets = dataManager.load(Budget.class)
                 .query("select e from Budget e order by e.year desc, e.name asc")
@@ -139,9 +138,7 @@ public class CapacityPlanningTeams extends Screen {
         ctd.setContext(item, budget);
         ctd.show();
     }
-
     private void refreshData() {
-
     }
 
     // *** UI functions
@@ -178,7 +175,7 @@ public class CapacityPlanningTeams extends Screen {
     private void updateCapacityPlanningData() {
         // refines the capacity and demand.details dataset for the CP report
         details = dataManager.load(Detail.class)
-                .query("select e from Detail e where e.demand.budget = :budget")
+                .query("select e from Detail e where e.budget = :budget")
                 .parameter("budget", budget)
                 .list();
         capacities = dataManager.load(Capacity.class)
@@ -212,7 +209,6 @@ public class CapacityPlanningTeams extends Screen {
                         .reduce(Double::sum).orElse(0.0));
                 cpTeams.add(cpTeam);
             }
-            // todo : insert here a loop to calculate CapaCons and DemandCons
             //
             // filterTeams();
             cPTeamsDc.setItems(cpTeams);

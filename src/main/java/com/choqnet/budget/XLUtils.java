@@ -177,7 +177,7 @@ public class XLUtils {
             double effort = details.stream().filter(e ->
                     e.getTeam() != null &&
                             finalDestName.equals(e.getTeam().getIcTarget()) &&
-                            iprb.equals(e.getDemand().getIprb())
+                            iprb.equals(e.getProgress().getIprb())
             ).map(Detail::getMdY).reduce(Double::sum).orElse(0.0);
             if (!(Double.compare(effort, 0.0) == 0)) {
                 writeNUM(iRow, destCol, effort, sheet);
@@ -197,7 +197,7 @@ public class XLUtils {
                 double effort = details.stream().filter(e ->
                         e.getTeam() != null &&
                                 finalDestName.equals(e.getTeam().getIcTarget()) &&
-                                finalProjType.equals(e.getDemand().getIprb().getProjectType())
+                                finalProjType.equals(e.getProgress().getIprb().getProjectType())
                 ).map(Detail::getMdY).reduce(Double::sum).orElse(0.0);
                 if (!(Double.compare(effort, 0.0) == 0)) {
                     writeNUM(4, destCol, effort, sheet);

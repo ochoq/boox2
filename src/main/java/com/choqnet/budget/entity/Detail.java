@@ -15,7 +15,11 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "DETAIL")
+@Table(name = "DETAIL", indexes = {
+        @Index(name = "IDX_DETAIL_BUDGET_ID", columnList = "BUDGET_ID"),
+        @Index(name = "IDX_DETAIL_IPRB_ID", columnList = "IPRB_ID"),
+        @Index(name = "IDX_DETAIL_PROGRESS_ID", columnList = "PROGRESS_ID")
+})
 @Entity
 public class Detail {
     @JmixGeneratedValue
@@ -68,20 +72,10 @@ public class Detail {
     private String category;
 
     @Column(name = "PRIORITY")
-    private String priority = Priority.P5.getId();
-
-    @JoinColumn(name = "DEMAND_ID", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Demand demand;
+    private String priority = Priority.P1.getId();
 
     @Column(name = "JIRA")
     private String jira;
-
-    @Column(name = "T_FULL_NAME")
-    private String tFullName;
-
-    @Column(name = "T_LINE")
-    private String tLine;
 
     @Column(name = "SIMPLE_DOMAIN")
     private String simpleDomain;
@@ -95,11 +89,62 @@ public class Detail {
     @Column(name = "TYPE_")
     private String type;
 
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "BUDGET_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Budget budget;
+
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "IPRB_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private IPRB iprb;
+
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "PROGRESS_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Progress progress;
+
+    @Column(name = "REMAINING")
+    private Double remaining = 0.0;
+
+    public Double getRemaining() {
+        Budget attachedBudget = progress.getBudget();
+        if (budget==null || budget.getFrozen()) return 0.0;
+        return (budget.getCloseQ1() ? 0.0 : mdQ1)  +
+               (budget.getCloseQ2() ? 0.0 : mdQ2)  +
+               (budget.getCloseQ3() ? 0.0 : mdQ3)  +
+               (budget.getCloseQ4() ? 0.0 : mdQ4) ;
+    }
+
+    public Progress getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Progress progress) {
+        this.progress = progress;
+    }
+
+    public IPRB getIprb() {
+        return iprb;
+    }
+
+    public void setIprb(IPRB iprb) {
+        this.iprb = iprb;
+    }
+
+    public Budget getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Budget budget) {
+        this.budget = budget;
+    }
+
     public String getType() {
-        if (demand==null || demand.getIprb()==null || demand.getIprb().getStrategicProgram()==null) {
+        if (progress==null || progress.getIprb()==null || progress.getIprb().getStrategicProgram()==null) {
             return "BAU";
         }
-        switch(demand.getIprb().getStrategicProgram().toString()) {
+        switch(progress.getIprb().getStrategicProgram().toString()) {
             case "RUN":
                 return "RUN";
             case "UNI":
@@ -129,10 +174,11 @@ public class Detail {
         // - there is a team connected
         // - priority is equal or less than the budget's threshold
         // - the IPRB is not out Budget
-        boolean bTeam = team!=null;
-        boolean bPrio = getPriority().isLessOrEqual(demand.getBudget().getPrioThreshold());
-        boolean bIPRB = !demand.getIprb().getOutBudget();
-        included = (team!=null) && (getPriority().isLessOrEqual(demand.getBudget().getPrioThreshold())) && (!demand.getIprb().getOutBudget());
+        // - the IPRB is not out Budget
+        included = (progress != null) &&
+                (team!=null) &&
+                (getPriority().isLessOrEqual(progress.getBudget().getPrioThreshold())) &&
+                (!progress.getIprb().getOutBudget());
         return included;
     }
 
@@ -150,15 +196,6 @@ public class Detail {
 
     public void setJira(String jira) {
         this.jira = jira;
-    }
-
-
-    public Demand getDemand() {
-        return demand;
-    }
-
-    public void setDemand(Demand demand) {
-        this.demand = demand;
     }
 
     public void setOnePager(OnePager onePager) {

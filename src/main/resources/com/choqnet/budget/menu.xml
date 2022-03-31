@@ -13,7 +13,8 @@
         <item screen="CapacityScreen" caption="msg://com.choqnet.budget.screen.capacity/capacityScreen.caption"/>
         <item screen="CapacityPlanningTeams"
               caption="msg://com.choqnet.budget.screen.capacity_planning_teams/capacityPlanningTeams.caption"/>
-        <item screen="DemandManagement" caption="msg://com.choqnet.budget.screen.demand/demandManagement.caption"/>
+        <item screen="ProgressManagement"
+              caption="msg://com.choqnet.budget.screen.progressmanagement/progressManagement.caption"/>
         <item screen="IprbScreen" caption="msg://com.choqnet.budget.screen.iprb/iprbScreen.caption"/>
         <item screen="Teams" caption="msg://com.choqnet.budget.screen.teams/teams.caption"/>
 
@@ -28,6 +29,12 @@
         <item screen="Mapping.browse" caption="msg://com.choqnet.budget.screen.mapping/mappingBrowse.menu"/>
         <item screen="Template.browse" caption="msg://com.choqnet.budget.screen.template/templateBrowse.menu"/>
         <item screen="ChangePassword" caption="msg://com.choqnet.budget.screen.change_password/changePassword.caption"/>
+        <menu id="data-management" caption="msg://com.choqnet.budget/menu_config.data-management">
+            <item screen="DetailSystem"
+                  caption="msg://com.choqnet.budget.screen.detail.detailsystem/detailSystem.caption"/>
+            <item screen="ExpenseSystem"
+                  caption="msg://com.choqnet.budget.screen.expense.expensesystem/expenseSystem.caption"/>
+        </menu>
     </menu>
 
 </menu-config>

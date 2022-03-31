@@ -30,10 +30,6 @@ public class Budget {
 
     @Composition
     @OneToMany(mappedBy = "budget")
-    private List<Demand> demands;
-
-    @Composition
-    @OneToMany(mappedBy = "budget")
     private List<Capacity> capacities;
 
     @Column(name = "CLOSE_Q1")
@@ -127,14 +123,6 @@ public class Budget {
 
     public void setCapacities(List<Capacity> capacities) {
         this.capacities = capacities;
-    }
-
-    public List<Demand> getDemands() {
-        return demands;
-    }
-
-    public void setDemands(List<Demand> demands) {
-        this.demands = demands;
     }
 
     public String getName() {

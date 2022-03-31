@@ -8,10 +8,6 @@
                 <property name="team" fetchPlan="_instance_name">
                     <property name="selectable"/>
                 </property>
-                <property name="demand" fetchPlan="_base">
-                    <property name="iprb" fetchPlan="_base"/>
-                    <property name="budget" fetchPlan="_base"/>
-                </property>
             </fetchPlan>
             <loader id="detailsDl">
                 <query>
@@ -121,7 +117,7 @@
                           editorBuffered="true"
                           dataContainer="detailsDc">
                     <columns>
-                        <column id="iprb" property="demand.iprb.reference" editable="false" caption="IPRB"/>
+                        <column id="iprb" property="iprb.reference" editable="false" caption="IPRB"/>
                         <column id="team" property="team"/>
                         <column id="roadmap" property="roadmap"/>
                         <column id="detail" property="detail"/>

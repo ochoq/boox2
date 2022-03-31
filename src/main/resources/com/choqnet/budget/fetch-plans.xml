@@ -11,10 +11,6 @@
             <property name="tDomain"/>
             <property name="icTarget"/>
         </property>
-        <property name="demand" fetchPlan="_base">
-            <property name="iprb" fetchPlan="_base"/>
-            <property name="budget" fetchPlan="_base"/>
-        </property>
     </fetchPlan>
     <fetchPlan entity="Capacity" name="capacities" extends="_base">
         <property name="team" fetchPlan="_base"/>
@@ -24,17 +20,7 @@
         <property name="team">
         </property>
     </fetchPlan>
-    <fetchPlan entity="Demand" name="demands" extends="_base">
-        <property name="iprb" fetchPlan="_base"/>
-        <property name="details" fetchPlan="_base"/>
-        <property name="expenses" fetchPlan="_base"/>
-        <property name="budget" fetchPlan="_base"/>
-    </fetchPlan>
     <fetchPlan entity="Expense" name="expenses" extends="_base">
-        <property name="demand" fetchPlan="_base">
-            <property name="iprb" fetchPlan="_base"/>
-            <property name="budget" fetchPlan="_base"/>
-        </property>
     </fetchPlan>
     <fetchPlan entity="Actual" name="actuals">
         <property name="iprb">
@@ -77,5 +63,13 @@
         <property name="costCenter"/>
         <property name="effort"/>
         <property name="jiraTeamRef"/>
+    </fetchPlan>
+    <fetchPlan entity="Progress" name="progAll" extends="_base">
+        <property name="budget" fetchPlan="_base"/>
+        <property name="details" fetchPlan="_base">
+            <property name="budget" fetchPlan="_base"/>
+        </property>
+        <property name="expenses" fetchPlan="_base"/>
+        <property name="iprb" fetchPlan="_base"/>
     </fetchPlan>
 </fetchPlans>

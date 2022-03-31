@@ -285,7 +285,7 @@ public class BudgetDashboard extends Screen {
                 .fetchPlan("capacities")
                 .list();
         List<Detail> details = dataManager.load(Detail.class)
-                .query("select e from Detail e where e.demand.budget = :budget and e.priority <= :priority order by e.simpleDomain, e.simplePlatform asc")
+                .query("select e from Detail e where e.budget = :budget and e.priority <= :priority order by e.simpleDomain, e.simplePlatform asc")
                 .parameter("budget", budget)
                 .parameter("priority", prioThreshold.getId())
                 .fetchPlan("details")

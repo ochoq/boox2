@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="Update Forecast">
+    <data>
+        <collection id="detailsDc" class="com.choqnet.budget.entity.Detail">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_instance_name" name="team">
+                    <property name="name"/>
+                    <property name="simpleDomain"/>
+                    <property name="simplePlatform"/>
+                </property>
+                <property fetchPlan="_base" name="onePager"/>
+                <property name="budget">
+                    <property name="name"/>
+                </property>
+                <property name="iprb">
+                    <property name="reference"/>
+                    <property name="name"/>
+                </property>
+                <property fetchPlan="_base" name="progress"/>
+            </fetchPlan>
+            <loader id="detailsDl">
+                <query>
+                    <![CDATA[select e from Detail e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="expensesDc" class="com.choqnet.budget.entity.Expense">
+            <fetchPlan extends="_base"/>
+            <loader id="expensesDl">
+                <query>
+                    <![CDATA[select e from Expense e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="screen">
+        <label stylename="h1" id="lblTitle"/>
+        <tabSheet id="screen">
+            <tab caption="Details in MD" id="details" spacing="true" expand="detailsTable"
+                 margin="true,false,false,false">
+                <filter id="filterDetails" columnsCount="3" dataLoader="detailsDl">
+                    <properties include=".*"/>
+                </filter>
+                <hbox stylename="card" spacing="true" margin="true">
+                    <button id="btnAdd" caption="Add"/>
+                    <button id="btnRemove" caption="Remove Selected"/>
+                </hbox>
+                <dataGrid id="detailsTable"
+                          width="100%"
+                          editorEnabled="true"
+                          editorBuffered="true"
+                          dataContainer="detailsDc">
+                    <columns>
+                        <column id="team" property="team">
+                            <componentRenderer/>
+                        </column>
+                        <column id="topic" property="topic"/>
+                        <column id="roadmap" property="roadmap"/>
+                        <column id="detail" property="detail"/>
+                        <column id="tShirt" property="tShirt"/>
+                        <column id="remaining" property="remaining" editable="false"/>
+                        <column id="mdY" property="mdY"/>
+                        <column id="mdQ1" property="mdQ1"/>
+                        <column id="mdQ2" property="mdQ2"/>
+                        <column id="mdQ3" property="mdQ3"/>
+                        <column id="mdQ4" property="mdQ4"/>
+                        <column id="onePager" property="onePager"/>
+                        <column id="category" property="category"/>
+                        <column id="priority" property="priority"/>
+                        <column id="jira" property="jira">
+                            <componentRenderer/>
+                        </column>
+                    </columns>
+                </dataGrid>
+            </tab>
+            <tab caption="Details in k€" id="expenses" spacing="true" expand="expensesTable"
+                 margin="true,false,false,false">
+                <filter id="filterExpenses" columnsCount="3" dataLoader="expensesDl">
+                    <properties include=".*"/>
+                </filter>
+                <hbox stylename="card" spacing="true" margin="true">
+                    <button id="btnExpAdd" caption="Add"/>
+                    <button id="btnExpRemove" caption="Remove Selected"/>
+                </hbox>
+                <dataGrid id="expensesTable"
+                          editorEnabled="true"
+                          editorBuffered="true"
+                          width="100%"
+                          dataContainer="expensesDc">
+                    <columns>
+                        <column id="name" property="name"/>
+                        <column id="amountKEuro" property="amountKEuro"/>
+                        <column id="capex" property="capex"/>
+                        <column id="accepted" property="accepted"/>
+                    </columns>
+                </dataGrid>
+            </tab>
+        </tabSheet>
+    </layout>
+</window>

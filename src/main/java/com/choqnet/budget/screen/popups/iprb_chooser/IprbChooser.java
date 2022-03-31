@@ -1,9 +1,7 @@
 package com.choqnet.budget.screen.popups.iprb_chooser;
 
-import com.choqnet.budget.entity.Budget;
-import com.choqnet.budget.entity.Demand;
-import com.choqnet.budget.entity.Detail;
-import com.choqnet.budget.entity.IPRB;
+import com.choqnet.budget.UtilBean;
+import com.choqnet.budget.entity.*;
 import io.jmix.core.DataManager;
 import io.jmix.core.SaveContext;
 import io.jmix.ui.component.Button;
@@ -30,6 +28,8 @@ public class IprbChooser extends Screen {
 
     private Set<Detail> detailsToMove;
     private Budget budget;
+    @Autowired
+    private UtilBean utilBean;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -58,6 +58,22 @@ public class IprbChooser extends Screen {
         // gets or creates the demand
         if (cmbIPRB.getValue()!=null) {
             IPRB iprbTarget = cmbIPRB.getValue();
+            Progress target = dataManager.load(Progress.class)
+                    .query("select e from Progress e where e.budget = :budget and e.iprb = :iprb")
+                    .parameter("budget", budget)
+                    .parameter("iprb", iprbTarget)
+                    .list()
+                    .stream()
+                    .findFirst()
+                    .orElse(dataManager.create(Progress.class));
+            target.setBudget(budget);
+            target.setIprb(iprbTarget);
+            target = dataManager.save(target);
+            for (Detail detail : detailsToMove) {
+                Progress source = detail.getProgress();
+                utilBean.moveDetail(source, target, detail);
+            }
+            /*
             Demand demand = dataManager
                     .load(Demand.class)
                     .query("select e from Demand e where e.budget = :budget and e.iprb = :iprb")
@@ -76,6 +92,7 @@ public class IprbChooser extends Screen {
                 sc.saving(detail);
             }
             dataManager.save(sc);
+             */
         }
         closeWithDefaultAction();
     }

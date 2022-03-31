@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <addColumn tableName="DETAIL">
+            <column name="IPRB_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <addColumn tableName="EXPENSE">
+            <column name="IPRB_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="3" author="boox">
+        <createIndex indexName="IDX_DETAIL_IPRB_ID" tableName="DETAIL">
+            <column name="IPRB_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="IPRB_ID" baseTableName="DETAIL" constraintName="FK_DETAIL_ON_IPRB"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="IPRB"/>
+    </changeSet>
+    <changeSet id="4" author="boox">
+        <createIndex indexName="IDX_EXPENSE_IPRB_ID" tableName="EXPENSE">
+            <column name="IPRB_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="IPRB_ID" baseTableName="EXPENSE" constraintName="FK_EXPENSE_ON_IPRB"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="IPRB"/>
+    </changeSet>
+</databaseChangeLog>

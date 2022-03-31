@@ -1,0 +1,327 @@
+package com.choqnet.budget.screen.popups.progressedit;
+
+import com.choqnet.budget.entity.*;
+import com.choqnet.budget.entity.datalists.TShirt;
+import io.jmix.core.DataManager;
+import io.jmix.ui.UiComponents;
+import io.jmix.ui.component.*;
+import io.jmix.ui.component.data.ValueSource;
+import io.jmix.ui.model.CollectionContainer;
+import io.jmix.ui.model.CollectionLoader;
+import io.jmix.ui.screen.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+@UiController("ProgressEdit")
+@UiDescriptor("progress-edit.xml")
+@DialogMode(width = "98%", height = "98%")
+public class ProgressEdit extends Screen {
+    private static final Logger log = LoggerFactory.getLogger(ProgressEdit.class);
+    private Progress progress;
+    private Budget budget;
+    private Double mdY, mdQ1, mdQ2, mdQ3, mdQ4;
+    private TShirt tShirt;
+    private List<Detail> dets;
+    private List<Expense> exps;
+    private Detail editedDetail;
+    private Expense editedExpense;
+
+    @Autowired
+    private CollectionLoader<Detail> detailsDl;
+    @Autowired
+    private CollectionLoader<Expense> expensesDl;
+    @Autowired
+    private Label<Serializable> lblTitle;
+    @Autowired
+    private UiComponents uiComponents;
+    @Autowired
+    private DataManager dataManager;
+    @Autowired
+    private DataGrid<Detail> detailsTable;
+    @Autowired
+    private Filter filterDetails;
+    @Autowired
+    private Filter filterExpenses;
+    @Autowired
+    private CollectionContainer<Detail> detailsDc;
+    @Autowired
+    private DataGrid<Expense> expensesTable;
+    @Autowired
+    private CollectionContainer<Expense> expensesDc;
+
+    @Subscribe
+    public void onInit(InitEvent event) {
+        filterDetails.setExpanded(false);
+        filterExpenses.setExpanded(false);
+    }
+
+    /**
+     * Populates the screen with the data of the selected Progress item
+     */
+    public void setContext(Progress passProgress) {
+        progress = passProgress;
+        budget = progress.getBudget();
+
+        lblTitle.setValue("Details for " + progress.getIprb().getReference() + " - " + progress.getIprb().getName());
+        detailsDl.setQuery("select e from Detail e where e.progress = :progress");
+        detailsDl.setParameter("progress", progress);
+        detailsDl.load();
+
+        expensesDl.setQuery("select e from Expense e where e.progress = :progress");
+        expensesDl.setParameter("progress", progress);
+        expensesDl.load();
+        setDetailsStylesAndModes();
+        setExpensesStylesAndModes();
+    }
+
+    private void setExpensesStylesAndModes() {
+        //sets the styles and edit/read modes for the expenses table
+    }
+
+    private void setDetailsStylesAndModes() {
+        // sets the styles and edit/read modes for the detail table
+        for (int i=1; i<5; i++) {
+            detailsTable.getColumn("mdQ"+i).setEditable(!budget.getFrozen() && !budget.getCloseQx(i));
+            int finalI = i;
+            detailsTable.getColumn("mdQ"+i).setStyleProvider(e -> {
+                return (!budget.getFrozen() && !budget.getCloseQx(finalI)) ? "ce1r" : "cror";
+            });
+        }
+        boolean isSomethingLocked= budget.getFrozen() || budget.getCloseQ1() || budget.getCloseQ2() || budget.getCloseQ3() || budget.getCloseQ4();
+        // TShirt can't be seen is 1 or more quarter is closed
+        detailsTable.getColumn("tShirt").setVisible(!isSomethingLocked);
+        detailsTable.getColumn("tShirt").setStyleProvider(e ->  "ce1r");
+        detailsTable.getColumn("mdY").setVisible(!isSomethingLocked);
+        detailsTable.getColumn("remaining").setVisible(isSomethingLocked);
+        detailsTable.getColumn("mdY").setStyleProvider(e -> "crotr");
+        detailsTable.getColumn("remaining").setStyleProvider(e -> "crotr");
+    }
+
+    // *** UI Functions
+
+    // TEAMS - edit mode
+    // restricts the list of teams to selectable teams only; display it with a combo
+    @Install(to = "detailsTable.team", subject = "editFieldGenerator")
+    private Field<Team> editingTeam(DataGrid.EditorFieldGenerationContext<Detail> editorContext) {
+        ComboBox<Team> cb = uiComponents.create(ComboBox.NAME);
+        cb.setValueSource((ValueSource<Team>) editorContext.getValueSourceProvider().getValueSource("team"));
+        cb.setOptionsList(dataManager.load(Team.class).query("select e from Team e where e.selectable = true").list());
+        return cb;
+    }
+
+    // TEAMS - read mode
+    @Install(to = "detailsTable.team", subject = "columnGenerator")
+    private Component shortName(DataGrid.ColumnGeneratorEvent<Detail> cDetail) {
+        Label<String> label = uiComponents.create(Label.NAME);
+        Team team = cDetail.getItem().getTeam();
+        label.setValue(team == null ? "???" : team.getName());
+        return label;
+    }
+
+    // ONEPAGER - OnePager renderer is a comboBox
+    @Install(to = "detailsTable.onePager", subject = "editFieldGenerator")
+    private Field<OnePager> editOnePager(DataGrid.EditorFieldGenerationContext<OnePager> efc) {
+        ComboBox<OnePager> cb = uiComponents.create(ComboBox.NAME);
+        cb.setValueSource((ValueSource<OnePager>) efc.getValueSourceProvider().getValueSource("onePager"));
+        cb.setOptionsList(dataManager.load(OnePager.class).all().list());
+        return cb;
+    }
+
+    // JIRA link management - Edit mode
+    @Install(to = "detailsTable.jira", subject = "editFieldGenerator")
+    private Field<String> editJIRA(DataGrid.EditorFieldGenerationContext<String> efc) {
+        TextField<String> txtJira = uiComponents.create(TextField.NAME);
+        txtJira.setValueSource((ValueSource<String>) efc.getValueSourceProvider().getValueSource("jira"));
+        return txtJira;
+    }
+
+    // JIRA link management - Read mode
+    @Install(to = "detailsTable.jira", subject = "columnGenerator")
+    private Component reachURL(DataGrid.ColumnGeneratorEvent<Detail> cDetail) {
+        Link lnk = uiComponents.create(Link.NAME);
+        lnk.setUrl(cDetail.getItem().getJira());
+        // cut the key of the Initiative
+        String[] heap = cDetail.getItem().getJira().split("/");
+        lnk.setCaption(heap.length == 0 ? cDetail.getItem().getJira() : heap[heap.length - 1]);
+        lnk.setHeightFull();
+        lnk.setAlignment(Component.Alignment.MIDDLE_CENTER);
+        lnk.setTarget("_blank");
+        return lnk;
+    }
+
+    // *** Data functions : allow sizing the efforts by using TShirt, or yearly value, or quarterly values
+    @Subscribe("detailsTable")
+    public void onDetailsTableEditorOpen(DataGrid.EditorOpenEvent<Detail> event) {
+        // saves the value of the edited detail
+        editedDetail = event.getItem();
+        // saves the values of the effort properties for a further comparison
+        mdY = event.getItem().getMdY();
+        mdQ1 = event.getItem().getMdQ1();
+        mdQ2 = event.getItem().getMdQ2();
+        mdQ3 = event.getItem().getMdQ3();
+        mdQ4 = event.getItem().getMdQ4();
+        tShirt = event.getItem().getTShirt();
+    }
+
+    @Subscribe("detailsTable")
+    public void onDetailsTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Detail> event) {
+        Detail detail = event.getItem();
+        // propagates the changes in values and actually saves them
+        if (!detail.getMdQ1().equals(mdQ1) ||
+                !detail.getMdQ2().equals(mdQ2) ||
+                !detail.getMdQ3().equals(mdQ3) ||
+                !detail.getMdQ4().equals(mdQ4)
+        ) {
+            detail.setTShirt(TShirt.FREE);
+            detail.setMdY(event.getItem().getMdQ1() +
+                    detail.getMdQ2() +
+                    detail.getMdQ3() +
+                    detail.getMdQ4());
+        } else {
+            if (!detail.getMdY().equals(mdY)) {
+                Double effort = detail.getMdY();
+                detail.setTShirt(TShirt.FREE);
+                detail.setMdQ1(effort / 4);
+                detail.setMdQ2(effort / 4);
+                detail.setMdQ3(effort / 4);
+                detail.setMdQ4(effort / 4);
+            } else {
+                if (detail.getTShirt()!=null && !detail.getTShirt().equals(tShirt)) {
+                    double effort = detail.getTShirt().getId() * 1.0;
+                    detail.setMdY(effort);
+                    detail.setMdQ1(effort / 4);
+                    detail.setMdQ2(effort / 4);
+                    detail.setMdQ3(effort / 4);
+                    detail.setMdQ4(effort / 4);
+                }
+            }
+        }
+        dataManager.save(detail);
+        // update the parent progress
+        dets = new ArrayList<>();
+        for (Detail det: progress.getDetails()) {
+            if (!det.equals(editedDetail)) {
+                dets.add(det);
+            }
+        }
+        dets.add(detail);
+        progress.setDetails(dets);
+        dataManager.save(progress);
+        detailsDl.load();
+
+        // if only 1 item, it is unselected
+        if (detailsDc.getItems().size()==1) {
+            detailsTable.deselectAll();
+        }
+    }
+
+    @Subscribe("btnAdd")
+    public void onBtnAddClick(Button.ClickEvent event) {
+        // create a new detail record and connect it to the current Progress
+        Detail detail = dataManager.create(Detail.class);
+        detail.setProgress(progress);
+        detail.setBudget(budget);
+        detail.setIprb(progress.getIprb());
+        detail = dataManager.save(detail);
+        detailsDl.load();
+        // add it to the Progress record
+        dets = new ArrayList<>();
+        dets.addAll(progress.getDetails());
+        dets.add(detail);
+        progress.setDetails(dets);
+        progress = dataManager.save(progress);
+    }
+
+    @Subscribe("btnRemove")
+    public void onBtnRemoveClick(Button.ClickEvent event) {
+        // build the list of all progress' details but the removed ones
+        dets = new ArrayList<>();
+        for (Detail det: progress.getDetails()) {
+            if (!detailsTable.getSelected().contains(det)) {
+                dets.add(det);
+            }
+        }
+        // inject the new value
+        progress.setDetails(dets);
+        dataManager.save(progress);
+        dataManager.remove(detailsTable.getSelected());
+        detailsDl.load();
+    }
+
+    @Subscribe("expensesTable")
+    public void onExpensesTableEditorOpen(DataGrid.EditorOpenEvent<Expense> event) {
+        editedExpense = event.getItem();
+    }
+
+    @Subscribe("expensesTable")
+
+    public void onExpensesTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Expense> event) {
+        Expense expense = event.getItem();
+        dataManager.save(expense);
+        // update the parent progress
+        exps = new ArrayList<>();
+        for (Expense exp: progress.getExpenses()) {
+            if (!exp.equals(editedExpense)) {
+                exps.add(exp);
+            }
+        }
+        exps.add(expense);
+        progress.setExpenses(exps);
+        dataManager.save(progress);
+        expensesDl.load();
+
+        // if only 1 item, it is unselected
+        if (expensesDc.getItems().size()==1) {
+            expensesTable.deselectAll();
+        }
+    }
+
+    @Subscribe("btnExpAdd")
+    public void onBtnExpAddClick(Button.ClickEvent event) {
+        Expense expense = dataManager.create(Expense.class);
+        expense.setProgress(progress);
+        expense.setBudget(budget);
+        expense.setIprb(progress.getIprb());
+        expense = dataManager.save(expense);
+        expensesDl.load();
+        // add it to the Progress record
+        exps = new ArrayList<>();
+        exps.addAll(progress.getExpenses());
+        exps.add(expense);
+        progress.setExpenses(exps);
+        progress = dataManager.save(progress);
+    }
+
+    @Subscribe("btnExpRemove")
+    public void onBtnExpRemoveClick(Button.ClickEvent event) {
+        // build the list of all progress' expense but the removed ones
+        exps = new ArrayList<>();
+        for (Expense exp: progress.getExpenses()) {
+            if (!expensesTable.getSelected().contains(exp)) {
+                exps.add(exp);
+            }
+        }
+        // inject the new value
+        progress.setExpenses(exps);
+        dataManager.save(progress);
+        dataManager.remove(expensesTable.getSelected());
+        expensesDl.load();
+    }
+
+    // *** Debug Functions
+    private void printProgress(Progress prog)  {
+        for (Detail detail: prog.getDetails()) {
+            log.info(detail.getTeam() + " " + detail.getMdQ1() + " - " + detail.getMdQ2() + " - " + detail.getMdQ3() + " - " + detail.getMdQ4() + " - ");
+
+        }
+        log.info("");
+
+    }
+
+
+}

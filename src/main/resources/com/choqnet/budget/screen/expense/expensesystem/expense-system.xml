@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://expenseSystem.caption">
+    <data>
+        <collection id="expensesDc" class="com.choqnet.budget.entity.Expense">
+            <fetchPlan extends="_base"/>
+            <loader id="expensesDl">
+                <query>
+                    <![CDATA[select e from Expense e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="expensesTable">
+        <filter id="filter" columnsCount="3" dataLoader="expensesDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="expensesTable" width="100%" dataContainer="expensesDc">
+            <actions>
+                <action id="remove" type="remove"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="expensesTableRemoveBtn" action="expensesTable.remove"/>
+            </buttonsPanel>
+            <columns>
+                <column id="name" property="name"/>
+                <column id="amountKEuro" property="amountKEuro"/>
+                <column id="capex" property="capex"/>
+                <column id="accepted" property="accepted"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

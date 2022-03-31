@@ -1,5 +1,6 @@
 package com.choqnet.budget.screen.popups.upload_demand;
 
+import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.Category;
 import com.choqnet.budget.entity.datalists.Priority;
@@ -21,6 +22,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -34,9 +36,9 @@ import java.util.UUID;
 @UiController("UploadDemand")
 @UiDescriptor("upload-demand.xml")
 public class UploadDemand extends Screen {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(UploadDemand.class);
+    private static final Logger log = LoggerFactory.getLogger(UploadDemand.class);
     List<Detail> details;
-    List<Demand> demands;
+    List<Progress> progresses;
     List<Expense> expenses;
     List<Team> teams;
     List<OnePager> onePagers;
@@ -54,6 +56,8 @@ public class UploadDemand extends Screen {
     private TemporaryStorage temporaryStorage;
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private UtilBean utilBean;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -152,27 +156,28 @@ public class UploadDemand extends Screen {
         // get the iprb reference and get the demand
         String iprbRef = readCell(row.getCell(1));
         if (!"".equals(iprbRef)) {
-            Demand demand = demands.stream()
+            Progress progress = progresses.stream()
                     .filter(e -> iprbRef.equals(e.getIprb().getReference()))
                     .findFirst()
                     .orElse(null);
-            if (demand == null) {
+            if (progress==null) {
                 Optional<IPRB> iprb = iprbs.stream()
                         .filter(e -> iprbRef.toUpperCase().equals(e.getReference().toUpperCase()))
                         .findFirst();
                 if (iprb.isPresent()) {
-                    demand = dataManager.create(Demand.class);
-                    demand.setIprb(iprb.get());
-                    demand.setBudget(budget);
-                    demand = dataManager.save(demand);
-                    demands.add(demand);
+                    progress = dataManager.create(Progress.class);
+                    progress.setIprb(iprb.get());
+                    progress.setBudget(budget);
+                    progress = dataManager.save(progress);
+                    progresses.add(progress);
                 } else {
-                    log.info(">>> Demand MD WARNING, no IPRB for " + iprbRef);
+                    log.info(">>> Progress MD WARNING, no IPRB for " + iprbRef);
                     return null;
                 }
             }
+
             Detail detail = dataManager.create(Detail.class);
-            detail.setDemand(demand);
+
             detail.setRoadmap(readCell(row.getCell(2)));
             detail.setDetail(readCell(row.getCell(3)));
             String teamName = readCell(row.getCell(4));
@@ -269,6 +274,7 @@ public class UploadDemand extends Screen {
                     .findFirst()
                     .orElse(null);
             detail.setOnePager(onePager);
+            utilBean.connectDetailProgress(detail, progress);
             return detail;
         } else {
             return null;
@@ -279,31 +285,32 @@ public class UploadDemand extends Screen {
     private Expense handleExpenseRow(Row row) {
         String iprbRef = readCell(row.getCell(0));
         if (!"".equals(iprbRef)) {
-            Demand demand = demands.stream()
+            Progress progress = progresses.stream()
                     .filter(e -> iprbRef.equals(e.getIprb().getReference()))
                     .findFirst()
                     .orElse(null);
-            if (demand == null) {
+            if (progress == null) {
                 Optional<IPRB> iprb = iprbs.stream()
                         .filter(e -> iprbRef.equals(e.getReference()))
                         .findFirst();
                 if (iprb.isPresent()) {
-                    demand = dataManager.create(Demand.class);
-                    demand.setIprb(iprb.get());
-                    demand.setBudget(budget);
-                    demand = dataManager.save(demand);
-                    demands.add(demand);
+                    progress = dataManager.create(Progress.class);
+                    progress.setIprb(iprb.get());
+                    progress.setBudget(budget);
+                    progress = dataManager.save(progress);
+                    progresses.add(progress);
                 } else {
                     log.info(">>> Demand €€ WARNING, no IPRB for " + iprbRef);
                     return null;
                 }
             }
             Expense expense = dataManager.create(Expense.class);
-            expense.setDemand(demand);
+
             expense.setName(readCell(row.getCell(2)));
             expense.setAmountKEuro(getDouble(readCell(row.getCell(3))) + getDouble(readCell(row.getCell(4))));
             expense.setCapex(!"".equals(readCell(row.getCell(3))));
             expense.setAccepted(true);
+            utilBean.connectExpenseProgress(expense, progress);
             return expense;
         } else {
             return null;
@@ -319,8 +326,8 @@ public class UploadDemand extends Screen {
     // *** Data functions
     public void setBudget(Budget budget) {
         this.budget = budget;
-        demands = dataManager.load(Demand.class)
-                .query("select e from Demand e where e.budget = :budget")
+        progresses = dataManager.load(Progress.class)
+                .query("select e from Progress e where e.budget = :budget")
                 .parameter("budget", budget)
                 .list();
         details = dataManager.load(Detail.class)

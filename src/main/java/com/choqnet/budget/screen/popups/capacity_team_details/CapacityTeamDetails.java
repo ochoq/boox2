@@ -73,7 +73,7 @@ public class CapacityTeamDetails extends Screen {
         detailsTable.getColumn("priority")
                 .setStyleProvider(detail -> {
                     try {
-                        if (detail.getPriority().isLessOrEqual(detail.getDemand().getBudget().getPrioThreshold())) {
+                        if (detail.getPriority().isLessOrEqual(detail.getBudget().getPrioThreshold())) {
                             return "green";
                         } else {
                             return "red";
@@ -96,7 +96,7 @@ public class CapacityTeamDetails extends Screen {
         }
         title.setValue(team.getFullName() + " is detailed here, for budget: " + budget.getName());
         // loads the details
-        detailsDl.setQuery("select e from Detail e where e.demand.budget = :budget and e.team = :team order by e.demand.iprb.reference asc");
+        detailsDl.setQuery("select e from Detail e where e.budget = :budget and e.team = :team order by e.iprb.reference asc");
         detailsDl.setParameter("budget", budget);
         detailsDl.setParameter("team", team);
         detailsDl.load();
@@ -165,7 +165,7 @@ public class CapacityTeamDetails extends Screen {
         mdQ3 = event.getItem().getMdQ3();
         mdQ4 = event.getItem().getMdQ4();
         tShirt = event.getItem().getTShirt();
-        iprbRef = event.getItem().getDemand().getIprb().getReference();
+        iprbRef = event.getItem().getIprb().getReference();
     }
 
     @Subscribe("detailsTable")
@@ -211,7 +211,7 @@ public class CapacityTeamDetails extends Screen {
         // creation of the chart
         ListDataProvider ldp = new ListDataProvider();
         List<Detail> details = dataManager.load(Detail.class)
-                .query("select e from Detail e where e.team = :team and e.demand.budget = :budget")
+                .query("select e from Detail e where e.team = :team and e.budget = :budget")
                 .parameter("team", team)
                 .parameter("budget", budget)
                 .list();

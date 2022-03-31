@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <createTable tableName="PROGRESS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_PROGRESS"/>
+            </column>
+            <column name="IPRB_ID" type="UUID"/>
+            <column name="BUDGET_ID" type="UUID"/>
+            <column name="ACTUAL_Q1" type="DOUBLE"/>
+            <column name="ACTUAL_Q2" type="DOUBLE"/>
+            <column name="ACTUAL_Q3" type="DOUBLE"/>
+            <column name="ACTUAL_Q4" type="DOUBLE"/>
+            <column name="DEMAND_Q1" type="DOUBLE"/>
+            <column name="DEMAND_Q2" type="DOUBLE"/>
+            <column name="DEMAND_Q3" type="DOUBLE"/>
+            <column name="DEMAND_Q4" type="DOUBLE"/>
+            <column name="EXPENSE" type="DOUBLE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <addColumn tableName="DETAIL">
+            <column name="PROGRESS_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="3" author="boox">
+        <addColumn tableName="EXPENSE">
+            <column name="PROGRESS_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="4" author="boox">
+        <createIndex indexName="IDX_DETAIL_PROGRESS_ID" tableName="DETAIL">
+            <column name="PROGRESS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PROGRESS_ID" baseTableName="DETAIL"
+                                 constraintName="FK_DETAIL_ON_PROGRESS" referencedColumnNames="ID"
+                                 referencedTableName="PROGRESS"/>
+    </changeSet>
+    <changeSet id="5" author="boox">
+        <createIndex indexName="IDX_EXPENSE_PROGRESS_ID" tableName="EXPENSE">
+            <column name="PROGRESS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PROGRESS_ID" baseTableName="EXPENSE"
+                                 constraintName="FK_EXPENSE_ON_PROGRESS" referencedColumnNames="ID"
+                                 referencedTableName="PROGRESS"/>
+    </changeSet>
+    <changeSet id="6" author="boox">
+        <createIndex indexName="IDX_PROGRESS_BUDGET_ID" tableName="PROGRESS">
+            <column name="BUDGET_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BUDGET_ID" baseTableName="PROGRESS"
+                                 constraintName="FK_PROGRESS_ON_BUDGET" onDelete="CASCADE" referencedColumnNames="ID"
+                                 referencedTableName="BUDGET"/>
+    </changeSet>
+    <changeSet id="7" author="boox">
+        <createIndex indexName="IDX_PROGRESS_IPRB_ID" tableName="PROGRESS">
+            <column name="IPRB_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="IPRB_ID" baseTableName="PROGRESS" constraintName="FK_PROGRESS_ON_IPRB"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="IPRB"/>
+    </changeSet>
+</databaseChangeLog>

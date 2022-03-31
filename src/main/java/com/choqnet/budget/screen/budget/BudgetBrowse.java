@@ -7,4 +7,5 @@ import com.choqnet.budget.entity.Budget;
 @UiDescriptor("budget-browse.xml")
 @LookupComponent("budgetsTable")
 public class BudgetBrowse extends StandardLookup<Budget> {
+
 }

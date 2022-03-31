@@ -51,6 +51,7 @@ public class BudgetApplication extends SpringBootServletInitializer {
     }
 
 
+    /*
     // *** Scheduled tasks initialization
     @Bean
     JobDetail buildMainJob()  {
@@ -68,6 +69,6 @@ public class BudgetApplication extends SpringBootServletInitializer {
                 .withSchedule(CronScheduleBuilder.cronSchedule("0 0 1 * * ?"))
                 .build();
     }
-
+    */
 
 }

@@ -27,9 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -46,6 +44,12 @@ public class MainProcessBean {
     private SystemAuthenticator systemAuthenticator;
 
     final int NB_ITEM_PER_PAGE = 5000;
+    List<String> quarter1 = Arrays.asList("fin202201", "fin202202", "fin202203");
+    List<String> quarter2 = Arrays.asList("fin202204", "fin202205", "fin202206");
+    List<String> quarter3 = Arrays.asList("fin202207", "fin202208", "fin202209");
+    List<String> quarter4 = Arrays.asList("fin202210", "fin202211", "fin202212");
+    List<String> months = new ArrayList<>();
+    List<String> quarters;
 
     List<Command> tempoCmds;
     String month;
@@ -94,13 +98,197 @@ public class MainProcessBean {
                     page += NB_ITEM_PER_PAGE;
                 } while (processedItems != 0);
                 connectActuals(month);
+
+                //setActualProgress();
                 log.info("Month " + month + " processed");
             }
+            // connect newly importer Actuals to the Progresses
+            setActualProgress(months);
             // delete the commands just run
             dataManager.remove(tempoCmds);
             saveLogApp("MainProcess", TypeMsg.INFO, "Done with import of Dumbo data", null);
             return null;
         });
+    }
+
+    private List<String> giveQuarterMonths(String quarter) {
+        String year = quarter.substring(0,4);
+        List<String> qMonths = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        switch (quarter.substring(4)) {
+            case "Q1":
+                tmp = Arrays.asList("01", "02", "03");
+                break;
+            case "Q2":
+                tmp = Arrays.asList("04", "05", "06");
+                break;
+            case "Q3":
+                tmp = Arrays.asList("07", "08", "09");
+                break;
+            case "Q4":
+                tmp = Arrays.asList("10", "11", "12");
+                break;
+        }
+        for (String mm: tmp) {
+            qMonths.add("fin" + year + mm);
+        }
+        return qMonths;
+    }
+
+    private Progress setQxValue(Progress target, double value, String quarter) {
+        String shortQuarter = quarter.substring(quarter.length() - 2);
+        switch(shortQuarter) {
+            case "Q1":
+                target.setActualQ1(value);
+                break;
+            case "Q2":
+                target.setActualQ2(value);
+                break;
+            case "Q3":
+                target.setActualQ3(value);
+                break;
+            case "Q4":
+                target.setActualQ4(value);
+                break;
+            default:
+                break;
+        }
+        return target;
+    }
+
+    private List<String> convertMonthsToQuarters(List<String> months) {
+        List<String> output = new ArrayList<>();
+        for (String month: months) {
+            String year = month.substring(3,7);
+            String mm = month.substring(7);
+            switch (mm) {
+                case "01":
+                case "02":
+                case "03":
+                    output.add(year+"Q1");
+                    break;
+                case "04":
+                case "05":
+                case "06":
+                    output.add(year+"Q2");
+                    break;
+                case "07":
+                case "08":
+                case "09":
+                    output.add(year+"Q3");
+                    break;
+                case "10":
+                case "11":
+                case "12":
+                    output.add(year+"Q4");
+                    break;
+            }
+        }
+        return output.stream().distinct().collect(Collectors.toList());
+    }
+
+    /**
+     * Update all Progress records with the actual efforts just imported
+     * @param months
+     */
+    private void setActualProgress(List<String> months) {
+        systemAuthenticator.withUser("admin", () -> {
+            saveLogApp("MainProcess", TypeMsg.INFO, "Connecting Actuals to Progresses", null);
+            String currentYear;
+            // 1. convert the list of months into a list of quarters
+            quarters = convertMonthsToQuarters(months);
+            // 2. fetch the quarters
+            for (String quarter: quarters) {
+                // a. quarter -> year
+                currentYear = quarter.substring(0,4);
+                // b. year -> list of budgets
+                List<Budget> budgets = dataManager.load(Budget.class).query("select e from Budget e where e.year = :year").parameter("year", currentYear).list();
+                // c. build the list of month of the quarter
+                List<String> qMonths = giveQuarterMonths(quarter);
+                // d. build the list of actuals belonging to these months
+                List<Actual> actuals = dataManager.load(Actual.class).query("select e from Actual e where e.finMonth IN :months").parameter("months", qMonths).list();
+                // e. get the list of IPRB out of them
+                List<IPRB> iprbs = actuals.stream().map(e -> e.getIprb()).distinct().collect(Collectors.toList());
+                // f. fetch the IPRBs
+
+                for (IPRB iprb: iprbs) {
+                    // fetch the budgets
+                    for (Budget budget: budgets) {
+                        SaveContext sc = new SaveContext();
+                        // get the list of progresses to update
+                        List<Progress> progresses = dataManager.load(Progress.class)
+                                .query("select e from Progress e where e.budget = :budget and e.iprb = :iprb")
+                                .parameter("budget", budget)
+                                .parameter("iprb",iprb)
+                                .list();
+                        for (Progress progress: progresses) {
+                            double value = sumQ(iprb, actuals);
+                            progress = setQxValue(progress, value, quarter);
+                            sc.saving(progress);
+                        }
+                        dataManager.save(sc);
+                    }
+                }
+
+                saveLogApp("MainProcess", TypeMsg.INFO, "Quarter completed", quarter);
+            }
+                    return null;
+                });
+            /*
+            // 1. get a list of unique involved quarters
+            //quarters = quarters.stream().distinct().collect(Collectors.toList());
+
+            List<Actual> actuals;
+            List<IPRB> iprbs = new ArrayList<>();
+            List<IPRB> defIprbs;
+            // gets the default budget
+            Budget budget = dataManager.load(Budget.class).query("select e from Budget e where e.preferred = true").one();
+            // get the monthly actuals
+            actuals = dataManager.load(Actual.class).query("select e from Actual e where e.finMonth = :finMonth").parameter("finMonth", month).list();
+            // get the list of IPRB from this list
+            iprbs = actuals.stream().map(Actual::getIprb).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            // get the list of existing Progress, for the default budget
+            List<Progress> defaultProgresses = dataManager.load(Progress.class).query("select e from Progress e where e.budget = :budget").parameter("budget", budget).list();
+            // get the list of IPRB from this default list
+            defIprbs = defaultProgresses.stream().map(e -> e.getIprb()).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            // build the list of missing Progresses
+            List<IPRB> missing = new ArrayList<>();
+            for (IPRB iprb : iprbs) {
+                if (!defIprbs.contains(iprb)) {
+                    missing.add(iprb);
+                }
+            }
+            // create the missing progresses
+            for (IPRB iprb : missing) {
+                Progress progress = dataManager.create(Progress.class);
+                progress.setBudget(budget);
+                progress.setIprb(iprb);
+                log.warn("Progress created for " + iprb.getReference());
+                dataManager.save(progress);
+            }
+            // get the full list of progress
+            List<Progress> progresses = dataManager.load(Progress.class).all().list();
+            SaveContext sc = new SaveContext();
+            for (Progress progress : progresses) {
+                progress.setActualQ1(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter1.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
+                progress.setActualQ2(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter2.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
+                progress.setActualQ3(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter3.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
+                progress.setActualQ4(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter4.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
+                sc.saving(progress);
+            }
+            dataManager.save(sc);
+            log.info("Actual Progress updated for " + month);
+            return null;
+
+             */
+    }
+
+    private double sumQ(IPRB iprb, List<Actual> actuals) {
+        if (iprb==null) {
+            return actuals.stream().filter(e -> e.getIprb()==null).map(e -> e.getEffort()).reduce(0.0, Double::sum);
+        } else {
+            return actuals.stream().filter(e -> iprb.equals(e.getIprb())).map(e -> e.getEffort()).reduce(0.0, Double::sum);
+        }
     }
 
     @ManagedOperation
@@ -127,7 +315,9 @@ public class MainProcessBean {
             // add getTempo command for month M and M-1
             tempoCmds = (dataManager.load(Command.class).query("select e from Command e where e.operation = :op")).parameter("op", Operation.TEMPO).list();
             for (int i = 0; i < 2; i++) {
-                String cMonth = "fin" + LocalDateTime.now().minusMonths(i).format(DateTimeFormatter.ofPattern("yyyyMM"));
+                //String cMonth = "fin" + LocalDateTime.now().minusMonths(i).format(DateTimeFormatter.ofPattern("yyyyMM"));
+                String cMonth = getFinancialMonth(addTime(new Date(),-i,"MONTH"));
+                months.add(cMonth);
                 if (tempoCmds.stream().noneMatch(e -> cMonth.equals(e.getValue()))) {
                     Command record = dataManager.create(Command.class);
                     record.setOperation(Operation.TEMPO);
@@ -590,5 +780,67 @@ public class MainProcessBean {
         }
     }
 
+
+    // *** Time utility Function
+
+    // ***** DATE MANAGEMENT METHODS
+    final int START_FINANCE_MONTH = 24;
+    public SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+
+    public Date getFinanceMonthStart(Date date) {
+        // last previous 24th of a month
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if (cal.get(Calendar.DATE) < START_FINANCE_MONTH) {
+            cal.add(Calendar.MONTH, -1);
+        }
+        cal.set(Calendar.DATE, START_FINANCE_MONTH);
+        return cal.getTime();
+    }
+
+    public String getFinancialMonth(Date date) {
+        // day >= 24 ?  next month : current month
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return "fin" + (cal.get(Calendar.DATE) >= START_FINANCE_MONTH ? monthToString(addTime(date, 1, "MONTH")) : monthToString(date));
+    }
+
+    public String monthToString(Date ref) {
+        // returns the provided date 'ref' under the common Dumbo's month format
+        return sdf.format(giveMonthStart(ref));
+    }
+    public Date giveMonthStart(Date ref) {
+        // returns the first day of the month the provided date 'ref' belongs to
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(ref);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.DATE, 1);
+        return cal.getTime();
+    }
+    public Date addTime(Date ref, int delta, String unit) {
+        // adds 'delta' 'unit' to the provided date 'ref'
+        // managed units:  DAY / MONTH / YEAR
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(ref);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        switch (unit) {
+            case "DAY":
+                cal.add(Calendar.DATE, delta);
+                break;
+            case "MONTH":
+                cal.add(Calendar.MONTH, delta);
+                break;
+            case "YEAR":
+                cal.add(Calendar.YEAR, delta);
+                break;
+        }
+        return cal.getTime();
+    }
 
 }

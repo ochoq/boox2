@@ -6,7 +6,14 @@
     <data readOnly="true">
         <collection id="detailsDc"
                     class="com.choqnet.budget.entity.Detail">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property fetchPlan="_instance_name" name="team">
+                    <property name="tLine"/>
+                    <property name="tDiv"/>
+                    <property name="tDomain"/>
+                    <property name="icTarget"/>
+                </property>
+            </fetchPlan>
             <loader id="detailsDl">
                 <query>
                     <![CDATA[select e from Detail e]]>
@@ -54,8 +61,6 @@
                 <column property="category" id="category"/>
                 <column property="priority" id="priority"/>
                 <column property="jira" id="jira"/>
-                <column property="tFullName" id="tFullName"/>
-                <column property="tLine" id="tLine"/>
                 <column property="simpleDomain" id="simpleDomain"/>
                 <column property="simplePlatform" id="simplePlatform"/>
                 <column property="included" id="included"/>

@@ -82,9 +82,10 @@
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
                         <label stylename="h2" value="Export budget" />
                         <hbox spacing="true" stylename="card" margin="true" width="100%">
-                            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_LEFT"/>
+                            <label value="Pick a budget"/>
+                            <comboBox id="cmbBudget" align="MIDDLE_LEFT"/>
                             <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>
-                            <button id="testExporftXL" caption="(temp) Test XL"/>
+                            <button id="testExporftXL" caption="(temp) Test XL" align="BOTTOM_RIGHT"/>
                         </hbox>
                         <label/>
                     </vbox>

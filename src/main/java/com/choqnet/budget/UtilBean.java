@@ -1,5 +1,8 @@
 package com.choqnet.budget;
 
+import com.choqnet.budget.entity.Detail;
+import com.choqnet.budget.entity.Expense;
+import com.choqnet.budget.entity.Progress;
 import com.choqnet.budget.entity.Team;
 import io.jmix.core.DataManager;
 import io.jmix.core.SaveContext;
@@ -7,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +31,6 @@ public class UtilBean {
     }
 
     // *** data management functions
-
     public void HierarchicalData(Team team) {
         int level;
         String fullName;
@@ -149,6 +152,61 @@ public class UtilBean {
             default:
                 return rootName;
         }
+    }
+    public void deleteProgress(Progress progress) {
+        for (Detail detail : progress.getDetails()) {
+            detail.setProgress(null);
+            detail = dataManager.save(detail);
+            dataManager.remove(detail);
+        }
+        for (Expense expense : progress.getExpenses()) {
+            expense.setProgress(null);
+            expense = dataManager.save(expense);
+            dataManager.remove(expense);
+        }
+        progress.setDetails(null);
+        progress.setExpenses(null);
+
+        dataManager.remove(progress);
+
+    }
+
+    public void moveDetail(Progress source, Progress target, Detail detail) {
+        // remove detail from the current parent Progress (source)
+        List<Detail> dets = new ArrayList<>();
+        for (Detail det: source.getDetails()) {
+            if (!det.equals(detail)) {
+                dets.add(det);
+            }
+        }
+        source.setDetails(dets);
+        dataManager.save(source);
+        // register detail in target
+        dets = new ArrayList<>(target.getDetails());
+        dets.add(detail);
+        target.setDetails(dets);
+        dataManager.save(target);
+        // move detail from source to target
+        detail.setProgress(target);
+        dataManager.save(detail);
+    }
+
+    public void connectDetailProgress(Detail detail, Progress progress) {
+        detail.setProgress(progress);
+        dataManager.save(detail);
+        List<Detail> dets = new ArrayList<>(progress.getDetails());
+        dets.add(detail);
+        progress.setDetails(dets);
+        dataManager.save(progress);
+    }
+
+    public void connectExpenseProgress(Expense expense, Progress progress) {
+        expense.setProgress(progress);
+        dataManager.save(expense);
+        List<Expense> exps = new ArrayList<>(progress.getExpenses());
+        exps.add(expense);
+        progress.setExpenses(exps);
+        dataManager.save(progress);
     }
 
 }
