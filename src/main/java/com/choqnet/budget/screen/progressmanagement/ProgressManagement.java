@@ -1,19 +1,18 @@
 package com.choqnet.budget.screen.progressmanagement;
 
 import com.choqnet.budget.UtilBean;
+import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.screen.popups.iprb_selector.IprbSelector;
 import com.choqnet.budget.screen.popups.progressedit.ProgressEdit;
 import io.jmix.core.DataManager;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
-import io.jmix.ui.component.Button;
-import io.jmix.ui.component.ComboBox;
-import io.jmix.ui.component.DataGrid;
-import io.jmix.ui.component.HasValue;
+import io.jmix.ui.component.*;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,12 +41,15 @@ public class ProgressManagement extends Screen {
     private Notifications notifications;
     @Autowired
     private UtilBean utilBean;
+    @Autowired
+    private Filter filter;
 
     @Subscribe
     public void onInit(InitEvent event) {
         initialiseBudgetCombo();
         loadData();
         setStylesAndModes();
+
     }
 
     private void initialiseBudgetCombo() {
@@ -107,6 +109,7 @@ public class ProgressManagement extends Screen {
         progTable.getColumn("actualQ2").setVisible(quarter.compareTo("Q2")>=0);
         progTable.getColumn("actualQ3").setVisible(quarter.compareTo("Q3")>=0);
         progTable.getColumn("actualQ4").setVisible(quarter.compareTo("Q4")>=0);
+        progTable.getColumn("expectedLanding").setStyleProvider(e -> "cror");
     }
 
     // *** Utilities
@@ -220,5 +223,17 @@ public class ProgressManagement extends Screen {
         }
         progressesDl.load();
 
+    }
+
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">> " + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
     }
 }

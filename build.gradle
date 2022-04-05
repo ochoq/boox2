@@ -63,6 +63,8 @@ dependencies {
     implementation("io.jmix.quartz:jmix-quartz-starter")
     implementation("io.jmix.appsettings:jmix-appsettings-ui-starter")
     implementation("io.jmix.appsettings:jmix-appsettings-starter")
+
+    implementation 'org.springframework:spring-webmvc:5.3.18'
 }
 
 test {

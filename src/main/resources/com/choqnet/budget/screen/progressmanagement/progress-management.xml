@@ -19,14 +19,22 @@
             <label stylename="h1" value="Demand Review" align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
         </hbox>
+        <filter id="filter" columnsCount="3" dataLoader="progressesDl">
+            <properties include=".*"
+                        excludeProperties="expectedLanding,id"
+                        excludeRecursively="true"/>
+        </filter>
         <hbox stylename="card" spacing="true" margin="true">
             <button id="btnAddIPRB" caption="Add IPRB to budget"/>
             <button id="btnRemove" caption="Remove Selected"/>
-
+            <button id="progTableExcelExportBtn" action="progTable.excelExport"/>
         </hbox>
         <dataGrid id="progTable"
                   selectionMode="MULTI_CHECK"
                   width="100%" dataContainer="progressesDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
             <columns>
                 <column id="iprb" property="iprb"/>
                 <column id="iprbName" property="iprb.name"/>
@@ -38,6 +46,7 @@
                 <column id="demandQ2" property="demandQ2"/>
                 <column id="demandQ3" property="demandQ3"/>
                 <column id="demandQ4" property="demandQ4"/>
+                <column id="expectedLanding" property="expectedLanding"/>
                 <column id="expense" property="expense"/>
             </columns>
         </dataGrid>

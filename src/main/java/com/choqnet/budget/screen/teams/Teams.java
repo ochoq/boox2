@@ -208,7 +208,7 @@ public class Teams extends Screen {
     private void received(UserNotification event) {
         notifications.create()
                 .withCaption("System Communication")
-                .withDescription(">>" + event.getMessage())
+                .withDescription(">> " + event.getMessage())
                 .withType(Notifications.NotificationType.WARNING)
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();

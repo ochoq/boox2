@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component
@@ -399,6 +398,13 @@ public class MainProcessBean {
                     wl.setUserRef(dwl.getUserRef());
                     wl.setDate(dwl.getDate());
                     wl.setKey(dwl.getKey());
+                    wl.setUserName(dwl.getUserName());
+                    wl.setResType(dwl.getResType());
+                    wl.setInitRef(dwl.getInitRef());
+                    wl.setFinanceType(dwl.getFinanceType());
+                    wl.setSapID(dwl.getSapID());
+                    wl.setAccount(dwl.getAccount());
+                    wl.setInitStatus(dwl.getInit()==null ? "" : dwl.getInit().getStatus());
                     sc.saving(wl);
                 }
                 dataManager.save(sc);

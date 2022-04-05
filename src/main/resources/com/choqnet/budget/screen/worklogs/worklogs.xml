@@ -47,9 +47,28 @@
 
             </buttonsPanel>
             <columns>
+                <column id="date" property="date"/>
+                <column id="finMonth" property="finMonth"/>
                 <column id="key" property="key"/>
+                <column id="userRef" property="userRef"/>
+                <column id="userName" property="userName"/>
+                <column id="resType" property="resType"/>
+
+                <column id="teamRef" property="teamRef"/>
+                <column id="team.fullName" property="team.fullName"/>
+                <column id="team.inBudget" property="team.inBudget"/>
+                <column id="team.simplePlatform" property="team.simplePlatform"/>
+                <column id="team.tDomain" property="team.tDomain"/>
+
+                <column id="initRef" property="initRef"/>
                 <column id="initiative" property="initiative"/>
                 <column id="category" property="category"/>
+                <column id="initStatus" property="initStatus"/>
+
+                <column id="financeType" property="financeType"/>
+                <column id="sapID" property="sapID"/>
+                <column id="account" property="account"/>
+
                 <column id="iprbRef" property="iprbRef"/>
                 <column id="iprb.name" property="iprb.name"/>
                 <column id="iprb.legalEntity" property="iprb.legalEntity"/>
@@ -60,15 +79,15 @@
                 <column id="iprb.owner" property="iprb.owner"/>
                 <column id="iprb.firstMonthOff" property="iprb.firstMonthOff"/>
                 <column id="iprb.newProductIndicator" property="iprb.newProductIndicator"/>
-                <column id="teamRef" property="teamRef"/>
-                <column id="team.fullName" property="team.fullName"/>
+
+
                 <column id="team.tLine" property="team.tLine"/>
                 <column id="team.tDiv" property="team.tDiv"/>
-                <column id="team.tDomain" property="team.tDomain"/>
+
                 <column id="effort" property="effort"/>
-                <column id="date" property="date"/>
-                <column id="finMonth" property="finMonth"/>
-                <column id="userRef" property="userRef"/>
+
+
+
             </columns>
         </dataGrid>
 

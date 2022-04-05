@@ -24,6 +24,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.inject.Named;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @UiController("IprbScreen")
 @UiDescriptor("iprb-screen.xml")
@@ -127,9 +130,33 @@ public class IprbScreen extends Screen {
 
     @Subscribe("iPRBsTable")
     public void onIPRBsTableEditorPostCommit(DataGrid.EditorPostCommitEvent<IPRB> event) {
+        IPRB iprb = event.getItem();
+        // Warning if missing items
+        List<String> missings = new ArrayList<>();
+        if (iprb.getPortfolioClassification()==null) missings.add("Portfolio Classification");
+        if (iprb.getLegalEntity()==null) missings.add("Legal Entity");
+        if (iprb.getStrategicProgram()==null) missings.add("Strategic Program");
+        if (iprb.getActivityType()==null) missings.add("Activity Type");
+        if (iprb.getNewProductIndicator()==null) missings.add("NPI");
+        if (iprb.getGroupOffering()==null) missings.add("Group Offering");
+        if (missings.size()!=0) {
+            String missMessage = "";
+            for (String missing: missings) {
+                missMessage += missing + "\n";
+            }
+            notifications.create(Notifications.NotificationType.WARNING)
+                    .withCaption("Data Quality Check")
+                    .withDescription("Your record misses the following information:\n" + missMessage)
+                    .show();
+        }
+
+        // DefaultValueProvider for Owner
+        if (iprb.getOwner()==null || Objects.equals(iprb.getOwner(), "")) {
+            iprb.setOwner(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        }
         // save changes permanently
-        iPRBsTable.getSingleSelected().setUpdated(LocalDateTime.now());
-        dataManager.save(iPRBsTable.getSingleSelected());
+        iprb.setUpdated(LocalDateTime.now());
+        dataManager.save(iprb);
         iPRBsDl.load();
         iPRBsTableRefresh.execute();
     }
@@ -140,7 +167,7 @@ public class IprbScreen extends Screen {
     private void received(UserNotification event) {
         notifications.create()
                 .withCaption("System Communication")
-                .withDescription(">>" + event.getMessage())
+                .withDescription(">> " + event.getMessage())
                 .withType(Notifications.NotificationType.WARNING)
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();

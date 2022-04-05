@@ -21,6 +21,66 @@ public class DumboWorklog {
 
     private String key;
 
+    private String userName;
+
+    private String resType;
+
+    private String initRef;
+
+    private String financeType;
+
+    private String sapID;
+
+    private String account;
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getSapID() {
+        return sapID;
+    }
+
+    public void setSapID(String sapID) {
+        this.sapID = sapID;
+    }
+
+    public String getFinanceType() {
+        return financeType;
+    }
+
+    public void setFinanceType(String financeType) {
+        this.financeType = financeType;
+    }
+
+    public String getInitRef() {
+        return initRef;
+    }
+
+    public void setInitRef(String initRef) {
+        this.initRef = initRef;
+    }
+
+    public String getResType() {
+        return resType;
+    }
+
+    public void setResType(String resType) {
+        this.resType = resType;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getKey() {
         return key;
     }

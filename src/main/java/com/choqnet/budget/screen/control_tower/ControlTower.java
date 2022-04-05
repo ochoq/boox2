@@ -6,12 +6,10 @@ import com.choqnet.budget.app.MainProcessBean;
 import com.choqnet.budget.app.UMsgBean;
 import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.*;
-import com.google.common.collect.Streams;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
 import io.jmix.core.SaveContext;
 import io.jmix.ui.Notifications;
-import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.component.*;
 import io.jmix.ui.download.Downloader;
 import io.jmix.ui.model.CollectionLoader;
@@ -19,28 +17,24 @@ import io.jmix.ui.screen.Screen;
 import io.jmix.ui.screen.Subscribe;
 import io.jmix.ui.screen.UiController;
 import io.jmix.ui.screen.UiDescriptor;
-import liquibase.pro.packaged.C;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @UiController("ControlTower")
 @UiDescriptor("control-tower.xml")
@@ -80,7 +74,7 @@ public class ControlTower extends Screen {
     @Autowired
     private CollectionLoader<LogApp> logAppsDl;
     @Autowired
-    private Label lblTitre;
+    private Label<String> lblTitre;
 
 
     // *** Initialisations
@@ -158,13 +152,12 @@ public class ControlTower extends Screen {
             outFile.close();
 
             String filePath = "tmp\\tmp_budget.xlsx";
-            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
             // file to byte[], File -> Path
             File file2 = new File(filePath);
             byte[] bytes2 = Files.readAllBytes(file2.toPath());
             downloader.download(bytes2, "MS Budget - Acceptance.xlsx");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error", e);
         }
     }
 
@@ -174,7 +167,6 @@ public class ControlTower extends Screen {
         List<Team> zeroTeam = dataManager.load(Team.class)
                 .query("select e from Team e where e.parent is null")
                 .list();
-        System.out.println("liste " + zeroTeam.size());
         for (Team team: zeroTeam) {
             utilBean.HierarchicalData(team);
         }
@@ -249,7 +241,7 @@ public class ControlTower extends Screen {
         try {
             wb = new XSSFWorkbook();
 
-            XSSFSheet sheet = (XSSFSheet) wb.createSheet();
+            XSSFSheet sheet = wb.createSheet();
 
             int nbRow = 10;
             int nbCol = 10;
@@ -308,14 +300,13 @@ public class ControlTower extends Screen {
             wb.write(outFile);
             outFile.close();
 
-            String filePath = tempFileName;
-            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+            byte[] bytes = Files.readAllBytes(Paths.get(tempFileName));
             // file to byte[], File -> Path
-            File file2 = new File(filePath);
+            File file2 = new File(tempFileName);
             byte[] bytes2 = Files.readAllBytes(file2.toPath());
             downloader.download(bytes2, "Test File.xlsx");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error", e);
         }
     }
 
@@ -328,4 +319,29 @@ public class ControlTower extends Screen {
         return CellReference.convertNumToColString(col + 1) + (row + 1);
     }
 
+    @Subscribe("btnEmail")
+    public void onBtnEmailClick(Button.ClickEvent event) {
+        List<User> users = dataManager.load(User.class).all().list();
+        SaveContext sc  = new SaveContext();
+        for (User user: users) {
+            if (user.getEmail()!= null) {
+                user.setEmail(user.getEmail().toLowerCase());
+                sc.saving(user);
+            }
+        }
+        dataManager.save(sc);
+        notifications.create().withDescription("Done! :-)").show();
+    }
+
+    // *** communications
+    // --- General Messaging
+    @EventListener
+    private void received(UserNotification event) {
+        notifications.create()
+                .withCaption("System Communication")
+                .withDescription(">> " + event.getMessage())
+                .withType(Notifications.NotificationType.WARNING)
+                .withPosition(Notifications.Position.TOP_CENTER)
+                .show();
+    }
 }

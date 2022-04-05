@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
@@ -32,17 +33,18 @@ public class RegistrationService {
     /**
      * @return true if user with this email (or login) already exists.
      */
-    public boolean checkUserAlreadyExist(String email) {
+    public boolean checkUserAlreadyExist(String email, String userName) {
         List<User> users = unconstrainedDataManager.load(User.class)
-                .query("select e from User e where e.username = :email or e.email = :email")
-                .parameter("email", email)
+                .query("select e from User e where e.username = :userName or e.email = :email")
+                .parameter("email", email.toLowerCase())
+                .parameter("userName", userName)
                 .list();
         return !users.isEmpty();
     }
 
     public User registerNewUser(String email, String firstName, String lastName, String wishedRole) {
         User user = unconstrainedDataManager.create(User.class);
-        user.setEmail(email);
+        user.setEmail(email.toLowerCase(Locale.ROOT));
         String userName = firstName.toLowerCase().substring(0,1) + lastName.replace(" ", "").toLowerCase();
         user.setUsername(userName);
         user.setFirstName(firstName);
@@ -92,7 +94,7 @@ public class RegistrationService {
                 .id(user.getId())
                 .one();
 
-        String activationLink = "https://80.78.10.84/boox/#activate?token=" + user.getActivationToken();
+        String activationLink = "https://boox.worldline-solutions.com/boox/#activate?token=" + user.getActivationToken();
         //String activationLink = "http://localhost:8080/#activate?token=" + user.getActivationToken();
         String body = String.format("Hello, %s %s.\nYour Boox activation link is: %s\nClick it to finish your registration.\nYour id is %s\n\nYou can find more information here: %s\n\n\n",
                 user.getFirstName(),

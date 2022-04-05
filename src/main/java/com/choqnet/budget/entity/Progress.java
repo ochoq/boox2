@@ -4,6 +4,7 @@ import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.NumberFormat;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,27 +32,41 @@ public class Progress {
     @ManyToOne(fetch = FetchType.LAZY)
     private Budget budget;
 
+    // @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @Column(name = "EXPECTED_LANDING")
+    private Double expectedLanding;
+
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "ACTUAL_Q1")
     private Double actualQ1 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "ACTUAL_Q2")
     private Double actualQ2 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "ACTUAL_Q3")
     private Double actualQ3 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "ACTUAL_Q4")
     private Double actualQ4 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "DEMAND_Q1")
     private Double demandQ1 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "DEMAND_Q2")
     private Double demandQ2 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "DEMAND_Q3")
     private Double demandQ3 = 0.0;
 
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "DEMAND_Q4")
     private Double demandQ4 = 0.0;
 
@@ -61,8 +76,17 @@ public class Progress {
     @OneToMany(mappedBy = "progress")
     private List<Expense> expenses;
 
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
     @Column(name = "EXPENSE")
     private Double expense = 0.0;
+
+    public Double getExpectedLanding() {
+        return (budget==null ? 0.0 : (budget.getCloseQ1() ? actualQ1 : demandQ1) +
+                (budget.getCloseQ2() ? actualQ2 : demandQ2) +
+                (budget.getCloseQ3() ? actualQ3 : demandQ3) +
+                (budget.getCloseQ4() ? actualQ4 : demandQ4));
+    }
+
 
     public Double getExpense() {
         return expense;

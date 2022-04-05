@@ -12,10 +12,13 @@ import io.jmix.ui.screen.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @UiController("ProgressEdit")
 @UiDescriptor("progress-edit.xml")
@@ -171,6 +174,10 @@ public class ProgressEdit extends Screen {
     @Subscribe("detailsTable")
     public void onDetailsTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Detail> event) {
         Detail detail = event.getItem();
+        // DefaultValueProvider for Owner
+        if (detail.getTopic()==null || Objects.equals(detail.getTopic(), "")) {
+            detail.setTopic(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        }
         // propagates the changes in values and actually saves them
         if (!detail.getMdQ1().equals(mdQ1) ||
                 !detail.getMdQ2().equals(mdQ2) ||

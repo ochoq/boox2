@@ -109,9 +109,10 @@ public class UserRegistration extends Screen {
         }
 
         String email = emailField.getValue();
-        if (registrationService.checkUserAlreadyExist(email)) {
+        String userName = firstNameField.getValue().toLowerCase().substring(0,1) + lastNameField.getValue().replace(" ", "").toLowerCase();
+        if (registrationService.checkUserAlreadyExist(email, userName)) {
             notifications.create(Notifications.NotificationType.WARNING)
-                    .withDescription("User with this email already exists")
+                    .withDescription("User with this email/userName already exists")
                     .withPosition(Notifications.Position.MIDDLE_CENTER)
                     .show();
             return false;

@@ -2,6 +2,7 @@ package com.choqnet.budget.entity;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.NumberFormat;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -38,6 +39,7 @@ public class Worklog {
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
+    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
     @Column(name = "EFFORT")
     private Double effort;
 
@@ -52,6 +54,83 @@ public class Worklog {
 
     @Column(name = "KEY_")
     private String key;
+
+    @Column(name = "USER_NAME")
+    private String userName;
+
+    @Column(name = "RES_TYPE")
+    private String resType;
+
+    @Column(name = "INIT_REF")
+    private String initRef;
+
+    @Column(name = "FINANCE_TYPE")
+    private String financeType;
+
+    @Column(name = "SAP_ID")
+    private String sapID;
+
+    @Column(name = "ACCOUNT")
+    private String account;
+
+    @Column(name = "INIT_STATUS")
+    private String initStatus;
+
+    public String getInitStatus() {
+        return initStatus;
+    }
+
+    public void setInitStatus(String initStatus) {
+        this.initStatus = initStatus;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getSapID() {
+        return sapID;
+    }
+
+    public void setSapID(String sapID) {
+        this.sapID = sapID;
+    }
+
+    public String getFinanceType() {
+        return financeType;
+    }
+
+    public void setFinanceType(String financeType) {
+        this.financeType = financeType;
+    }
+
+    public String getInitRef() {
+        return initRef;
+    }
+
+    public void setInitRef(String initRef) {
+        this.initRef = initRef;
+    }
+
+    public String getResType() {
+        return resType;
+    }
+
+    public void setResType(String resType) {
+        this.resType = resType;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getKey() {
         return key;

@@ -47,7 +47,7 @@
                         <vbox height="100px" spacing="true">
                             <label stylename="h1" value="Acceptance Capacity Planning &amp; Budget" align="MIDDLE_CENTER"/>
                         </vbox>
-                        <richTextArea width="600px" height="250px" align="MIDDLE_CENTER" id="screen" editable="false"/>
+                        <richTextArea width="900px" height="500px" align="MIDDLE_CENTER" id="screen" editable="false"/>
                         <label id="spacer"/>
                     </vbox>
 
