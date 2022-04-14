@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <addColumn tableName="TEAM">
+            <column name="SETUP_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <createIndex indexName="IDX_TEAM_SETUP_ID" tableName="TEAM">
+            <column name="SETUP_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="SETUP_ID" baseTableName="TEAM" constraintName="FK_TEAM_ON_SETUP"
+                                 onDelete="SET NULL" referencedColumnNames="ID" referencedTableName="SETUP"/>
+    </changeSet>
+</databaseChangeLog>

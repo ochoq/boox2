@@ -15,6 +15,16 @@ public class DumboInit {
 
     private String status;
 
+    private String refIPRB;
+
+    public String getRefIPRB() {
+        return refIPRB;
+    }
+
+    public void setRefIPRB(String refIPRB) {
+        this.refIPRB = refIPRB;
+    }
+
     public String getStatus() {
         return status;
     }

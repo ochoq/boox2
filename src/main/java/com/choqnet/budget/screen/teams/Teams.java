@@ -3,6 +3,7 @@ package com.choqnet.budget.screen.teams;
 import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Capacity;
+import com.choqnet.budget.entity.Setup;
 import com.choqnet.budget.entity.Team;
 import com.choqnet.budget.screen.popups.parent_chooser.ParentChooser;
 import com.choqnet.budget.screen.popups.upload_teams.UploadTeams;
@@ -51,6 +52,7 @@ public class Teams extends Screen {
 
     private Team oldParent;
     private String oldName;
+    private boolean wasEnabled, wasInBudget;
     @Autowired
     private UtilBean utilBean;
     @Autowired
@@ -87,6 +89,15 @@ public class Teams extends Screen {
         cb.setValueSource((ValueSource<Team>) editorParent.getValueSourceProvider()
                 .getValueSource("parent"));
         cb.setOptionsList(restricted);
+        return cb;
+    }
+
+    @Install(to = "table.setup", subject = "editFieldGenerator")
+    private Field<Setup> editingSetup(DataGrid.EditorFieldGenerationContext<Setup> editorSetup) {
+        ComboBox<Setup> cb = uiComponents.create(ComboBox.NAME);
+        List<Setup> setups = dataManager.load(Setup.class).all().list();
+        cb.setOptionsList(setups);
+        cb.setValueSource((ValueSource<Setup>) editorSetup.getValueSourceProvider().getValueSource("setup"));
         return cb;
     }
 
@@ -182,6 +193,13 @@ public class Teams extends Screen {
     @Subscribe("table")
     public void onTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Team> event) {
         // saves actually the changes in the DB
+        if (!wasInBudget && event.getItem().getInBudget()) {
+            event.getItem().setEnabled(true);
+        }
+        if (wasEnabled && !event.getItem().getEnabled()) {
+            event.getItem().setInBudget(false);
+        }
+
         Team target = dataManager.save(event.getItem());
         if (
                 (oldParent != null && !oldParent.equals(target.getParent())) || (oldParent == null && target.getParent() != null)
@@ -200,6 +218,8 @@ public class Teams extends Screen {
         // save values before any changes
         oldParent = event.getItem().getParent();
         oldName = event.getItem().getName();
+        wasEnabled = event.getItem().getEnabled();
+        wasInBudget = event.getItem().getInBudget();
     }
 
     // *** communications

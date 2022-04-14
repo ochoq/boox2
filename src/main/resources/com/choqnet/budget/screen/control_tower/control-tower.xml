@@ -113,6 +113,22 @@
                         </hbox>
                         <label/>
                     </vbox>
+
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Set Costs for Actuals and Worklogs (2022)"/>
+                        <hbox spacing="true" stylename="card" margin="true" width="100%">
+                            <button id="btnCosts" caption="Initialize Cost Data"/>
+                        </hbox>
+                        <label/>
+                    </vbox>
+
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Maintenance Task"/>
+                        <hbox spacing="true" stylename="card" margin="true" width="100%">
+                            <button id="btnDummy" caption="Initialize costs"/>
+                        </hbox>
+                        <label/>
+                    </vbox>
                 </flowBox>
             </tab>
             <tab caption="Message Board" id="logApp"

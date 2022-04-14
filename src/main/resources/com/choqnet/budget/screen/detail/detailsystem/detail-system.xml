@@ -34,11 +34,17 @@
                 <column id="roadmap" property="roadmap"/>
                 <column id="detail" property="detail"/>
                 <column id="tShirt" property="tShirt"/>
+                <column id="budgetCost" property="budgetCost"/>
+                <column id="budgetCostQ1" property="budgetCostQ1"/>
+                <column id="budgetCostQ2" property="budgetCostQ2"/>
+                <column id="budgetCostQ3" property="budgetCostQ3"/>
+                <column id="budgetCostQ4" property="budgetCostQ4"/>
                 <column id="mdY" property="mdY"/>
                 <column id="mdQ1" property="mdQ1"/>
                 <column id="mdQ2" property="mdQ2"/>
                 <column id="mdQ3" property="mdQ3"/>
                 <column id="mdQ4" property="mdQ4"/>
+                <column id="mdNY" property="mdNY"/>
                 <column id="category" property="category"/>
                 <column id="priority" property="priority"/>
                 <column id="jira" property="jira"/>

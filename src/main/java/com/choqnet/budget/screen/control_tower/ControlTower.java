@@ -9,7 +9,9 @@ import com.choqnet.budget.entity.*;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
 import io.jmix.core.SaveContext;
+import io.jmix.ui.Dialogs;
 import io.jmix.ui.Notifications;
+import io.jmix.ui.action.DialogAction;
 import io.jmix.ui.component.*;
 import io.jmix.ui.download.Downloader;
 import io.jmix.ui.model.CollectionLoader;
@@ -33,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +78,8 @@ public class ControlTower extends Screen {
     private CollectionLoader<LogApp> logAppsDl;
     @Autowired
     private Label<String> lblTitre;
+    @Autowired
+    private Dialogs dialogs;
 
 
     // *** Initialisations
@@ -344,4 +349,78 @@ public class ControlTower extends Screen {
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
     }
+
+    @Subscribe("btnCosts")
+    public void onBtnCostsClick(Button.ClickEvent event) {
+        dialogs.createOptionDialog().withMessage("Are you sure to set the costs for 2022 data?")
+                .withCaption("Costs Setup")
+                .withActions(
+                        new DialogAction(DialogAction.Type.OK)
+                                .withHandler(e -> setupCosts()),
+                        new DialogAction(DialogAction.Type.CANCEL)
+                )
+                .show();
+    }
+
+    private void setupCosts() {
+        SaveContext sc;
+        List<String> months = Arrays.asList("fin202201", "fin202202", "fin202203", "fin202204");
+        for (String month: months) {
+            log.info("Month "  + month);
+            sc = new SaveContext();
+            List<Worklog> worklogs = dataManager.load(Worklog.class)
+                    .query("select e from Worklog e where e.finMonth = :month")
+                    .parameter("month", month)
+                    .list();
+            for (Worklog worklog: worklogs) {
+                worklog.setBudgetCost();
+                sc.saving(worklog);
+            }
+            dataManager.save(sc);
+            log.info("--> worklogs done.");
+            sc = new SaveContext();
+            List<Actual> actuals = dataManager.load(Actual.class)
+                    .query("select e from Actual e where e.finMonth = :month")
+                    .parameter("month", month)
+                    .list();
+            for (Actual actual: actuals) {
+                actual.setBudgetCost();
+                sc.saving(actual);
+            }
+            dataManager.save(sc);
+            log.info("--> actuals done.");
+        }
+        log.info("Done");
+        notifications.create().withCaption("Cost Setup Done.").show();
+    }
+
+    @Subscribe("btnDummy")
+    public void onBtnDummyClick(Button.ClickEvent event) {
+        SaveContext sc;
+        // programme de maintenance
+        List<Detail> details = dataManager.load(Detail.class).all().fetchPlan("details").list();
+        log.info(details.size() + " details to process");
+        sc = new SaveContext();
+        for (Detail detail: details) {
+            sc.saving(utilBean.setDetailData(detail));
+        }
+        dataManager.save(sc);
+        List<Capacity> capacities = dataManager.load(Capacity.class).all().fetchPlan("capacities").list();
+        log.info(capacities.size() + " capacities to process");
+        sc = new SaveContext();
+        for(Capacity capacity: capacities) {
+            sc.saving(utilBean.setCapacityData(capacity));
+        }
+        dataManager.save(sc);
+        List<Progress> progresses = dataManager.load(Progress.class).all().fetchPlan("progAll").list();
+        log.info(progresses.size() + " progress items to process");
+        sc = new SaveContext();
+        for(Progress progress: progresses) {
+            sc.saving(utilBean.setProgressData(progress));
+        }
+        dataManager.save(sc);
+        notifications.create().withDescription("Done").show();
+
+    }
+
 }

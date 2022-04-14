@@ -347,17 +347,17 @@ public class BudgetDashboard extends Screen {
                     Capacity capacity = capacities.stream().filter(e -> team.equals(e.getTeam())).findFirst().orElse(null);
                     if (capacity != null) {
                         capa = capa + capacity.getMdY();
-                        ceur = ceur + (capacity.getMdQ1()*capacity.getRateQ1() + capacity.getMdQ2()*capacity.getRateQ2() + capacity.getMdQ3()*capacity.getRateQ3() + capacity.getMdQ4()*capacity.getRateQ4()) / 1000;
+                        ceur = ceur + capacity.getMdY() * capacity.getRateY();
                         // get the cost
                         List<Detail> subFocus = focus.stream().filter(e -> team.equals(e.getTeam())).collect(Collectors.toList());
                         if (subFocus != null) {
                             bau = bau + subFocus.stream().filter(e -> "BAU".equals(e.getType()) && e.getIncluded()).map(Detail::getMdY).reduce(0.0, Double::sum)*(capacity==null ? 0.0 : capacity.getRateY())/1000;
                             ump = ump + subFocus.stream().filter(e -> "UMP".equals(e.getType()) && e.getIncluded()).map(Detail::getMdY).reduce(0.0, Double::sum)*(capacity==null ? 0.0 : capacity.getRateY())/1000;
                             run = run + subFocus.stream().filter(e -> "RUN".equals(e.getType()) && e.getIncluded()).map(Detail::getMdY).reduce(0.0, Double::sum)*(capacity==null ? 0.0 : capacity.getRateY())/1000;
-                            c1 = c1 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ1).reduce(0.0, Double::sum) * capacity.getRateQ1() / 1000;
-                            c2 = c2 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ2).reduce(0.0, Double::sum) * capacity.getRateQ2() / 1000;
-                            c3 = c3 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ3).reduce(0.0, Double::sum) * capacity.getRateQ3() / 1000;
-                            c4 = c4 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ4).reduce(0.0, Double::sum) * capacity.getRateQ4() / 1000;
+                            c1 = c1 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ1).reduce(0.0, Double::sum) * capacity.getRateY() / 1000;
+                            c2 = c2 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ2).reduce(0.0, Double::sum) * capacity.getRateY() / 1000;
+                            c3 = c3 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ3).reduce(0.0, Double::sum) * capacity.getRateY() / 1000;
+                            c4 = c4 + subFocus.stream().filter(Detail::getIncluded).map(Detail::getMdQ4).reduce(0.0, Double::sum) * capacity.getRateY() / 1000;
 
                         }
                     } else {

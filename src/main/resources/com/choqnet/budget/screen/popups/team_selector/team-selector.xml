@@ -3,7 +3,9 @@
         caption="msg://teamSelector.caption">
     <data>
         <collection id="teamsDc" class="com.choqnet.budget.entity.Team">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="setup" fetchPlan="_base"/>
+            </fetchPlan>
             <loader id="teamsDl">
                 <query>
                     <![CDATA[select e from Team e where e is null]]>

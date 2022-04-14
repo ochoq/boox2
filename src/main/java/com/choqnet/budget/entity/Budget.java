@@ -54,7 +54,7 @@ public class Budget {
     private Boolean preferred = false;
 
     public Boolean getPreferred() {
-        return preferred==null ? false : preferred;
+        return preferred != null && preferred;
     }
 
     public void setPreferred(Boolean preferred) {

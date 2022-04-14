@@ -64,6 +64,9 @@ public class Detail {
     @Column(name = "MD_Q4")
     private Double mdQ4 = 0.0;
 
+    @Column(name = "MD_NY")
+    private Double mdNY;
+
     @JoinColumn(name = "ONE_PAGER_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private OnePager onePager;
@@ -107,13 +110,79 @@ public class Detail {
     @Column(name = "REMAINING")
     private Double remaining = 0.0;
 
+    @NumberFormat(pattern = "#,##0.0")
+    @Column(name = "BUDGET_COST")
+    private Double budgetCost;
+
+    @Column(name = "BUDGET_COST_Q1")
+    private Double budgetCostQ1;
+
+    @Column(name = "BUDGET_COST_Q2")
+    private Double budgetCostQ2;
+
+    @Column(name = "BUDGET_COST_Q3")
+    private Double budgetCostQ3;
+
+    @Column(name = "BUDGET_COST_Q4")
+    private Double budgetCostQ4;
+
+    public Double getMdNY() {
+        return mdNY==null ? 0.0 : mdNY;
+    }
+
+    public void setMdNY(Double mdNY) {
+        this.mdNY = mdNY;
+    }
+
+    public Double getBudgetCostQ4() {
+        return budgetCostQ4==null ? 0.0 : budgetCostQ4;
+    }
+
+    public void setBudgetCostQ4(Double budgetCostQ4) {
+        this.budgetCostQ4 = budgetCostQ4;
+    }
+
+    public Double getBudgetCostQ3() {
+        return budgetCostQ3==null ? 0.0 : budgetCostQ3;
+    }
+
+    public void setBudgetCostQ3(Double budgetCostQ3) {
+        this.budgetCostQ3 = budgetCostQ3;
+    }
+
+    public Double getBudgetCostQ2() {
+        return budgetCostQ2==null ? 0.0 : budgetCostQ2;
+    }
+
+    public void setBudgetCostQ2(Double budgetCostQ2) {
+        this.budgetCostQ2 = budgetCostQ2;
+    }
+
+    public Double getBudgetCostQ1() {
+        return budgetCostQ1==null ? 0.0 : budgetCostQ1;
+    }
+
+    public void setBudgetCostQ1(Double budgetCostQ1) {
+        this.budgetCostQ1 = budgetCostQ1;
+    }
+
+    // todo : better implementation of cost for details
+
+    public Double getBudgetCost() {
+        return budgetCost==null ? 0.0 : budgetCost;
+    }
+
+    public void setBudgetCost(Double budgetCost) {
+        this.budgetCost = budgetCost;
+    }
+
+
     public Double getRemaining() {
-        Budget attachedBudget = progress.getBudget();
         if (budget==null || budget.getFrozen()) return 0.0;
-        return (budget.getCloseQ1() ? 0.0 : mdQ1)  +
-               (budget.getCloseQ2() ? 0.0 : mdQ2)  +
-               (budget.getCloseQ3() ? 0.0 : mdQ3)  +
-               (budget.getCloseQ4() ? 0.0 : mdQ4) ;
+        return (budget.getCloseQ1() ? 0.0 : (mdQ1==null ? 0.0 : mdQ1))  +
+               (budget.getCloseQ2() ? 0.0 : (mdQ2==null ? 0.0 : mdQ2))  +
+               (budget.getCloseQ3() ? 0.0 : (mdQ3==null ? 0.0 : mdQ3))  +
+               (budget.getCloseQ4() ? 0.0 : (mdQ4==null ? 0.0 : mdQ4)) ;
     }
 
     public Progress getProgress() {

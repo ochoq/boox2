@@ -8,6 +8,8 @@
                 <property name="team" fetchPlan="_instance_name">
                     <property name="selectable"/>
                 </property>
+                <property name="iprb"/>
+                <property name="budget" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="detailsDl">
                 <query>
@@ -109,7 +111,8 @@
                   spacing="true"
                   expand="detailsTable"
                   id="dataScreen">
-                <button id="btnChangeIPRB" caption="Change IPRB" icon="font-icon:EXCHANGE"/>
+                <button id="btnChangeIPRB" caption="Change IPRB"
+                        icon="font-icon:EXCHANGE" visible="true"/>
                 <dataGrid id="detailsTable"
                           width="100%"
                           selectionMode="MULTI"
@@ -127,6 +130,7 @@
                         <column id="mdQ2" property="mdQ2"/>
                         <column id="mdQ3" property="mdQ3"/>
                         <column id="mdQ4" property="mdQ4"/>
+                        <column id="mdNY" property="mdNY"/>
                         <column id="priority" property="priority"/>
 
                     </columns>

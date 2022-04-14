@@ -139,14 +139,8 @@ public class UploadCapacities extends Screen {
             if (targetTeam.isPresent()) {
                 targetCapacity = capacities.stream().filter(e -> targetTeam.get().equals(e.getTeam())).findFirst().orElse(dataManager.create(Capacity.class));
                 targetCapacity.setTeam(targetTeam.get());
-                targetCapacity.setNbWorkingDays((int) getDouble(readCell(row.getCell(3))));
                 Double rate = getDouble(readCell(row.getCell(5)));
-                targetCapacity.setRateY(rate);
                 targetCapacity.setBudget(budget);
-                targetCapacity.setFteQ1(getDouble(readCell(row.getCell(6))));
-                targetCapacity.setFteQ2(getDouble(readCell(row.getCell(7))));
-                targetCapacity.setFteQ3(getDouble(readCell(row.getCell(8))));
-                targetCapacity.setFteQ4(getDouble(readCell(row.getCell(9))));
                 targetCapacity.setMdQ1(getDouble(readCell(row.getCell(10))));
                 targetCapacity.setMdQ2(getDouble(readCell(row.getCell(11))));
                 targetCapacity.setMdQ3(getDouble(readCell(row.getCell(12))));

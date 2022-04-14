@@ -54,7 +54,7 @@ public class Capacity {
     }
 
     public Integer getNbWorkingDays() {
-        return nbWorkingDays;
+       return  nbWorkingDays;
     }
 
     public void setNbWorkingDays(Integer nbWorkingDays) {
@@ -87,36 +87,32 @@ public class Capacity {
     @Column(name = "FTE_Q4")
     private Double fteQ4 = 0.0;
 
+    public void setFteQ4(Double fte) {
+        this.fteQ4 = fte;
+    }
     public Double getFteQ4() {
         return fteQ4;
     }
 
-    public void setFteQ4(Double fteQ4) {
-        this.fteQ4 = fteQ4;
+    public void setFteQ3(Double fte) {
+        this.fteQ3 = fte;
     }
-
     public Double getFteQ3() {
         return fteQ3;
     }
 
-    public void setFteQ3(Double fteQ3) {
-        this.fteQ3 = fteQ3;
+    public void setFteQ2(Double fte) {
+        this.fteQ2 = fte;
     }
-
     public Double getFteQ2() {
-        return fteQ2;
+       return fteQ2;
     }
 
-    public void setFteQ2(Double fteQ2) {
-        this.fteQ2 = fteQ2;
+    public void setFteQ1(Double fte) {
+        this.fteQ1 = fte;
     }
-
     public Double getFteQ1() {
         return fteQ1;
-    }
-
-    public void setFteQ1(Double fteQ1) {
-        this.fteQ1 = fteQ1;
     }
 
     // *** RATES DATA
@@ -125,87 +121,32 @@ public class Capacity {
     @Column(name = "RATE_Y")
     private Double rateY;
 
-    @NumberFormat(pattern = "0")
-    @Column(name = "RATE_Q1")
-    private Double rateQ1 = 0.0;
-
-    @NumberFormat(pattern = "0")
-    @Column(name = "RATE_Q2")
-    private Double rateQ2 = 0.0;
-
-    @NumberFormat(pattern = "0")
-    @Column(name = "RATE_Q3")
-    private Double rateQ3 = 0.0;
-
-    @NumberFormat(pattern = "0")
-    @Column(name = "RATE_Q4")
-    private Double rateQ4 = 0.0;
-
+    public void setRateY(Double rate) {
+        this.rateY = rate;
+    }
     public Double getRateY() {
-        return rateY == null ? 0.0 : rateY;
-    }
-
-    public void setRateY(Double rateY) {
-        this.rateY = rateY;
-        // currently, the captured rateY applies for each quarter
-        // however, calculations will be done with rateQx for each quarter
-        this.rateQ1 = rateY;
-        this.rateQ2 = rateY;
-        this.rateQ3 = rateY;
-        this.rateQ4 = rateY;
-    }
-
-    public Double getRateQ4() {
-        return rateQ4 == null ? 0.0 : rateQ4;
-    }
-
-    public void setRateQ4(Double rateQ4) {
-        this.rateQ4 = rateQ4;
-    }
-
-    public Double getRateQ3() {
-        return rateQ3 == null ? 0.0 : rateQ3;
-    }
-
-    public void setRateQ3(Double rateQ3) {
-        this.rateQ3 = rateQ3;
-    }
-
-    public Double getRateQ2() {
-        return rateQ2 == null ? 0.0 : rateQ2;
-    }
-
-    public void setRateQ2(Double rateQ2) {
-        this.rateQ2 = rateQ2;
-    }
-
-    public Double getRateQ1() {
-        return rateQ1 == null ? 0.0 : rateQ1;
-    }
-
-    public void setRateQ1(Double rateQ1) {
-        this.rateQ1 = rateQ1;
+        return rateY==null ? 0.0 : rateY;
     }
 
     // *** MANDAYS DATA
 
-    @NumberFormat(pattern = "#,##0")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q1")
     private Double mdQ1;
 
-    @NumberFormat(pattern = "#,##0")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q2")
     private Double mdQ2;
 
-    @NumberFormat(pattern = "#,##0")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q3")
     private Double mdQ3;
 
-    @NumberFormat(pattern = "#,##0")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @Column(name = "MD_Q4")
     private Double mdQ4;
 
-    @NumberFormat(pattern = "#,##0")
+    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
     @JmixProperty
     public Double getMdY() {
         return getMdQ1() + getMdQ2() + getMdQ3() + getMdQ4();

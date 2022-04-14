@@ -83,18 +83,13 @@ public class CapacityScreen extends Screen {
                     return "ce2r";
                 });
         for (int i =1; i < 5; i++) {
+            int finalI = i;
             capacitiesTable.getColumn("mdQ" + i)
                     .setStyleProvider(capacity -> {
-                        return "ce1r";
+                        return budget.getCloseQx(finalI) ? "cror" : "ce1r";
                     });
             capacitiesTable.getColumn("fteQ" + i)
-                    .setStyleProvider(ce1r -> {
-                        return "rightCell";
-                    });
-            capacitiesTable.getColumn("fteQ" + i)
-                    .setStyleProvider(capacity -> {
-                        return "ce1r";
-                    });
+                    .setStyleProvider(capacity ->  "cror");
         }
         capacitiesTable.getHeaderRow(0).getCell("nbWorkingDays").setStyleName("h1r");
         capacitiesTable.getHeaderRow(0).getCell("fteQ1").setStyleName("h1r");
@@ -114,7 +109,7 @@ public class CapacityScreen extends Screen {
     public void onCmbBudgetValueChange(HasValue.ValueChangeEvent event) {
         // loads the capacity records when the budget changes
         if (cmbBudget.getValue()!=null) {
-            capacitiesDl.setQuery("select e from Capacity e where e.budget = :budget order by e.team.fullName asc");
+            capacitiesDl.setQuery("select e from Capacity e where e.budget = :budget and e.team.enabled = true order by e.team.fullName asc");
             capacitiesDl.setParameter("budget", cmbBudget.getValue());
             capacitiesDl.load();
 
@@ -122,14 +117,11 @@ public class CapacityScreen extends Screen {
             budget = cmbBudget.getValue();
             for (int i=1; i<5; i++) {
                 int finalI = i;
-                capacitiesTable.getColumn("fteQ"+i).setEditable(!budget.getCloseQx(i));
-                capacitiesTable.getColumn("fteQ"+i).setCaption(
-                        capacitiesTable.getColumn("fteQ"+i).getCaption() +
-                                (budget.getCloseQx(i) ? "(x)" : "")
-                );
-                capacitiesTable.getColumn("fteQ"+i).setStyleProvider(e -> {
-                    return budget.getCloseQx(finalI) ? "readonly" : "";
-                });
+                capacitiesTable.getColumn("mdQ" + i).setEditable(!budget.getCloseQx(i));
+                capacitiesTable.getColumn("fteQ"+i).setCaption("FTE Q" +i + (budget.getCloseQx(i) ? "(x)" : ""));
+                capacitiesTable.getColumn("mdQ"+i).setCaption("MD Q" +i + (budget.getCloseQx(i) ? "(x)" : ""));
+                capacitiesTable.getColumn("fteQ"+i).setStyleProvider(e -> { return budget.getCloseQx(finalI) ? "cror" : "";});
+                capacitiesTable.getColumn("mdQ"+i).setStyleProvider(e -> { return budget.getCloseQx(finalI) ? "cror" : "";});
             }
         }
         capacitiesTable.sort("team", DataGrid.SortDirection.ASCENDING);
@@ -138,7 +130,7 @@ public class CapacityScreen extends Screen {
     @Subscribe("capacitiesTable")
     public void onCapacitiesTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Capacity> event) {
         dataManager.save(event.getItem());
-        //capacitiesDl.load();
+        capacitiesDl.load();
     }
 
     @Subscribe("btnAdd")
@@ -152,7 +144,7 @@ public class CapacityScreen extends Screen {
                 .list();
         List<Team> usedTeams = dataManager
                 .load(Capacity.class)
-                .query("select e from Capacity e where e.budget = :budget")
+                .query("select e from Capacity e where e.budget = :budget and e.team.enabled = true")
                 .parameter("budget",cmbBudget.getValue())
                 .list()
                 .stream()

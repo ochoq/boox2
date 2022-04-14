@@ -64,11 +64,10 @@
                 <column id="initiative" property="initiative"/>
                 <column id="category" property="category"/>
                 <column id="initStatus" property="initStatus"/>
-
+                <column id="originIPRB" property="originIPRB"/>
                 <column id="financeType" property="financeType"/>
                 <column id="sapID" property="sapID"/>
                 <column id="account" property="account"/>
-
                 <column id="iprbRef" property="iprbRef"/>
                 <column id="iprb.name" property="iprb.name"/>
                 <column id="iprb.legalEntity" property="iprb.legalEntity"/>
@@ -79,12 +78,10 @@
                 <column id="iprb.owner" property="iprb.owner"/>
                 <column id="iprb.firstMonthOff" property="iprb.firstMonthOff"/>
                 <column id="iprb.newProductIndicator" property="iprb.newProductIndicator"/>
-
-
                 <column id="team.tLine" property="team.tLine"/>
                 <column id="team.tDiv" property="team.tDiv"/>
-
                 <column id="effort" property="effort"/>
+                <column id="budgetCost" property="budgetCost" editable="false"/>
 
 
 

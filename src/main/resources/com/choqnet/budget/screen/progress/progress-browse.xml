@@ -1,0 +1,121 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://progressBrowse.caption"
+        focusComponent="table">
+    <data>
+        <collection id="progressesDc"
+                    class="com.choqnet.budget.entity.Progress">
+            <fetchPlan extends="_base">
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="budget" fetchPlan="_base"/>
+                <property name="details" fetchPlan="_base"/>
+                <property name="expenses" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="progressesDl">
+                <query>
+                    <![CDATA[select e from Progress e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="progressDc"
+                  class="com.choqnet.budget.entity.Progress">
+            <fetchPlan extends="_base">
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="budget" fetchPlan="_base"/>
+                <property name="details" fetchPlan="_base"/>
+                <property name="expenses" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="save" icon="OK" caption="msg:///actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="CANCEL" caption="msg:///actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <filter id="filter" dataLoader="progressesDl">
+                    <properties include=".*"/>
+                </filter>
+                <dataGrid id="table"
+                            width="100%"
+                            dataContainer="progressesDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="iprb" property="iprb"/>
+                        <column id="budget" property="budget"/>
+                        <column id="expectedLanding" property="expectedLanding" />
+                        <column id="actualQ1" property="actualQ1"/>
+                        <column id="actualQ2" property="actualQ2"/>
+                        <column id="actualQ3" property="actualQ3"/>
+                        <column id="actualQ4" property="actualQ4"/>
+                        <column id="demandNY" property="demandNY"/>
+                        <column id="demandQ1" property="demandQ1"/>
+                        <column id="demandQ2" property="demandQ2"/>
+                        <column id="demandQ3" property="demandQ3"/>
+                        <column id="demandQ4" property="demandQ4"/>
+                        <column id="expense" property="expense"/>
+                        <column id="budgetCost" property="budgetCost"/>
+
+                    </columns>
+                    <simplePagination/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </dataGrid>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="progressDc">
+                        <column width="350px">
+                            <entityPicker id="iprbField" property="iprb">
+                                <actions>
+                                    <action id="entityLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityPicker>
+                            <entityPicker id="budgetField" property="budget">
+                                <actions>
+                                    <action id="entityLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityPicker>
+                            <textField id="expectedLandingField" property="expectedLanding"/>
+                            <textField id="actualQ1Field" property="actualQ1"/>
+                            <textField id="actualQ2Field" property="actualQ2"/>
+                            <textField id="actualQ3Field" property="actualQ3"/>
+                            <textField id="actualQ4Field" property="actualQ4"/>
+                            <textField id="demandQ1Field" property="demandQ1"/>
+                            <textField id="demandQ2Field" property="demandQ2"/>
+                            <textField id="demandQ3Field" property="demandQ3"/>
+                            <textField id="demandQ4Field" property="demandQ4"/>
+                            <textField id="expenseField" property="expense"/>
+                            <textField id="budgetCostField" property="budgetCost"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

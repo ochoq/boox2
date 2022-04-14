@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "TEAM")
+@Table(name = "TEAM", indexes = {
+        @Index(name = "IDX_TEAM_SETUP_ID", columnList = "SETUP_ID")
+})
 @Entity
 public class Team {
     @JmixGeneratedValue
@@ -77,6 +79,19 @@ public class Team {
 
     @Column(name = "IN_BUDGET")
     private Boolean inBudget = false;
+
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @JoinColumn(name = "SETUP_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Setup setup;
+
+    public Setup getSetup() {
+        return setup;
+    }
+
+    public void setSetup(Setup setup) {
+        this.setup = setup;
+    }
 
     public Boolean getInBudget() {
         return inBudget==null ? false : inBudget;

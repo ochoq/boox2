@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://setupManagement.caption">
+    <data>
+        <collection id="setupsDc" class="com.choqnet.budget.entity.Setup">
+            <fetchPlan extends="_base"/>
+            <loader id="setupsDl">
+                <query>
+                    <![CDATA[select e from Setup e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="setupsTable">
+        <label stylename="h1" value="Teams Setup Management"/>
+        <dataGrid id="setupsTable"
+                  editorEnabled="true"
+                  editorBuffered="true"
+                  width="100%" dataContainer="setupsDc">
+            <actions>
+                <action id="bulkEdit" type="bulkEdit"/>
+                <action id="create" type="create"/>
+                <action id="remove" type="remove"/>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="setupsTableBulkEditBtn" action="setupsTable.bulkEdit"/>
+                <button id="setupsTableCreateBtn" action="setupsTable.create"/>
+                <button id="setupsTableRemoveBtn" action="setupsTable.remove"/>
+                <button id="setupsTableExcelExportBtn" action="setupsTable.excelExport"/>
+            </buttonsPanel>
+            <columns>
+                <column id="name" property="name"/>
+                <column id="wd2022" property="wd2022"/>
+                <column id="wd2023" property="wd2023"/>
+                <column id="r2022" property="r2022"/>
+                <column id="r2023" property="r2023"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

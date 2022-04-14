@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://worklogPmo.caption">
+    <data>
+        <collection id="worklogsDc" class="com.choqnet.budget.entity.Worklog">
+            <fetchPlan extends="_base">
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="team" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="worklogsDl">
+                <query>
+                    <![CDATA[select e from Worklog e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="worklogsTable">
+        <hbox spacing="true" margin="true" stylename="card" width="100%">
+            <label stylename="h1" value="Tempo Worklogs" align="MIDDLE_LEFT"/>
+            <comboBox id="cmbMonths" caption="Pick a Month" align="MIDDLE_RIGHT"/>
+        </hbox>
+        <filter id="filter" columnsCount="3" dataLoader="worklogsDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="worklogsTable"
+                  width="100%"
+                  dataContainer="worklogsDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="worklogsTableExcelExportBtn" action="worklogsTable.excelExport"/>
+            </buttonsPanel>
+            <columns>
+                <column id="date" property="date"/>
+                <column id="finMonth" property="finMonth"/>
+                <column id="key" property="key"/>
+                <column id="userRef" property="userRef"/>
+                <column id="userName" property="userName"/>
+                <column id="resType" property="resType"/>
+
+                <column id="teamRef" property="teamRef"/>
+                <column id="team.fullName" property="team.fullName"/>
+                <column id="team.inBudget" property="team.inBudget"/>
+                <column id="team.simplePlatform" property="team.simplePlatform"/>
+                <column id="team.tDomain" property="team.tDomain"/>
+
+                <column id="initRef" property="initRef"/>
+                <column id="initiative" property="initiative"/>
+                <column id="category" property="category"/>
+                <column id="initStatus" property="initStatus"/>
+                <column id="originIPRB" property="originIPRB"/>
+
+                <column id="financeType" property="financeType"/>
+                <column id="sapID" property="sapID"/>
+                <column id="account" property="account"/>
+
+                <column id="iprbRef" property="iprbRef"/>
+                <column id="iprb.name" property="iprb.name"/>
+                <column id="iprb.legalEntity" property="iprb.legalEntity"/>
+                <column id="iprb.strategicProgram" property="iprb.strategicProgram"/>
+                <column id="iprb.activityType" property="iprb.activityType"/>
+                <column id="iprb.groupOffering" property="iprb.groupOffering"/>
+                <column id="iprb.portfolioClassification" property="iprb.portfolioClassification"/>
+                <column id="iprb.owner" property="iprb.owner"/>
+                <column id="iprb.firstMonthOff" property="iprb.firstMonthOff"/>
+                <column id="iprb.newProductIndicator" property="iprb.newProductIndicator"/>
+
+
+                <column id="team.tLine" property="team.tLine"/>
+                <column id="team.tDiv" property="team.tDiv"/>
+
+                <column id="effort" property="effort"/>
+                <column id="budgetCost" property="budgetCost" editable="false"/>
+
+
+
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

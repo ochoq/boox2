@@ -1,5 +1,6 @@
 package com.choqnet.budget.screen.popups.progressedit;
 
+import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.TShirt;
 import io.jmix.core.DataManager;
@@ -56,6 +57,8 @@ public class ProgressEdit extends Screen {
     private DataGrid<Expense> expensesTable;
     @Autowired
     private CollectionContainer<Expense> expensesDc;
+    @Autowired
+    private UtilBean utilBean;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -100,8 +103,10 @@ public class ProgressEdit extends Screen {
         detailsTable.getColumn("tShirt").setVisible(!isSomethingLocked);
         detailsTable.getColumn("tShirt").setStyleProvider(e ->  "ce1r");
         detailsTable.getColumn("mdY").setVisible(!isSomethingLocked);
-        detailsTable.getColumn("remaining").setVisible(isSomethingLocked);
         detailsTable.getColumn("mdY").setStyleProvider(e -> "crotr");
+        detailsTable.getColumn("mdNY").setVisible(true);
+        detailsTable.getColumn("mdNY").setStyleProvider(e -> "ce1r");
+        detailsTable.getColumn("remaining").setVisible(isSomethingLocked);
         detailsTable.getColumn("remaining").setStyleProvider(e -> "crotr");
     }
 
@@ -218,6 +223,7 @@ public class ProgressEdit extends Screen {
         }
         dets.add(detail);
         progress.setDetails(dets);
+        progress = utilBean.setProgressData(progress);
         dataManager.save(progress);
         detailsDl.load();
 
@@ -241,6 +247,7 @@ public class ProgressEdit extends Screen {
         dets.addAll(progress.getDetails());
         dets.add(detail);
         progress.setDetails(dets);
+        progress = utilBean.setProgressData(progress);
         progress = dataManager.save(progress);
     }
 
@@ -255,6 +262,7 @@ public class ProgressEdit extends Screen {
         }
         // inject the new value
         progress.setDetails(dets);
+        progress = utilBean.setProgressData(progress);
         dataManager.save(progress);
         dataManager.remove(detailsTable.getSelected());
         detailsDl.load();
@@ -266,7 +274,6 @@ public class ProgressEdit extends Screen {
     }
 
     @Subscribe("expensesTable")
-
     public void onExpensesTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Expense> event) {
         Expense expense = event.getItem();
         dataManager.save(expense);
@@ -279,6 +286,7 @@ public class ProgressEdit extends Screen {
         }
         exps.add(expense);
         progress.setExpenses(exps);
+        progress = utilBean.setProgressData(progress);
         dataManager.save(progress);
         expensesDl.load();
 
@@ -301,6 +309,7 @@ public class ProgressEdit extends Screen {
         exps.addAll(progress.getExpenses());
         exps.add(expense);
         progress.setExpenses(exps);
+        progress = utilBean.setProgressData(progress);
         progress = dataManager.save(progress);
     }
 
@@ -315,6 +324,7 @@ public class ProgressEdit extends Screen {
         }
         // inject the new value
         progress.setExpenses(exps);
+        progress = utilBean.setProgressData(progress);
         dataManager.save(progress);
         dataManager.remove(expensesTable.getSelected());
         expensesDl.load();
@@ -324,7 +334,6 @@ public class ProgressEdit extends Screen {
     private void printProgress(Progress prog)  {
         for (Detail detail: prog.getDetails()) {
             log.info(detail.getTeam() + " " + detail.getMdQ1() + " - " + detail.getMdQ2() + " - " + detail.getMdQ3() + " - " + detail.getMdQ4() + " - ");
-
         }
         log.info("");
 

@@ -6,6 +6,7 @@
             <item screen="Worklogs" caption="msg://com.choqnet.budget/menu_config.Worklogs"/>
             <item screen="WorklogSummary"
                   caption="msg://com.choqnet.budget.screen.worklog_summary/worklogSummary.caption"/>
+            <item screen="WorklogPmo" caption="msg://com.choqnet.budget.screen.worklog_pmo/worklogPmo.caption"/>
         </menu>
         <item screen="BudgetScreen" caption="msg://com.choqnet.budget.screen.budget/budgetScreen.caption"/>
         <item screen="BudgetDashboard"
@@ -34,6 +35,10 @@
                   caption="msg://com.choqnet.budget.screen.detail.detailsystem/detailSystem.caption"/>
             <item screen="ExpenseSystem"
                   caption="msg://com.choqnet.budget.screen.expense.expensesystem/expenseSystem.caption"/>
+            <item screen="SetupManagement"
+                  caption="msg://com.choqnet.budget.screen.setup_management/setupManagement.caption"/>
+            <item screen="Detail.browse2" caption="msg://com.choqnet.budget.screen.detail/detailBrowse2.menu"/>
+            <item screen="Progress.browse" caption="msg://com.choqnet.budget.screen.progress/progressBrowse.menu"/>
         </menu>
     </menu>
 

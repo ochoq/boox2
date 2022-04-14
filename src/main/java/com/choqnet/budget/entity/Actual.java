@@ -2,6 +2,7 @@ package com.choqnet.budget.entity;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.JmixEntity;
+import io.jmix.core.metamodel.annotation.NumberFormat;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -56,8 +57,30 @@ public class Actual {
     @Column(name = "COST_CENTER")
     private String costCenter;
 
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
     @Column(name = "EFFORT")
     private Double effort;
+
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
+    @Column(name = "BUDGET_COST")
+    private Double budgetCost;
+
+    public Double getBudgetCost() {
+        if (team == null || team.getSetup()==null) {
+            return 0.0;
+        } else {
+            return team.getSetup().getRate(finMonth) * effort / 1000;
+        }
+        //return budgetCost==null ? 0.0 : budgetCost;
+    }
+
+    public void setBudgetCost(Double budgetCost) {
+        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRate(finMonth) * effort / 1000;
+    }
+    // version w/o value
+    public void setBudgetCost() {
+        setBudgetCost(0.0);
+    }
 
     public Team getTeam() {
         return team;
@@ -65,6 +88,7 @@ public class Actual {
 
     public void setTeam(Team team) {
         this.team = team;
+        setBudgetCost();
     }
 
     public String getJiraProjectPlatform() {
@@ -153,14 +177,17 @@ public class Actual {
 
     public void setEffort(Double effort) {
         this.effort = effort;
+        setBudgetCost();
     }
 
     public String getFinMonth() {
         return finMonth;
+
     }
 
     public void setFinMonth(String finMonth) {
         this.finMonth = finMonth;
+        setBudgetCost();
     }
 
     public UUID getId() {

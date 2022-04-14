@@ -1,0 +1,156 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://detailBrowse2.caption"
+        focusComponent="table">
+    <data>
+        <collection id="detailsDc"
+                    class="com.choqnet.budget.entity.Detail">
+            <fetchPlan extends="_base">
+                <property name="budget" fetchPlan="_base"/>
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="progress" fetchPlan="_base">
+                    <property name="iprb" fetchPlan="_base"/>
+                </property>
+            </fetchPlan>
+            <loader id="detailsDl">
+                <query>
+                    <![CDATA[select e from Detail e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="detailDc"
+                  class="com.choqnet.budget.entity.Detail">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="budget"/>
+                <property fetchPlan="_base" name="iprb"/>
+                <property fetchPlan="_base" name="progress">
+                    <property fetchPlan="_base" name="iprb"/>
+                </property>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="save" icon="OK" caption="msg:///actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="CANCEL" caption="msg:///actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <filter id="filter" dataLoader="detailsDl">
+                    <properties include=".*"/>
+                </filter>
+                <groupTable id="table"
+                            width="100%"
+                            dataContainer="detailsDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="team"/>
+                        <column id="topic"/>
+                        <column id="roadmap"/>
+                        <column id="detail"/>
+                        <column id="tShirt"/>
+
+                        <column id="mdY"/>
+                        <column id="mdQ1"/>
+                        <column id="mdQ2"/>
+                        <column id="mdQ3"/>
+                        <column id="mdQ4"/>
+                        <column id="mdNY"/>
+                        <column id="category"/>
+                        <column id="priority"/>
+                        <column id="jira"/>
+                        <column id="simpleDomain"/>
+                        <column id="simplePlatform"/>
+                        <column id="included"/>
+                        <column id="type"/>
+                        <column id="budget"/>
+                        <column id="iprb"/>
+                        <column id="progress"/>
+                        <column id="remaining"/>
+                        <column id="budgetCost"/>
+                        <column id="budgetCostQ1"/>
+                        <column id="budgetCostQ2"/>
+                        <column id="budgetCostQ3"/>
+                        <column id="budgetCostQ4"/>
+                    </columns>
+                    <simplePagination/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="detailDc">
+                        <column width="350px">
+                            <entityPicker id="teamField" property="team">
+                                <actions>
+                                    <action id="entityLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityPicker>
+                            <textField id="topicField" property="topic"/>
+                            <textField id="roadmapField" property="roadmap"/>
+                            <textField id="detailField" property="detail"/>
+                            <comboBox id="tShirtField" property="tShirt"/>
+                            <textField id="budgeCostField" datatype="double" property="budgetCost" editable="false"/>
+                            <textField id="mdYField" property="mdY"/>
+                            <textField id="mdQ1Field" property="mdQ1"/>
+                            <textField id="mdQ2Field" property="mdQ2"/>
+                            <textField id="mdQ3Field" property="mdQ3"/>
+                            <textField id="mdQ4Field" property="mdQ4"/>
+                            <comboBox id="categoryField" property="category"/>
+                            <comboBox id="priorityField" property="priority"/>
+                            <textField id="jiraField" property="jira"/>
+                            <textField id="simpleDomainField" property="simpleDomain"/>
+                            <textField id="simplePlatformField" property="simplePlatform"/>
+                            <checkBox id="includedField" property="included"/>
+                            <textField id="typeField" property="type"/>
+                            <entityPicker id="budgetField" property="budget">
+                                <actions>
+                                    <action id="entityLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityPicker>
+                            <entityPicker id="iprbField" property="iprb">
+                                <actions>
+                                    <action id="entityLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityPicker>
+                            <entityPicker id="progressField" property="progress">
+                                <actions>
+                                    <action id="entityLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityPicker>
+                            <textField id="remainingField" property="remaining"/>
+
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

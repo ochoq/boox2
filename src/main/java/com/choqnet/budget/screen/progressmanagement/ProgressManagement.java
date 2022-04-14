@@ -9,8 +9,10 @@ import io.jmix.core.DataManager;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.component.*;
+import io.jmix.ui.model.CollectionContainer;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 
@@ -25,14 +27,13 @@ import java.util.stream.Collectors;
 @UiDescriptor("progress-management.xml")
 public class ProgressManagement extends Screen {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ProgressManagement.class);
     @Autowired
     private DataManager dataManager;
     @Autowired
     private ComboBox<Budget> cmbBudget;
 
     private Budget budget;
-    @Autowired
-    private CollectionLoader<Progress> progressesDl;
     @Autowired
     private DataGrid<Progress> progTable;
     @Autowired
@@ -43,6 +44,10 @@ public class ProgressManagement extends Screen {
     private UtilBean utilBean;
     @Autowired
     private Filter filter;
+    @Autowired
+    private CollectionContainer<Progress> progressesDc;
+    @Autowired
+    private CollectionLoader<Progress> progressesDl;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -64,11 +69,13 @@ public class ProgressManagement extends Screen {
 
     @Subscribe("progTable")
     public void onProgTableItemClick(DataGrid.ItemClickEvent<Progress> event) {
+        log.info("progress " + event.getItem().getExpense());
         ProgressEdit pe = screenBuilders.screen(this)
                 .withScreenClass(ProgressEdit.class)
                 .withOpenMode(OpenMode.DIALOG)
                 .withAfterCloseListener(e -> {
-                    progressesDl.load();
+                    //updateProgress(event.getItem());
+                    loadData();
                     progTable.deselectAll();
                 })
                 .build();
@@ -99,6 +106,7 @@ public class ProgressManagement extends Screen {
         progTable.getColumn("demandQ2").setStyleProvider(e -> { return (budget.getFrozen() || budget.getCloseQ2()) ? "cror" : "ce1r";});
         progTable.getColumn("demandQ3").setStyleProvider(e -> { return (budget.getFrozen() || budget.getCloseQ3()) ? "cror" : "ce1r";});
         progTable.getColumn("demandQ4").setStyleProvider(e -> { return (budget.getFrozen() || budget.getCloseQ4()) ? "cror" : "ce1r";});
+        progTable.getColumn("demandNY").setStyleProvider(e -> "ce1r");
         progTable.getColumn("expense").setStyleProvider(e -> { return (budget.getFrozen()) ? "cror" : "ce1r";});
         progTable.getColumn("actualQ1").setStyleProvider(e ->  "cror");
         progTable.getColumn("actualQ2").setStyleProvider(e ->  "cror");
@@ -206,7 +214,7 @@ public class ProgressManagement extends Screen {
                 .withScreenClass(IprbSelector.class)
                 .withOpenMode(OpenMode.DIALOG)
                 .withAfterCloseListener(e -> {
-                    progressesDl.load();
+                    loadData();
                     notifications.create()
                             .withDescription("IPRB(s) added")
                             .show();
@@ -221,8 +229,7 @@ public class ProgressManagement extends Screen {
         for (Progress progress : progTable.getSelected()) {
             utilBean.deleteProgress(progress);
         }
-        progressesDl.load();
-
+        loadData();
     }
 
     // *** communications

@@ -65,9 +65,12 @@ public class CapacityTeamDetails extends Screen {
         detailsTable.getHeaderRow(0).getCell("mdQ2").setStyleName("boldCell");
         detailsTable.getHeaderRow(0).getCell("mdQ3").setStyleName("boldCell");
         detailsTable.getHeaderRow(0).getCell("mdQ4").setStyleName("boldCell");
+        detailsTable.getHeaderRow(0).getCell("mdNY").setStyleName("boldCell");
+
         for (int i = 1; i < 5; i++) {
             detailsTable.getColumn("mdQ" + i).setStyleProvider(e -> "rightCell");
         }
+        detailsTable.getColumn("mdNY").setStyleProvider(e -> "rightCell");
         detailsTable.getColumn("mdY").setStyleProvider(e -> "rightCell");
         // color code on priority
         detailsTable.getColumn("priority")
@@ -87,8 +90,7 @@ public class CapacityTeamDetails extends Screen {
 
     public void setContext(CPTeam item, Budget budget) {
         this.budget = budget;
-        this.
-                team = dataManager.load(Team.class).query("select e from Team e where e=:team")
+        this.team = dataManager.load(Team.class).query("select e from Team e where e=:team")
                 .parameter("team", item.getCapacity().getTeam())
                 .list().get(0);
         if (team == null) {
@@ -111,6 +113,8 @@ public class CapacityTeamDetails extends Screen {
         if (oneQuarterClosed) {
             detailsTable.getColumn("mdY").setEditable(false);
             detailsTable.getColumn("mdY").setStyleProvider(detail -> "readonly");
+            detailsTable.getColumn("mdNY").setEditable(true);
+            detailsTable.getColumn("mdNY").setStyleProvider(detail -> "rightCell");
             detailsTable.getColumn("tShirt").setEditable(false);
             detailsTable.getColumn("tShirt").setStyleProvider(detail -> "readonly");
         }

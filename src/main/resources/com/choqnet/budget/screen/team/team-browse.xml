@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://teamBrowse.caption"
+        focusComponent="teamsTable">
+    <data readOnly="true">
+        <collection id="teamsDc"
+                    class="com.choqnet.budget.entity.Team">
+            <fetchPlan extends="_base"/>
+            <loader id="teamsDl">
+                <query>
+                    <![CDATA[select e from Team e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="teamsTable" spacing="true">
+        <filter id="filter"
+                dataLoader="teamsDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="teamsTable"
+                  width="100%"
+                  dataContainer="teamsDc">
+            <actions>
+            </actions>
+            <columns>
+                <column property="name" id="name"/>
+                <column property="source" id="source"/>
+                <column property="sourceName" id="sourceName"/>
+                <column property="sourceID" id="sourceID"/>
+                <column property="mainGTM" id="mainGTM"/>
+                <column property="icTarget" id="icTarget"/>
+                <column property="enabled" id="enabled"/>
+                <column property="selectable" id="selectable"/>
+                <column property="updated" id="updated"/>
+                <column property="fullName" id="fullName"/>
+                <column property="level" id="level"/>
+                <column property="tLine" id="tLine"/>
+                <column property="tDiv" id="tDiv"/>
+                <column property="tDomain" id="tDomain"/>
+                <column property="simpleDomain" id="simpleDomain"/>
+                <column property="simplePlatform" id="simplePlatform"/>
+                <column property="inBudget" id="inBudget"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+            </buttonsPanel>
+        </dataGrid>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

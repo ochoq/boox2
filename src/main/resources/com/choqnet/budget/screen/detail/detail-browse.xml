@@ -58,6 +58,7 @@
                 <column property="mdQ2" id="mdQ2"/>
                 <column property="mdQ3" id="mdQ3"/>
                 <column property="mdQ4" id="mdQ4"/>
+                <column property="mdNY" id="mdNY"/>
                 <column property="category" id="category"/>
                 <column property="priority" id="priority"/>
                 <column property="jira" id="jira"/>

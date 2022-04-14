@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <addColumn tableName="WORKLOG">
+            <column name="BUDGET_COST" type="DOUBLE"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <dropColumn columnName="rate_q1" tableName="capacity"/>
+
+        <dropColumn columnName="rate_q2" tableName="capacity"/>
+
+        <dropColumn columnName="rate_q3" tableName="capacity"/>
+
+        <dropColumn columnName="rate_q4" tableName="capacity"/>
+    </changeSet>
+</databaseChangeLog>

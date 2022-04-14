@@ -65,6 +65,7 @@
                         <column id="mdQ2" property="mdQ2"/>
                         <column id="mdQ3" property="mdQ3"/>
                         <column id="mdQ4" property="mdQ4"/>
+                        <column id="mdNY" property="mdNY"/>
                         <column id="onePager" property="onePager"/>
                         <column id="category" property="category"/>
                         <column id="priority" property="priority"/>

@@ -34,41 +34,44 @@ public class Progress {
 
     // @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "EXPECTED_LANDING")
     private Double expectedLanding;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "ACTUAL_Q1")
     private Double actualQ1 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "ACTUAL_Q2")
     private Double actualQ2 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "ACTUAL_Q3")
     private Double actualQ3 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "ACTUAL_Q4")
     private Double actualQ4 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "DEMAND_Q1")
     private Double demandQ1 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "DEMAND_Q2")
     private Double demandQ2 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "DEMAND_Q3")
     private Double demandQ3 = 0.0;
 
-    @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0")
     @Column(name = "DEMAND_Q4")
     private Double demandQ4 = 0.0;
+
+    @Column(name = "DEMAND_NY")
+    private Double demandNY;
 
     @OneToMany(mappedBy = "progress")
     private List<Detail> details;
@@ -76,9 +79,76 @@ public class Progress {
     @OneToMany(mappedBy = "progress")
     private List<Expense> expenses;
 
-    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0.0")
     @Column(name = "EXPENSE")
     private Double expense = 0.0;
+
+    @NumberFormat(pattern = "#,##0.00")
+    @Column(name = "BUDGET_COST")
+    private Double budgetCost;
+
+    @Column(name = "BUDGET_COST_Q1")
+    private Double budgetCostQ1;
+
+    @Column(name = "BUDGET_COST_Q2")
+    private Double budgetCostQ2;
+
+    @Column(name = "BUDGET_COST_Q3")
+    private Double budgetCostQ3;
+
+    @Column(name = "BUDGET_COST_Q4")
+    private Double budgetCostQ4;
+
+    public Double getBudgetCostQ4() {
+        return budgetCostQ4 == null ? 0.0 : budgetCostQ4;
+    }
+
+    public void setBudgetCostQ4(Double budgetCostQ4) {
+        this.budgetCostQ4 = budgetCostQ4;
+    }
+
+    public Double getBudgetCostQ3() {
+        return budgetCostQ3 == null ? 0.0 : budgetCostQ3;
+    }
+
+    public void setBudgetCostQ3(Double budgetCostQ3) {
+        this.budgetCostQ3 = budgetCostQ3;
+    }
+
+    public Double getBudgetCostQ2() {
+        return budgetCostQ2 == null ? 0.0 : budgetCostQ2;
+    }
+
+    public void setBudgetCostQ2(Double budgetCostQ2) {
+        this.budgetCostQ2 = budgetCostQ2;
+    }
+
+    public Double getBudgetCostQ1() {
+        return budgetCostQ1 == null ? 0.0 : budgetCostQ1;
+    }
+
+    public void setBudgetCostQ1(Double budgetCostQ1) {
+        this.budgetCostQ1 = budgetCostQ1;
+    }
+
+    public Double getDemandNY() {
+        return demandNY == null ? 0.0 : demandNY;
+    }
+
+    public void setDemandNY(Double demandNY) {
+        this.demandNY = demandNY;
+    }
+
+
+    // todo : better implementation of the costs for Progress
+
+    public Double getBudgetCost() {
+        return budgetCost == null ? 0.0 : budgetCost;
+    }
+
+    public void setBudgetCost(Double budgetCost) {
+        this.budgetCost= budgetCost;
+    }
 
     public Double getExpectedLanding() {
         return (budget==null ? 0.0 : (budget.getCloseQ1() ? actualQ1 : demandQ1) +
@@ -102,11 +172,6 @@ public class Progress {
     }
 
     public void setExpenses(List<Expense> expenses) {
-        if (expenses!=null) {
-            expense = expenses.stream().filter(o -> o.getAccepted()).map(o -> o.getAmountKEuro()).reduce(0.0, Double::sum);
-        } else {
-            expense = 0.0;
-        }
         this.expenses = expenses;
     }
 
@@ -115,29 +180,6 @@ public class Progress {
     }
 
     public void setDetails(List<Detail> details) {
-        if (details!=null && budget!=null) {
-            demandQ1 = details.stream()
-                    .filter(o -> o.getPriority() != null && o.getPriority().isLessOrEqual(budget.getPrioThreshold()))
-                    .map(Detail::getMdQ1)
-                    .reduce(0.0, Double::sum);
-            demandQ2 = details.stream()
-                    .filter(o -> o.getPriority() != null && o.getPriority().isLessOrEqual(budget.getPrioThreshold()))
-                    .map(Detail::getMdQ2)
-                    .reduce(0.0, Double::sum);
-            demandQ3 = details.stream()
-                    .filter(o -> o.getPriority() != null && o.getPriority().isLessOrEqual(budget.getPrioThreshold()))
-                    .map(Detail::getMdQ3)
-                    .reduce(0.0, Double::sum);
-            demandQ4 = details.stream()
-                    .filter(o -> o.getPriority() != null && o.getPriority().isLessOrEqual(budget.getPrioThreshold()))
-                    .map(Detail::getMdQ4)
-                    .reduce(0.0, Double::sum);
-        } else {
-            demandQ1 = 0.0;
-            demandQ2 = 0.0;
-            demandQ3 = 0.0;
-            demandQ4 = 0.0;
-        }
         this.details = details;
     }
 
@@ -232,4 +274,7 @@ public class Progress {
     public void setId(UUID id) {
         this.id = id;
     }
+
+
+
 }

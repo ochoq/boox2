@@ -34,12 +34,13 @@
                       editorEnabled="true"
                       editorBuffered="true"
                       responsive="true"
+                      frozenColumnCount="1"
                       hierarchyProperty="parent"
                       dataContainer="teamsDc">
             <actions>
                 <action id="bulkEdit" type="bulkEdit">
                     <properties>
-                        <property name="includeProperties" value="inBudget,selectable,mainGTM,enabled,source,icTarget"/>
+                        <property name="includeProperties" value="setup,inBudget,selectable,mainGTM,enabled,source,icTarget"/>
                     </properties>
                 </action>
                 <action id="refresh" type="refresh"/>
@@ -67,6 +68,7 @@
                 <column id="sourceID" property="sourceID"/>
                 <column id="mainGTM" property="mainGTM"/>
                 <column id="icTarget" property="icTarget"/>
+                <column id="setup" property="setup"/>
                 <column id="enabled" property="enabled"/>
                 <column id="selectable" property="selectable"/>
                 <column id="inBudget" property="inBudget"/>

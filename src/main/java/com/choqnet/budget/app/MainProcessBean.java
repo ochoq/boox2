@@ -405,6 +405,7 @@ public class MainProcessBean {
                     wl.setSapID(dwl.getSapID());
                     wl.setAccount(dwl.getAccount());
                     wl.setInitStatus(dwl.getInit()==null ? "" : dwl.getInit().getStatus());
+                    wl.setOriginIPRB(dwl.getInit()==null ? "" : dwl.getInit().getRefIPRB());
                     sc.saving(wl);
                 }
                 dataManager.save(sc);

@@ -94,6 +94,11 @@ public class CapacityPlanningTeams extends Screen {
         headerCell.setStyleName("center");
     }
 
+    @Subscribe("cPTeamsTable")
+    public void onCPTeamsTableItemClick(DataGrid.ItemClickEvent<CPTeam> event) {
+        editCPTeam(event.getItem());
+    }
+
     // open details view (old version, driven by a click on a dedicated icon)
     /*
     @Install(to = "cPTeamsTable.detail", subject = "columnGenerator")
@@ -111,6 +116,7 @@ public class CapacityPlanningTeams extends Screen {
     }
     */
 
+    /*
     // open details view by clicking on the name
     @Install(to = "cPTeamsTable.capaName", subject = "columnGenerator")
     private Component editDetail(DataGrid.ColumnGeneratorEvent<CPTeam> cEvent) {
@@ -120,7 +126,7 @@ public class CapacityPlanningTeams extends Screen {
         detail.setCaption(cEvent.getItem().getCapacity().getTeam().getFullName());
         return detail;
     }
-
+    */
 
     private void editCPTeam(CPTeam item) {
         CapacityTeamDetails ctd = screenBuilders.screen(this)

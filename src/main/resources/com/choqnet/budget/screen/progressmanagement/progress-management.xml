@@ -4,12 +4,14 @@
     <data>
         <collection id="progressesDc" class="com.choqnet.budget.entity.Progress">
             <fetchPlan extends="_base">
-                <property fetchPlan="_base" name="iprb"/>
-                <property fetchPlan="_base" name="budget"/>
+                <property name="iprb">
+                    <property name="reference"/>
+                    <property name="name"/>
+                </property>
             </fetchPlan>
             <loader id="progressesDl">
                 <query>
-                    <![CDATA[select e from Progress e is null]]>
+                    <![CDATA[select e from Progress e where e is null]]>
                 </query>
             </loader>
         </collection>
@@ -46,6 +48,7 @@
                 <column id="demandQ2" property="demandQ2"/>
                 <column id="demandQ3" property="demandQ3"/>
                 <column id="demandQ4" property="demandQ4"/>
+                <column id="demandNY" property="demandNY"/>
                 <column id="expectedLanding" property="expectedLanding"/>
                 <column id="expense" property="expense"/>
             </columns>

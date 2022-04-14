@@ -1,6 +1,7 @@
 <fetchPlans xmlns="http://jmix.io/schema/core/fetch-plans">
     <fetchPlan entity="Team" name="teams" extends="_base">
         <property name="parent" fetchPlan="_base">
+            <property name="setup" fetchPlan="_base"/>
         </property>
     </fetchPlan>
     <fetchPlan entity="Detail" name="details" extends="_base">
@@ -10,11 +11,21 @@
             <property name="tDiv"/>
             <property name="tDomain"/>
             <property name="icTarget"/>
+            <property name="setup" fetchPlan="_base"/>
+        </property>
+        <property name="budget" fetchPlan="_base"/>
+        <property name="progress" fetchPlan="_base">
+            <property name="details" fetchPlan="_base"/>
+            <property name="expenses" fetchPlan="_base"/>
+            <property name="budget" fetchPlan="_base"/>
         </property>
     </fetchPlan>
     <fetchPlan entity="Capacity" name="capacities" extends="_base">
-        <property name="team" fetchPlan="_base"/>
+        <property name="team" fetchPlan="_base">
+            <property name="setup" fetchPlan="_base"/>
+        </property>
         <property name="mdY"/>
+        <property name="budget" fetchPlan="_base"/>
     </fetchPlan>
     <fetchPlan entity="Detail" name="detail-fetch-plan" extends="details">
         <property name="team">
@@ -71,5 +82,43 @@
         </property>
         <property name="expenses" fetchPlan="_base"/>
         <property name="iprb" fetchPlan="_base"/>
+    </fetchPlan>
+    <fetchPlan entity="Actual" name="actual-fetch-plan" extends="actuals">
+        <property name="budgetCost"/>
+    </fetchPlan>
+    <fetchPlan entity="Progress" name="progresses" extends="_base">
+        <property name="iprb">
+            <property name="reference"/>
+            <property name="name"/>
+        </property>
+        <property name="budget">
+            <property name="name"/>
+            <property name="closeQ1"/>
+            <property name="closeQ2"/>
+            <property name="closeQ3"/>
+            <property name="closeQ4"/>
+        </property>
+        <property name="details">
+            <property name="roadmap"/>
+            <property name="mdY"/>
+            <property name="mdQ1"/>
+            <property name="mdQ2"/>
+            <property name="mdQ3"/>
+            <property name="mdQ4"/>
+            <property name="priority"/>
+        </property>
+        <property name="expenses">
+            <property name="name"/>
+            <property name="amountKEuro"/>
+            <property name="accepted"/>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="Expense" name="exList" extends="_base">
+        <property name="budget" fetchPlan="_base"/>
+        <property name="progress" fetchPlan="_base">
+            <property name="budget" fetchPlan="_base"/>
+            <property name="expenses" fetchPlan="_base"/>
+            <property name="details" fetchPlan="_base"/>
+        </property>
     </fetchPlan>
 </fetchPlans>

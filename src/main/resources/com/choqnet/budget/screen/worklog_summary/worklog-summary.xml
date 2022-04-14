@@ -2,7 +2,7 @@
 <window xmlns="http://jmix.io/schema/ui/window"
         caption="msg://worklogSummary.caption">
     <data>
-        <collection id="actualsDc" class="com.choqnet.budget.entity.Actual" fetchPlan="actuals">
+        <collection id="actualsDc" class="com.choqnet.budget.entity.Actual" fetchPlan="actual-fetch-plan">
             <loader id="actualsDl">
                 <query>
                     <![CDATA[select e from Actual e]]>
@@ -23,6 +23,9 @@
                 <checkBox id="chk2022" align="MIDDLE_CENTER"/>
             </hbox>
         </hbox>
+        <filter id="filter" columnsCount="3" dataLoader="actualsDl" width="100%">
+            <properties include=".*"/>
+        </filter>
         <dataGrid id="actualsTable" height="100%" width="100%" dataContainer="actualsDc">
             <actions>
                 <action id="excelExport" type="excelExport"/>
@@ -33,7 +36,7 @@
             <columns>
                 <column id="finMonth" property="finMonth"/>
                 <column id="iprbRef" property="iprbRef"/>
-                <column id="iprb" property="iprb"/>
+                <column id="iprbName" property="iprb.name"/>
                 <column id="jiraTeamRef" property="jiraTeamRef"/>
                 <column id="team" property="team"/>
                 <column id="initRef" property="initRef"/>
@@ -44,6 +47,7 @@
                 <column id="jiraProjectPlatform" property="jiraProjectPlatform"/>
                 <column id="costCenter" property="costCenter"/>
                 <column id="effort" property="effort"/>
+                <column id="budgetCost" property="budgetCost" editable="false"/>
             </columns>
         </dataGrid>
     </layout>
