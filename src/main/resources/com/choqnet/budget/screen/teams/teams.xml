@@ -62,7 +62,7 @@
             <columns>
                 <column id="name" property="name"/>
                 <column id="parent" property="parent"/>
-                <column id="source" property="source"/>
+                <column id="source" property="source" />
 <!--                <column id="inBudget" property="inBudget"/>-->
                 <column id="sourceName" property="sourceName"/>
                 <column id="sourceID" property="sourceID"/>

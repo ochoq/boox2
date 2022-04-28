@@ -1,6 +1,7 @@
 package com.choqnet.budget.screen.login;
 
 import com.choqnet.budget.entity.Token;
+import com.choqnet.budget.screen._public.reset_password.ResetPassword;
 import com.choqnet.budget.screen._public.userregistration.UserRegistration;
 import io.jmix.core.DataManager;
 import io.jmix.core.MessageTools;
@@ -144,6 +145,15 @@ public class LoginScreen extends Screen {
     public void onRegistrationClick(Button.ClickEvent event) {
         screenBuilders.screen(this)
                 .withScreenClass(UserRegistration.class)
+                .withOpenMode(OpenMode.ROOT)
+                .build()
+                .show();
+    }
+
+    @Subscribe("resetPassword")
+    public void onResetPasswordClick(Button.ClickEvent event) {
+        screenBuilders.screen(this)
+                .withScreenClass(ResetPassword.class)
                 .withOpenMode(OpenMode.ROOT)
                 .build()
                 .show();

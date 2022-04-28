@@ -3,7 +3,17 @@ package com.choqnet.budget.screen.popups.progressedit;
 import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.TShirt;
+import com.choqnet.budget.screen.changes.Changes;
+import com.choqnet.budget.screen.popups.iprb_chooser.IprbChooser;
+import io.jmix.audit.EntityLog;
+import io.jmix.audit.entity.EntityLogAttr;
+import io.jmix.audit.entity.EntityLogItem;
+import io.jmix.audit.entity.LoggedAttribute;
+import io.jmix.audit.entity.LoggedEntity;
 import io.jmix.core.DataManager;
+import io.jmix.core.MetadataTools;
+import io.jmix.ui.Notifications;
+import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.UiComponents;
 import io.jmix.ui.component.*;
 import io.jmix.ui.component.data.ValueSource;
@@ -17,9 +27,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @UiController("ProgressEdit")
 @UiDescriptor("progress-edit.xml")
@@ -59,11 +68,18 @@ public class ProgressEdit extends Screen {
     private CollectionContainer<Expense> expensesDc;
     @Autowired
     private UtilBean utilBean;
+    @Autowired
+    private MetadataTools metadataTools;
+    @Autowired
+    private ScreenBuilders screenBuilders;
+    @Autowired
+    private Notifications notifications;
 
     @Subscribe
     public void onInit(InitEvent event) {
         filterDetails.setExpanded(false);
         filterExpenses.setExpanded(false);
+
     }
 
     /**
@@ -91,17 +107,17 @@ public class ProgressEdit extends Screen {
 
     private void setDetailsStylesAndModes() {
         // sets the styles and edit/read modes for the detail table
-        for (int i=1; i<5; i++) {
-            detailsTable.getColumn("mdQ"+i).setEditable(!budget.getFrozen() && !budget.getCloseQx(i));
+        for (int i = 1; i < 5; i++) {
+            detailsTable.getColumn("mdQ" + i).setEditable(!budget.getFrozen() && !budget.getCloseQx(i));
             int finalI = i;
-            detailsTable.getColumn("mdQ"+i).setStyleProvider(e -> {
+            detailsTable.getColumn("mdQ" + i).setStyleProvider(e -> {
                 return (!budget.getFrozen() && !budget.getCloseQx(finalI)) ? "ce1r" : "cror";
             });
         }
-        boolean isSomethingLocked= budget.getFrozen() || budget.getCloseQ1() || budget.getCloseQ2() || budget.getCloseQ3() || budget.getCloseQ4();
+        boolean isSomethingLocked = budget.getFrozen() || budget.getCloseQ1() || budget.getCloseQ2() || budget.getCloseQ3() || budget.getCloseQ4();
         // TShirt can't be seen is 1 or more quarter is closed
         detailsTable.getColumn("tShirt").setVisible(!isSomethingLocked);
-        detailsTable.getColumn("tShirt").setStyleProvider(e ->  "ce1r");
+        detailsTable.getColumn("tShirt").setStyleProvider(e -> "ce1r");
         detailsTable.getColumn("mdY").setVisible(!isSomethingLocked);
         detailsTable.getColumn("mdY").setStyleProvider(e -> "crotr");
         detailsTable.getColumn("mdNY").setVisible(true);
@@ -180,7 +196,7 @@ public class ProgressEdit extends Screen {
     public void onDetailsTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Detail> event) {
         Detail detail = event.getItem();
         // DefaultValueProvider for Owner
-        if (detail.getTopic()==null || Objects.equals(detail.getTopic(), "")) {
+        if (detail.getTopic() == null || Objects.equals(detail.getTopic(), "")) {
             detail.setTopic(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         }
         // propagates the changes in values and actually saves them
@@ -203,7 +219,7 @@ public class ProgressEdit extends Screen {
                 detail.setMdQ3(effort / 4);
                 detail.setMdQ4(effort / 4);
             } else {
-                if (detail.getTShirt()!=null && !detail.getTShirt().equals(tShirt)) {
+                if (detail.getTShirt() != null && !detail.getTShirt().equals(tShirt)) {
                     double effort = detail.getTShirt().getId() * 1.0;
                     detail.setMdY(effort);
                     detail.setMdQ1(effort / 4);
@@ -216,7 +232,7 @@ public class ProgressEdit extends Screen {
         dataManager.save(detail);
         // update the parent progress
         dets = new ArrayList<>();
-        for (Detail det: progress.getDetails()) {
+        for (Detail det : progress.getDetails()) {
             if (!det.equals(editedDetail)) {
                 dets.add(det);
             }
@@ -228,7 +244,7 @@ public class ProgressEdit extends Screen {
         detailsDl.load();
 
         // if only 1 item, it is unselected
-        if (detailsDc.getItems().size()==1) {
+        if (detailsDc.getItems().size() == 1) {
             detailsTable.deselectAll();
         }
     }
@@ -255,7 +271,7 @@ public class ProgressEdit extends Screen {
     public void onBtnRemoveClick(Button.ClickEvent event) {
         // build the list of all progress' details but the removed ones
         dets = new ArrayList<>();
-        for (Detail det: progress.getDetails()) {
+        for (Detail det : progress.getDetails()) {
             if (!detailsTable.getSelected().contains(det)) {
                 dets.add(det);
             }
@@ -266,6 +282,41 @@ public class ProgressEdit extends Screen {
         dataManager.save(progress);
         dataManager.remove(detailsTable.getSelected());
         detailsDl.load();
+    }
+
+    @Subscribe("btnClone")
+    public void onBtnCloneClick(Button.ClickEvent event) {
+        /**
+         * Clones the selected detail records
+         */
+        Detail detail = cloneDetail(detailsTable.getSingleSelected(), progress, budget);
+        //detail = dataManager.save(detail);
+        detailsDl.load();
+        // add it to the Progress record
+        dets = new ArrayList<>();
+        dets.addAll(progress.getDetails());
+        dets.add(detail);
+        progress.setDetails(dets);
+        progress = utilBean.setProgressData(progress);
+        progress = dataManager.save(progress);
+    }
+
+    @Subscribe("btnChangeIPRB")
+    public void onBtnChangeIPRBClick(Button.ClickEvent event) {
+        // Displays the list of IPRB to choose the destination from
+        IprbChooser ic = screenBuilders.screen(this)
+                .withScreenClass(IprbChooser.class)
+                .withOpenMode(OpenMode.DIALOG)
+                .withAfterCloseListener(e -> {
+                    notifications.create()
+                            .withType(Notifications.NotificationType.TRAY)
+                            .withCaption("IPRB mover closed.")
+                            .show();
+                    detailsDl.load();
+                })
+                .build();
+        ic.setContext(detailsTable.getSelected(), budget);
+        ic.show();
     }
 
     @Subscribe("expensesTable")
@@ -279,7 +330,7 @@ public class ProgressEdit extends Screen {
         dataManager.save(expense);
         // update the parent progress
         exps = new ArrayList<>();
-        for (Expense exp: progress.getExpenses()) {
+        for (Expense exp : progress.getExpenses()) {
             if (!exp.equals(editedExpense)) {
                 exps.add(exp);
             }
@@ -291,7 +342,7 @@ public class ProgressEdit extends Screen {
         expensesDl.load();
 
         // if only 1 item, it is unselected
-        if (expensesDc.getItems().size()==1) {
+        if (expensesDc.getItems().size() == 1) {
             expensesTable.deselectAll();
         }
     }
@@ -317,7 +368,7 @@ public class ProgressEdit extends Screen {
     public void onBtnExpRemoveClick(Button.ClickEvent event) {
         // build the list of all progress' expense but the removed ones
         exps = new ArrayList<>();
-        for (Expense exp: progress.getExpenses()) {
+        for (Expense exp : progress.getExpenses()) {
             if (!expensesTable.getSelected().contains(exp)) {
                 exps.add(exp);
             }
@@ -331,8 +382,8 @@ public class ProgressEdit extends Screen {
     }
 
     // *** Debug Functions
-    private void printProgress(Progress prog)  {
-        for (Detail detail: prog.getDetails()) {
+    private void printProgress(Progress prog) {
+        for (Detail detail : prog.getDetails()) {
             log.info(detail.getTeam() + " " + detail.getMdQ1() + " - " + detail.getMdQ2() + " - " + detail.getMdQ3() + " - " + detail.getMdQ4() + " - ");
         }
         log.info("");
@@ -340,4 +391,41 @@ public class ProgressEdit extends Screen {
     }
 
 
+    private Detail cloneDetail(Detail source, Progress progress, Budget budget) {
+        Detail target = dataManager.create(Detail.class);
+        UUID uuid = target.getId();
+        metadataTools.copy(source, target);
+        target.setBudget(budget);
+        target.setId(uuid);
+        target.setProgress(progress);
+        target.setTeam(source.getTeam());
+        target.setIprb(source.getIprb());
+        return dataManager.save(target);
+    }
+
+    private void temp() {
+        log.info("targeted details start");
+        List<EntityLogItem> entityLogItemList = dataManager.load(EntityLogItem.class).query("select e from audit_EntityLog e where e.entity='Detail'").list();
+
+        log.info("targeted details end");
+        log.info("globa details start");
+        entityLogItemList = dataManager.load(EntityLogItem.class).all().list();
+        entityLogItemList = entityLogItemList.stream().filter(e -> "Detail".equals(e.getEntity())).collect(Collectors.toList());
+        log.info("globa details end");
+        for (EntityLogItem eli: entityLogItemList) {
+        }
+        log.info("ok");
+    }
+
+    @Subscribe("detailsTable")
+    public void onDetailsTableContextClick(DataGrid.ContextClickEvent event) {
+        List<ChangeHistory> changeHistoryList = utilBean.giveChangeHistory(detailsTable.getSingleSelected().getId());
+
+        Changes changes = screenBuilders.screen(this)
+                .withScreenClass(Changes.class)
+                .withOpenMode(OpenMode.DIALOG)
+                .build();
+        changes.show();
+        changes.setData(changeHistoryList);
+    }
 }

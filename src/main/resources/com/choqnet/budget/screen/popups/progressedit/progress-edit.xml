@@ -45,6 +45,9 @@
                 <hbox stylename="card" spacing="true" margin="true">
                     <button id="btnAdd" caption="Add"/>
                     <button id="btnRemove" caption="Remove Selected"/>
+                    <button id="btnClone" caption="Clone selected"/>
+                    <button id="btnChangeIPRB" caption="Change IPRB"
+                            icon="font-icon:EXCHANGE" visible="true"/>
                 </hbox>
                 <dataGrid id="detailsTable"
                           width="100%"

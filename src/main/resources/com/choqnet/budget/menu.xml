@@ -7,6 +7,7 @@
             <item screen="WorklogSummary"
                   caption="msg://com.choqnet.budget.screen.worklog_summary/worklogSummary.caption"/>
             <item screen="WorklogPmo" caption="msg://com.choqnet.budget.screen.worklog_pmo/worklogPmo.caption"/>
+            <item screen="XLActual.browse" caption="msg://com.choqnet.budget.screen.xlactual/XLActualBrowse.menu"/>
         </menu>
         <item screen="BudgetScreen" caption="msg://com.choqnet.budget.screen.budget/budgetScreen.caption"/>
         <item screen="BudgetDashboard"

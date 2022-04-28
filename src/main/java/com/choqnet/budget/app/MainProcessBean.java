@@ -10,6 +10,7 @@ import io.jmix.core.SaveContext;
 import io.jmix.core.security.Authenticated;
 import io.jmix.core.security.SystemAuthenticator;
 import io.jmix.email.*;
+import io.micrometer.core.instrument.util.AbstractPartition;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -42,7 +43,7 @@ public class MainProcessBean {
     @Autowired
     private SystemAuthenticator systemAuthenticator;
 
-    final int NB_ITEM_PER_PAGE = 5000;
+    final int NB_ITEM_PER_PAGE = 50000;
     List<String> quarter1 = Arrays.asList("fin202201", "fin202202", "fin202203");
     List<String> quarter2 = Arrays.asList("fin202204", "fin202205", "fin202206");
     List<String> quarter3 = Arrays.asList("fin202207", "fin202208", "fin202209");
@@ -54,6 +55,7 @@ public class MainProcessBean {
     String month;
     String dumboToken;
     HttpURLConnection conn = null;
+    List<Integer> teamList = new ArrayList<>();
 
     @ManagedOperation
     public void mainProcess() {
@@ -70,38 +72,43 @@ public class MainProcessBean {
     }
 
     @ManagedOperation
+    private void getTeamList() {
+        systemAuthenticator.withUser("admin", () -> {
+            teamList = dataManager.load(Team.class).all().list().stream().map(e -> e.getSID()).distinct().collect(Collectors.toList());
+            return null;
+         });
+
+
+    }
+
+    @ManagedOperation
     public void getDumboData() {
         systemAuthenticator.withUser("admin", () -> {
             int processedItems;
             int page;
+
+
             loadMonth();
+            getTeamList();
             getDumboToken();
             for (Command cmd : tempoCmds) {
                 month = cmd.getValue();
-                // Get the worklogs : finWL
-                log.info("Get worklog for " + month);
+                log.info("Working for month " + month);
                 deleteMonthWorkloads(month);
-                page = 0;
-                do {
-                    processedItems = getWorklogs(page, month);
-                    page += NB_ITEM_PER_PAGE;
-                } while (processedItems != 0);
-                connectWorklogs(month);
-
-                // Get the actualMonths
-                log.info("Get actuals for " + month);
                 deleteActualMonths(month);
-                page = 0;
-                do {
-                    processedItems = getActuals(page, month);
-                    page += NB_ITEM_PER_PAGE;
-                } while (processedItems != 0);
+                for (Integer i: teamList) {
+                    if (i!=0) {
+                        getWorklogs(i, month);
+                        //log.info("loaded worklogs for team n° " + i);
+                        getActuals(i, month);
+                        //log.info("loaded actuals for team n° " + i);
+                    }
+                }
+                connectWorklogs(month);
                 connectActuals(month);
-
-                //setActualProgress();
                 log.info("Month " + month + " processed");
             }
-            // connect newly importer Actuals to the Progresses
+            // connect newly imported Actuals to the Progresses
             setActualProgress(months);
             // delete the commands just run
             dataManager.remove(tempoCmds);
@@ -188,7 +195,8 @@ public class MainProcessBean {
 
     /**
      * Update all Progress records with the actual efforts just imported
-     * @param months
+     * @param months: list of all the months for which the actuals have been previously imported
+     *              for them, the values of actualQX for the progresses must be updated.
      */
     private void setActualProgress(List<String> months) {
         systemAuthenticator.withUser("admin", () -> {
@@ -206,80 +214,56 @@ public class MainProcessBean {
                 List<String> qMonths = giveQuarterMonths(quarter);
                 // d. build the list of actuals belonging to these months
                 List<Actual> actuals = dataManager.load(Actual.class).query("select e from Actual e where e.finMonth IN :months").parameter("months", qMonths).list();
+                String sYear = quarter.substring(0,4);
+                String sQuarter = quarter.substring(4);
+                List<XLActual> xlActuals = dataManager.load(XLActual.class).query("select e from XLActual e where e.year = :year and e.quarter = :quarter")
+                        .parameter("year", quarter.substring(0,4))
+                        .parameter("quarter", quarter.substring(4))
+                        .list();
                 // e. get the list of IPRB out of them
-                List<IPRB> iprbs = actuals.stream().map(e -> e.getIprb()).distinct().collect(Collectors.toList());
-                // f. fetch the IPRBs
+                // IPRB referenced in JIRA actuals and Excel actuals as well.
+                List<IPRB> tempIPRB = actuals.stream().map(Actual::getIprb).distinct().collect(Collectors.toList());
+                tempIPRB.addAll(xlActuals.stream().map(XLActual::getIprb).distinct().collect(Collectors.toList()));
+                List<IPRB> iprbs = tempIPRB.stream().distinct().collect(Collectors.toList());
 
+                // f. fetch the IPRBs
                 for (IPRB iprb: iprbs) {
-                    // fetch the budgets
-                    for (Budget budget: budgets) {
-                        SaveContext sc = new SaveContext();
-                        // get the list of progresses to update
-                        List<Progress> progresses = dataManager.load(Progress.class)
-                                .query("select e from Progress e where e.budget = :budget and e.iprb = :iprb")
-                                .parameter("budget", budget)
-                                .parameter("iprb",iprb)
-                                .list();
-                        for (Progress progress: progresses) {
-                            double value = sumQ(iprb, actuals);
-                            progress = setQxValue(progress, value, quarter);
-                            sc.saving(progress);
+                    if (iprb!=null) {
+                        // fetch the budgets
+                        for (Budget budget: budgets) {
+                            SaveContext sc = new SaveContext();
+                            // get the list of progresses to update
+                            List<Progress> progresses = dataManager.load(Progress.class)
+                                    .query("select e from Progress e where e.budget = :budget and e.iprb = :iprb")
+                                    .parameter("budget", budget)
+                                    .parameter("iprb",iprb)
+                                    .list();
+                            if (progresses.size()==0) {
+                                // if this IPRB has no budget and no dumbo's actual, it is not existing and must be created to hold the Excel actuals
+                                Progress newProgress = dataManager.create(Progress.class);
+                                newProgress.setBudget(budget);
+                                newProgress.setIprb(iprb);
+                                newProgress = dataManager.save(newProgress);
+                                progresses.add(newProgress);
+                            }
+                            for (Progress progress: progresses) {
+                                // setup of actuals, coming from both JIRA and EXCEL
+                                double jValue = sumQ(iprb, actuals);
+                                double xlValue = xlActuals.stream().filter(e -> iprb.equals(e.getIprb())).map(XLActual::getEffort).reduce(0.0, Double::sum);
+                                double value = jValue+xlValue;
+                                progress = setQxValue(progress, value, quarter);
+                                sc.saving(progress);
+                            }
+                            dataManager.save(sc);
                         }
-                        dataManager.save(sc);
                     }
+
                 }
 
                 saveLogApp("MainProcess", TypeMsg.INFO, "Quarter completed", quarter);
             }
                     return null;
                 });
-            /*
-            // 1. get a list of unique involved quarters
-            //quarters = quarters.stream().distinct().collect(Collectors.toList());
-
-            List<Actual> actuals;
-            List<IPRB> iprbs = new ArrayList<>();
-            List<IPRB> defIprbs;
-            // gets the default budget
-            Budget budget = dataManager.load(Budget.class).query("select e from Budget e where e.preferred = true").one();
-            // get the monthly actuals
-            actuals = dataManager.load(Actual.class).query("select e from Actual e where e.finMonth = :finMonth").parameter("finMonth", month).list();
-            // get the list of IPRB from this list
-            iprbs = actuals.stream().map(Actual::getIprb).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-            // get the list of existing Progress, for the default budget
-            List<Progress> defaultProgresses = dataManager.load(Progress.class).query("select e from Progress e where e.budget = :budget").parameter("budget", budget).list();
-            // get the list of IPRB from this default list
-            defIprbs = defaultProgresses.stream().map(e -> e.getIprb()).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-            // build the list of missing Progresses
-            List<IPRB> missing = new ArrayList<>();
-            for (IPRB iprb : iprbs) {
-                if (!defIprbs.contains(iprb)) {
-                    missing.add(iprb);
-                }
-            }
-            // create the missing progresses
-            for (IPRB iprb : missing) {
-                Progress progress = dataManager.create(Progress.class);
-                progress.setBudget(budget);
-                progress.setIprb(iprb);
-                log.warn("Progress created for " + iprb.getReference());
-                dataManager.save(progress);
-            }
-            // get the full list of progress
-            List<Progress> progresses = dataManager.load(Progress.class).all().list();
-            SaveContext sc = new SaveContext();
-            for (Progress progress : progresses) {
-                progress.setActualQ1(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter1.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
-                progress.setActualQ2(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter2.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
-                progress.setActualQ3(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter3.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
-                progress.setActualQ4(actuals.stream().filter(e -> progress.getIprb().equals(e.getIprb()) && quarter4.contains(e.getFinMonth())).map(Actual::getEffort).reduce(0.0, Double::sum));
-                sc.saving(progress);
-            }
-            dataManager.save(sc);
-            log.info("Actual Progress updated for " + month);
-            return null;
-
-             */
     }
 
     private double sumQ(IPRB iprb, List<Actual> actuals) {
@@ -313,11 +297,15 @@ public class MainProcessBean {
         systemAuthenticator.withUser("admin", () -> {
             // add getTempo command for month M and M-1
             tempoCmds = (dataManager.load(Command.class).query("select e from Command e where e.operation = :op")).parameter("op", Operation.TEMPO).list();
+            for (Command command: tempoCmds) {
+                months.add(command.getValue());
+            }
             for (int i = 0; i < 2; i++) {
                 //String cMonth = "fin" + LocalDateTime.now().minusMonths(i).format(DateTimeFormatter.ofPattern("yyyyMM"));
                 String cMonth = getFinancialMonth(addTime(new Date(),-i,"MONTH"));
-                months.add(cMonth);
+
                 if (tempoCmds.stream().noneMatch(e -> cMonth.equals(e.getValue()))) {
+                    months.add(cMonth);
                     Command record = dataManager.create(Command.class);
                     record.setOperation(Operation.TEMPO);
                     record.setValue(cMonth);
@@ -364,13 +352,15 @@ public class MainProcessBean {
 
     }
 
-    private int getWorklogs(int offset, String finMonth) {
+    private int getWorklogs(int teamid, String finMonth) {
         int result = systemAuthenticator.withUser("admin", () -> {
             SaveContext sc;
+            //log.info("");
+            //log.info("read team " +  teamid + " for month " + finMonth);
             // gets the worklogs for the current month
             try {
                 //URL dumboURL = new URL("http://cosnprpsn21:6100/dumbo/rest/v2/entities/dumbo_FinWL?view=finWLs&limit=50&offset=100000&sort=key");
-                URL dumboURL = new URL("http://cosnprpsn21:6100/dumbo/rest/v2/queries/dumbo_FinWL/wl4boox?finMonth=" + finMonth + "&limit=" + NB_ITEM_PER_PAGE + "&offset=" + offset);
+                URL dumboURL = new URL("http://cosnprpsn21:6100/dumbo/rest/v2/queries/dumbo_FinWL/wl4booxbyteam?finMonth=" + finMonth + "&teamid=" + teamid);
                 HttpURLConnection connectionIssue = (HttpURLConnection) dumboURL.openConnection();
                 connectionIssue.setRequestMethod("GET");
                 connectionIssue.setRequestProperty("Accept", "*/*");
@@ -409,7 +399,8 @@ public class MainProcessBean {
                     sc.saving(wl);
                 }
                 dataManager.save(sc);
-                saveLogApp("MainProcess::getWorklogs", TypeMsg.INFO, "Success", "finMonth:" + finMonth + ", offset: " + offset + ", read: " + dwls.length);
+                saveLogApp("MainProcess::getWorklogs", TypeMsg.INFO, "Success", "finMonth:" + finMonth + ", teamid: " + teamid + ", read: " + dwls.length);
+                //log.info("MainProcess::getWorklogs", TypeMsg.INFO, "Success", "finMonth:" + finMonth + ", teamid: " + teamid + ", read: " + dwls.length);
                return dwls.length;
             } catch (Exception e) {
                 saveLogApp("MainProcess::getWorklogs", TypeMsg.ERROR, "Error", e.toString());
@@ -420,12 +411,12 @@ public class MainProcessBean {
     }
 
     @ManagedOperation
-    private int getActuals(int offset, String finMonth) {
+    private int getActuals(int teamid, String finMonth) {
         int result = systemAuthenticator.withUser("admin", () -> {
             SaveContext sc;
             // gets the actuals for all commands
             try {
-                URL dumboURL = new URL("http://cosnprpsn21:6100/dumbo/rest/v2/queries/dumbo_ActualMonth/am4boox?finMonth=" + finMonth + "&limit=" + NB_ITEM_PER_PAGE + "&offset=" + offset);
+                URL dumboURL = new URL("http://cosnprpsn21:6100/dumbo/rest/v2/queries/dumbo_ActualMonth/am4booxbyteam?finMonth=" + finMonth + "&teamid=" +  teamid);
                 HttpURLConnection connectionIssue = (HttpURLConnection) dumboURL.openConnection();
                 connectionIssue.setRequestMethod("GET");
                 connectionIssue.setRequestProperty("Accept", "*/*");

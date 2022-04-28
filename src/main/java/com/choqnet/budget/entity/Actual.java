@@ -57,11 +57,11 @@ public class Actual {
     @Column(name = "COST_CENTER")
     private String costCenter;
 
-    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0.0")
     @Column(name = "EFFORT")
     private Double effort;
 
-    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0.0")
     @Column(name = "BUDGET_COST")
     private Double budgetCost;
 

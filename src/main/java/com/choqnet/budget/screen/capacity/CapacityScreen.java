@@ -1,9 +1,12 @@
 package com.choqnet.budget.screen.capacity;
 
+import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.Budget;
 import com.choqnet.budget.entity.Capacity;
+import com.choqnet.budget.entity.ChangeHistory;
 import com.choqnet.budget.entity.Team;
+import com.choqnet.budget.screen.changes.Changes;
 import com.choqnet.budget.screen.popups.team_selector.TeamSelector;
 import com.choqnet.budget.screen.popups.upload_capacities.UploadCapacities;
 import io.jmix.core.DataManager;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 @UiController("CapacityScreen")
 @UiDescriptor("capacity-screen.xml")
 public class CapacityScreen extends Screen {
+
     private static final Logger log = LoggerFactory.getLogger(CapacityScreen.class);
     @Autowired
     private DataManager dataManager;
@@ -52,6 +56,8 @@ public class CapacityScreen extends Screen {
     private Button btnUpload;
     @Named("capacitiesTable.bulkEdit")
     private BulkEditAction capacitiesTableBulkEdit;
+    @Autowired
+    private UtilBean utilBean;
 
     // *** init & decoration functions
     @Subscribe
@@ -196,6 +202,19 @@ public class CapacityScreen extends Screen {
                 .withType(Notifications.NotificationType.WARNING)
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
+    }
+
+    @Subscribe("capacitiesTable")
+    public void onCapacitiesTableContextClick(DataGrid.ContextClickEvent event) {
+        List<ChangeHistory> changeHistoryList = utilBean.giveChangeHistory(capacitiesTable.getSingleSelected().getId());
+
+        Changes changes = screenBuilders.screen(this)
+                .withScreenClass(Changes.class)
+                .withOpenMode(OpenMode.DIALOG)
+                .build();
+        changes.show();
+        changes.setData(changeHistoryList);
+
     }
 
 }

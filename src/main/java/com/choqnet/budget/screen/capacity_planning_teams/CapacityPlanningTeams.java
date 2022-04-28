@@ -99,34 +99,6 @@ public class CapacityPlanningTeams extends Screen {
         editCPTeam(event.getItem());
     }
 
-    // open details view (old version, driven by a click on a dedicated icon)
-    /*
-    @Install(to = "cPTeamsTable.detail", subject = "columnGenerator")
-    private Component editDetail(DataGrid.ColumnGeneratorEvent<CPTeam> cEvent) {
-        HBoxLayout hbl = uiComponents.create(HBoxLayout.NAME);
-        hbl.setWidth("100%");
-        hbl.setAlignment(Component.Alignment.MIDDLE_CENTER);
-        LinkButton detail = uiComponents.create(LinkButton.NAME);
-        detail.setIconFromSet(JmixIcon.EDIT);
-        detail.setStyleName("center");
-        detail.setAlignment(Component.Alignment.MIDDLE_CENTER);
-        detail.addClickListener(e -> editCPTeam(cEvent.getItem()));
-        hbl.add(detail);
-        return hbl;
-    }
-    */
-
-    /*
-    // open details view by clicking on the name
-    @Install(to = "cPTeamsTable.capaName", subject = "columnGenerator")
-    private Component editDetail(DataGrid.ColumnGeneratorEvent<CPTeam> cEvent) {
-        LinkButton detail = uiComponents.create(LinkButton.NAME);
-        detail.setIconFromSet(JmixIcon.ARROW_CIRCLE_RIGHT);
-        detail.addClickListener(e -> editCPTeam(cEvent.getItem()));
-        detail.setCaption(cEvent.getItem().getCapacity().getTeam().getFullName());
-        return detail;
-    }
-    */
 
     private void editCPTeam(CPTeam item) {
         CapacityTeamDetails ctd = screenBuilders.screen(this)
@@ -138,13 +110,10 @@ public class CapacityPlanningTeams extends Screen {
                             .withPosition(Notifications.Position.BOTTOM_RIGHT)
                             .show();
                     updateCapacityPlanningData();
-
                 })
                 .build();
         ctd.setContext(item, budget);
         ctd.show();
-    }
-    private void refreshData() {
     }
 
     // *** UI functions
@@ -155,7 +124,6 @@ public class CapacityPlanningTeams extends Screen {
         cmbPriority.setValue(event.getValue().getPrioThreshold());
         // updates the dataset for the capacity planning
         updateCapacityPlanningData();
-        // updates the default priority threshold
     }
 
     @Subscribe("cmbPriority")
@@ -168,11 +136,15 @@ public class CapacityPlanningTeams extends Screen {
 
     @Subscribe("txtFilter")
     public void onTxtFilterTextChange(TextInputField.TextChangeEvent event) {
-        if ("".equals(event.getText())) {
+        filterCapacities(event.getText());
+    }
+
+    private void filterCapacities(String strFilter) {
+        if ("".equals(strFilter)) {
             cPTeamsDc.setItems(cpTeams);
         } else {
             cPTeamsDc.setItems(
-                    cpTeams.stream().filter(e -> e.getCapacity().getTeam().getFullName().toUpperCase().contains(event.getText().toUpperCase())).collect(Collectors.toList())
+                    cpTeams.stream().filter(e -> e.getCapacity().getTeam().getFullName().toUpperCase().contains(strFilter.toUpperCase())).collect(Collectors.toList())
             );
         }
     }
@@ -184,17 +156,15 @@ public class CapacityPlanningTeams extends Screen {
                 .query("select e from Detail e where e.budget = :budget")
                 .parameter("budget", budget)
                 .list();
+        String query = "select e from Capacity e where e.budget = :budget";
         capacities = dataManager.load(Capacity.class)
-                .query("select e from Capacity e where e.budget = :budget")
+                .query(query)
                 .parameter("budget", budget)
                 .list();
         if (priority != null && budget != null) {
             // creation of the CPTeam records
             cpTeams = new ArrayList<>();
             for (Capacity capacity : capacities) {
-
-                // System.out.println("managing ... " + capacity.getTeam().getName() + " - " + capacity.getTeam().getFullName());
-
                 CPTeam cpTeam = dataManager.create(CPTeam.class);
                 cpTeam.setCapacity(capacity);
                 cpTeam.setDemandQ1(details.stream()
@@ -215,15 +185,13 @@ public class CapacityPlanningTeams extends Screen {
                         .reduce(Double::sum).orElse(0.0));
                 cpTeams.add(cpTeam);
             }
-            //
-            // filterTeams();
-            cPTeamsDc.setItems(cpTeams);
+            // apply display filter
+            filterCapacities(txtFilter.getValue()==null ? "" : txtFilter.getValue());
             cPTeamsTable.repaint();
             if (cPTeamsDc.getItems().size() != 0) {
                 cPTeamsTable.sort("capaName", DataGrid.SortDirection.ASCENDING);
             }
         }
-
     }
 
     // *** communications

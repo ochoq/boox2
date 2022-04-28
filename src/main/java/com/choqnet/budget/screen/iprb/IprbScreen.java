@@ -1,6 +1,7 @@
 package com.choqnet.budget.screen.iprb;
 
 import com.choqnet.budget.communications.UserNotification;
+import com.choqnet.budget.entity.Expense;
 import com.choqnet.budget.entity.IPRB;
 import com.choqnet.budget.screen.popups.upload_iprb.UploadIprb;
 import io.jmix.core.DataManager;
@@ -172,6 +173,5 @@ public class IprbScreen extends Screen {
                 .withPosition(Notifications.Position.TOP_CENTER)
                 .show();
     }
-
 
 }

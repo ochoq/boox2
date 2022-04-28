@@ -1,6 +1,7 @@
 package com.choqnet.budget;
 
 import com.choqnet.budget.entity.*;
+import io.jmix.audit.entity.EntityLogItem;
 import io.jmix.core.DataManager;
 import io.jmix.core.SaveContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UtilBean {
@@ -122,7 +121,6 @@ public class UtilBean {
                 sc.saving(team);
             }
             dataManager.save(sc);
-            System.out.println("rank " + i  + " passed");
             i++;
             teams = dataManager.load(Team.class).query("select e from Team e where e.level = " + i).list();
         } while (teams.size()>0);
@@ -350,4 +348,69 @@ public class UtilBean {
         }
         return detail;
     }
+
+    // *** HISTORY MANAGEMENT
+    public List<ChangeHistory> giveChangeHistory(UUID uuid) {
+        List<ChangeHistory> changeHistoryList = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<EntityLogItem> entityLogItemList = dataManager
+                .load(EntityLogItem.class)
+                .query("select e from audit_EntityLog e where e.entityRef.entityId = :id order by e.eventTs")
+                .parameter("id", uuid)
+                .list();
+        for (EntityLogItem entityLogItem: entityLogItemList) {
+            //System.out.println(entityLogItem.getUsername() + " - " + entityLogItem.getCreateTs() + " --> " + entityLogItem.getType());
+            ChangeHistory changeHistory = dataManager.create(ChangeHistory.class);
+            changeHistory.setWho(entityLogItem.getUsername());
+            changeHistory.setWhen(dateFormat.format(entityLogItem.getCreateTs().getTime()));
+            if (entityLogItem.getType()== EntityLogItem.Type.CREATE) {
+                changeHistory.setAttribute("CREATION");
+
+            } else {
+                // process the changes one by one
+                String[] changes = getReadableChanges(entityLogItem.getChanges());
+                // fetch the changes to process all new values
+                for (String change: changes) {
+                    if (!change.contains("-oldVl")) {
+                        String changed = getOldInstance(getName(change), changes);
+                        changeHistory.setAttribute(getName(change));
+                        changeHistory.setOldValue(getValue(changed));
+                        changeHistory.setNewValue(getValue(change));
+                    }
+                }
+            }
+            changeHistoryList.add(changeHistory);
+            //System.out.println("");
+        }
+        changeHistoryList = changeHistoryList.stream().sorted((ChangeHistory c1, ChangeHistory c2) -> c1.getWhen().compareTo(c2.getWhen())).collect(Collectors.toList());
+        return changeHistoryList;
+    }
+
+    private String[] getReadableChanges(String changes) {
+        /**
+         * returns the String changes under a more convenient format: a list of single changes
+         */
+        return changes.split("\r\n");
+    }
+
+    private String getValue(String attribute) {
+        if (attribute==null || !attribute.contains("=")) return attribute;
+        return attribute.substring(attribute.indexOf("=")+1);
+    }
+    private String getName(String attribute) {
+        if (!attribute.contains("=")) return attribute;
+        return attribute.substring(0,attribute.indexOf("="));
+    }
+
+    private String getOldInstance(String attribute, String[] changes) {
+        for (String change: changes) {
+            String temp = attribute + "-oldVl";
+            if (change.contains(attribute + "-oldVl")) {
+                return change;
+            }
+        }
+        return null;
+    }
+
+
 }

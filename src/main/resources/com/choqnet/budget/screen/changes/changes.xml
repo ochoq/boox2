@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://changes.caption">
+    <data>
+        <collection id="changeHistoriesDc" class="com.choqnet.budget.entity.ChangeHistory">
+            <fetchPlan extends="_base"/>
+            <loader id="changeHistoriesDl">
+                <query>
+                    <![CDATA[select e from ChangeHistory e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="changeHistoriesTable">
+        <table id="changeHistoriesTable"
+               stylename="borderless"
+               width="100%"
+               dataContainer="changeHistoriesDc">
+            <columns>
+                <column id="when"/>
+                <column id="who"/>
+                <column id="attribute"/>
+                <column id="oldValue"/>
+                <column id="newValue"/>
+            </columns>
+        </table>
+        <label value="A feature requested by GSV"/>
+    </layout>
+</window>

@@ -40,6 +40,9 @@ public class Team {
     @Column(name = "SOURCE_ID")
     private String sourceID;
 
+    @Column(name = "S_ID")
+    private Integer sID;
+
     @Column(name = "MAIN_GTM")
     private String mainGTM;
 
@@ -84,6 +87,14 @@ public class Team {
     @JoinColumn(name = "SETUP_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Setup setup;
+
+    public Integer getSID() {
+        try {
+            return Integer.valueOf(sourceID);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
     public Setup getSetup() {
         return setup;
@@ -219,7 +230,7 @@ public class Team {
     }
 
     public Source getSource() {
-        return source == null ? null : Source.fromId(source);
+        return source == null ? Source.MN : Source.fromId(source);
     }
 
     public void setSource(Source source) {
@@ -235,29 +246,6 @@ public class Team {
     }
 
     public void setParent(Team parent) {
-        /*level = parent==null ? 0 : parent.getLevel()+1;
-        switch(level) {
-            case 0:
-                gbl = name;
-                gbd = "";
-                domain = "";
-                break;
-            case 1:
-                gbl = parent.getGbl();
-                gbd = name;
-                domain = "";
-                break;
-            case 2:
-                gbl = parent.getGbl();
-                gbd = parent.getGbd();
-                domain = name;
-                break;
-            default:
-                gbl = parent.getGbl();
-                gbd = parent.getGbd();
-                domain = parent.getDomain();
-                break;
-        }*/
         this.parent = parent;
     }
 

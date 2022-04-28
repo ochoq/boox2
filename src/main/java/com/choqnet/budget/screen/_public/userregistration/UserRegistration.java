@@ -81,7 +81,7 @@ public class UserRegistration extends Screen {
                 .show();
         form.setEditable(false);
         registerButton.setEnabled(false);
-        String body = String.format("Registration request from %s %s for the role of %s\n\n\n", firstNameField.getValue(), lastNameField.getValue(), wishedRole.getValue());
+        String body = String.format("Registration request from %s %s for the role of %s\nemail: %s\n\n", firstNameField.getValue(), lastNameField.getValue(), wishedRole.getValue(),emailField.getValue());
         try {
             EmailInfo email = EmailInfoBuilder.create()
                     .setSubject("User registration request: " + user.getUsername())

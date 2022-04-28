@@ -60,7 +60,7 @@
                                 dataContainer="tokensDc"
                                 id="tokTable">
                             <columns>
-                                <column id="token" property="token" editable="true"></column>
+                                <column id="token" property="token" editable="true"/>
                             </columns>
                         </dataGrid>
                         <label/>
@@ -74,18 +74,19 @@
                                 dataContainer="tokensDc"
                                 id="mailTable">
                             <columns>
-                                <column id="recipients" property="recipients" editable="true"></column>
+                                <column id="recipients" property="recipients" editable="true"/>
                             </columns>
                         </dataGrid>
                         <label/>
                     </vbox>
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
-                        <label stylename="h2" value="Export budget" />
+                        <label stylename="h2" value="Manual Actuals Loading" />
                         <hbox spacing="true" stylename="card" margin="true" width="100%">
-                            <label value="Pick a budget"/>
-                            <comboBox id="cmbBudget" align="MIDDLE_LEFT"/>
-                            <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>
-                            <button id="testExporftXL" caption="(temp) Test XL" align="BOTTOM_RIGHT"/>
+<!--                            <label value="Pick a budget"/>-->
+<!--                            <comboBox id="cmbBudget" align="MIDDLE_LEFT"/>-->
+<!--                            <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>-->
+                            <button id="btnUploadActual" caption="Upload Actuals" align="BOTTOM_RIGHT"/>
+<!--                            <button id="testExporftXL" caption="(temp) Test XL" align="BOTTOM_RIGHT"/>-->
                         </hbox>
                         <label/>
                     </vbox>

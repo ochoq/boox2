@@ -65,8 +65,30 @@ public class User implements JmixUserDetails, HasTimeZone {
     @Column(name = "REQUESTED_ROLE")
     private String requestedRole;
 
+    @Column(name = "PWD_RESET_TOKEN")
+    private String pwdResetToken;
+
+    @Column(name = "PWD_RESET_PENDING")
+    private Boolean pwdResetPending;
+
     @Transient
     protected Collection<? extends GrantedAuthority> authorities;
+
+    public Boolean getPwdResetPending() {
+        return pwdResetPending;
+    }
+
+    public void setPwdResetPending(Boolean pwdResetPending) {
+        this.pwdResetPending = pwdResetPending;
+    }
+
+    public String getPwdResetToken() {
+        return pwdResetToken;
+    }
+
+    public void setPwdResetToken(String pwdResetToken) {
+        this.pwdResetToken = pwdResetToken;
+    }
 
     public String getRequestedRole() {
         return requestedRole;

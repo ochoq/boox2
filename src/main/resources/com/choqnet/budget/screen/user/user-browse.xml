@@ -56,6 +56,9 @@
                 <column id="activationToken"/>
                 <column id="needsActivation"/>
                 <column id="requestedRole"/>
+                <column id="pwdResetToken" />
+                <column id="pwdResetPending"/>
+
                 <column id="timeZoneId"/>
                 <column id="active"/>
             </columns>

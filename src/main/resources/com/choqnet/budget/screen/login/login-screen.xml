@@ -54,6 +54,7 @@
                             stylename="jmix-login-submit-button"/>
                     <label/>
                     <linkButton id="registration" caption="Not registered already? Request access"/>
+                    <linkButton id="resetPassword" caption="Password lost?"/>
                 </vbox>
             </vbox>
         </vbox>

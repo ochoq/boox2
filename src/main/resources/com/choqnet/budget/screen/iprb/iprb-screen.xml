@@ -47,7 +47,6 @@
                 <button id="iPRBsTableRefreshBtn" action="iPRBsTable.refresh"/>
                 <button id="btnCreate" caption="Create" icon="CREATE_ACTION"/>
                 <button id="iPRBsTableBulkEditBtn" action="iPRBsTable.bulkEdit"/>
-                <button id="iPRBsTableRemoveBtn" action="iPRBsTable.remove"/>
                 <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
                 <button id="btnClose" caption="Close" icon="CLOSE"/>
                 <button id="iPRBsTableExcelExportBtn" action="iPRBsTable.excelExport"/>

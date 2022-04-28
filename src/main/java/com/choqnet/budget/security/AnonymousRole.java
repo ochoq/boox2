@@ -6,6 +6,6 @@ import io.jmix.securityui.role.annotation.ScreenPolicy;
 @ResourceRole(name = "AnonymousRole", code = AnonymousRole.CODE, scope = "UI")
 public interface AnonymousRole {
     String CODE = "anonymous-role";
-    @ScreenPolicy(screenIds = {"UserActivation","UserRegistration"})
+    @ScreenPolicy(screenIds = {"UserActivation","UserRegistration","ResetPassword","CapturePwd"})
     void screens();
 }

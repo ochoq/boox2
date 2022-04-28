@@ -6,19 +6,18 @@ import com.choqnet.budget.app.MainProcessBean;
 import com.choqnet.budget.app.UMsgBean;
 import com.choqnet.budget.communications.UserNotification;
 import com.choqnet.budget.entity.*;
+import com.choqnet.budget.screen.popups.uploadactuals.UploadActuals;
 import io.jmix.core.DataManager;
 import io.jmix.core.FileStorage;
 import io.jmix.core.SaveContext;
 import io.jmix.ui.Dialogs;
 import io.jmix.ui.Notifications;
+import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.action.DialogAction;
 import io.jmix.ui.component.*;
 import io.jmix.ui.download.Downloader;
 import io.jmix.ui.model.CollectionLoader;
-import io.jmix.ui.screen.Screen;
-import io.jmix.ui.screen.Subscribe;
-import io.jmix.ui.screen.UiController;
-import io.jmix.ui.screen.UiDescriptor;
+import io.jmix.ui.screen.*;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
@@ -51,8 +50,8 @@ public class ControlTower extends Screen {
     private Notifications notifications;
     @Autowired
     private DataManager dataManager;
-    @Autowired
-    private ComboBox<Budget> cmbBudget;
+//    @Autowired
+//    private ComboBox<Budget> cmbBudget;
     @Autowired
     private FileStorage fileStorage;
     @Autowired
@@ -80,17 +79,19 @@ public class ControlTower extends Screen {
     private Label<String> lblTitre;
     @Autowired
     private Dialogs dialogs;
+    @Autowired
+    private ScreenBuilders screenBuilders;
 
 
     // *** Initialisations
     @Subscribe
     public void onInit(InitEvent event) {
-        List<Budget> budgets = dataManager.load(Budget.class)
-                .query("select e from Budget e order by e.year desc, e.name asc")
-                .list();
-        cmbBudget.setOptionsList(budgets);
-        Optional<Budget> prefBudget = budgets.stream().filter(Budget::getPreferred).findFirst();
-        prefBudget.ifPresent(value -> cmbBudget.setValue(value));
+//        List<Budget> budgets = dataManager.load(Budget.class)
+//                .query("select e from Budget e order by e.year desc, e.name asc")
+//                .list();
+//        cmbBudget.setOptionsList(budgets);
+//        Optional<Budget> prefBudget = budgets.stream().filter(Budget::getPreferred).findFirst();
+//        prefBudget.ifPresent(value -> cmbBudget.setValue(value));
         // loads token
         tokensDl.load();
         // loads message for edition
@@ -141,30 +142,30 @@ public class ControlTower extends Screen {
         umb.publishEvent(new UserNotification(this, txtMessage.getValue()));
     }
 
-    @Subscribe("btnExportBudget")
-    public void onBtnExportBudgetClick(Button.ClickEvent event) {
-        // launches the export of the budget Excel file
-        Template template = dataManager.load(Template.class)
-                .query("select e from Template e where e.code = 'MSBUDGET'")
-                .list().get(0);
-        try {
-            wb = new XSSFWorkbook(fileStorage.openStream(template.getFile()));
-            wb = xLUtils.processFile(wb, cmbBudget.getValue());
-            File directory = new File("tmp");
-            directory.mkdir();
-            FileOutputStream outFile = new FileOutputStream("tmp\\tmp_budget.xlsx");
-            wb.write(outFile);
-            outFile.close();
-
-            String filePath = "tmp\\tmp_budget.xlsx";
-            // file to byte[], File -> Path
-            File file2 = new File(filePath);
-            byte[] bytes2 = Files.readAllBytes(file2.toPath());
-            downloader.download(bytes2, "MS Budget - Acceptance.xlsx");
-        } catch (IOException e) {
-            log.error("Error", e);
-        }
-    }
+//    @Subscribe("btnExportBudget")
+//    public void onBtnExportBudgetClick(Button.ClickEvent event) {
+//        // launches the export of the budget Excel file
+//        Template template = dataManager.load(Template.class)
+//                .query("select e from Template e where e.code = 'MSBUDGET'")
+//                .list().get(0);
+//        try {
+//            wb = new XSSFWorkbook(fileStorage.openStream(template.getFile()));
+//            wb = xLUtils.processFile(wb, cmbBudget.getValue());
+//            File directory = new File("tmp");
+//            directory.mkdir();
+//            FileOutputStream outFile = new FileOutputStream("tmp\\tmp_budget.xlsx");
+//            wb.write(outFile);
+//            outFile.close();
+//
+//            String filePath = "tmp\\tmp_budget.xlsx";
+//            // file to byte[], File -> Path
+//            File file2 = new File(filePath);
+//            byte[] bytes2 = Files.readAllBytes(file2.toPath());
+//            downloader.download(bytes2, "MS Budget - Acceptance.xlsx");
+//        } catch (IOException e) {
+//            log.error("Error", e);
+//        }
+//    }
 
     @Subscribe("cleanTeams")
     public void onCleanTeamsClick(Button.ClickEvent event) {
@@ -241,79 +242,79 @@ public class ControlTower extends Screen {
     }
 
     // temp
-    @Subscribe("testExporftXL")
-    public void onTestExporftXLClick(Button.ClickEvent event) {
-        try {
-            wb = new XSSFWorkbook();
-
-            XSSFSheet sheet = wb.createSheet();
-
-            int nbRow = 10;
-            int nbCol = 10;
-            String tempFileName = "tmp\\tmp_test.xlsx";
-            // Set which area the table should be placed in
-            AreaReference reference = wb.getCreationHelper().createAreaReference(
-                    new CellReference(0, 0), new CellReference(nbRow-1, nbCol-1));
-            // Create
-            XSSFTable table = sheet.createTable(reference);
-            // fix references
-            for (int i=1; i<nbRow; i++ ) {
-                table.getCTTable().getTableColumns().getTableColumnArray(i).setId(i+1);
-            }
-            table.setName("IPRB");
-            table.setDisplayName("Test_IPRB");
-
-            // For now, create the initial style in a low-level way
-            table.getCTTable().addNewTableStyleInfo();
-            table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-
-            // Style the table
-            XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-            style.setName("TableStyleMedium2");
-            style.setShowColumnStripes(false);
-            style.setShowRowStripes(true);
-            style.setFirstColumn(true);
-            style.setLastColumn(false);
-            style.setShowRowStripes(true);
-            style.setShowColumnStripes(false);
-
-            // Set the values for the table
-            XSSFRow row;
-            XSSFCell cell;
-            for (int i = 0; i < nbRow; i++) {
-                // Create row
-                row = sheet.createRow(i);
-                for (int j = 0; j < nbCol; j++) {
-                    // Create cell
-                    cell = row.createCell(j);
-                    if (i == 0) {
-                        cell.setCellValue("Column" + (j + 1));
-
-                    } else {
-                        if (j==0) {
-                            cell.setCellFormula(getSumFormula(i,0,i,nbCol-2));
-                        } else {
-                            cell.setCellValue((i + 1.0) * (j + 1.0));
-                        }
-                    }
-                }
-            }
-
-            File directory = new File("tmp");
-            directory.mkdir();
-            FileOutputStream outFile = new FileOutputStream(tempFileName);
-            wb.write(outFile);
-            outFile.close();
-
-            byte[] bytes = Files.readAllBytes(Paths.get(tempFileName));
-            // file to byte[], File -> Path
-            File file2 = new File(tempFileName);
-            byte[] bytes2 = Files.readAllBytes(file2.toPath());
-            downloader.download(bytes2, "Test File.xlsx");
-        } catch (IOException e) {
-            log.error("Error", e);
-        }
-    }
+//    @Subscribe("testExporftXL")
+//    public void onTestExporftXLClick(Button.ClickEvent event) {
+//        try {
+//            wb = new XSSFWorkbook();
+//
+//            XSSFSheet sheet = wb.createSheet();
+//
+//            int nbRow = 10;
+//            int nbCol = 10;
+//            String tempFileName = "tmp\\tmp_test.xlsx";
+//            // Set which area the table should be placed in
+//            AreaReference reference = wb.getCreationHelper().createAreaReference(
+//                    new CellReference(0, 0), new CellReference(nbRow-1, nbCol-1));
+//            // Create
+//            XSSFTable table = sheet.createTable(reference);
+//            // fix references
+//            for (int i=1; i<nbRow; i++ ) {
+//                table.getCTTable().getTableColumns().getTableColumnArray(i).setId(i+1);
+//            }
+//            table.setName("IPRB");
+//            table.setDisplayName("Test_IPRB");
+//
+//            // For now, create the initial style in a low-level way
+//            table.getCTTable().addNewTableStyleInfo();
+//            table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
+//
+//            // Style the table
+//            XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
+//            style.setName("TableStyleMedium2");
+//            style.setShowColumnStripes(false);
+//            style.setShowRowStripes(true);
+//            style.setFirstColumn(true);
+//            style.setLastColumn(false);
+//            style.setShowRowStripes(true);
+//            style.setShowColumnStripes(false);
+//
+//            // Set the values for the table
+//            XSSFRow row;
+//            XSSFCell cell;
+//            for (int i = 0; i < nbRow; i++) {
+//                // Create row
+//                row = sheet.createRow(i);
+//                for (int j = 0; j < nbCol; j++) {
+//                    // Create cell
+//                    cell = row.createCell(j);
+//                    if (i == 0) {
+//                        cell.setCellValue("Column" + (j + 1));
+//
+//                    } else {
+//                        if (j==0) {
+//                            cell.setCellFormula(getSumFormula(i,0,i,nbCol-2));
+//                        } else {
+//                            cell.setCellValue((i + 1.0) * (j + 1.0));
+//                        }
+//                    }
+//                }
+//            }
+//
+//            File directory = new File("tmp");
+//            directory.mkdir();
+//            FileOutputStream outFile = new FileOutputStream(tempFileName);
+//            wb.write(outFile);
+//            outFile.close();
+//
+//            byte[] bytes = Files.readAllBytes(Paths.get(tempFileName));
+//            // file to byte[], File -> Path
+//            File file2 = new File(tempFileName);
+//            byte[] bytes2 = Files.readAllBytes(file2.toPath());
+//            downloader.download(bytes2, "Test File.xlsx");
+//        } catch (IOException e) {
+//            log.error("Error", e);
+//        }
+//    }
 
     private String getSumFormula(int rStart, int cStart, int rEnd, int cEnd) {
         return "SUM(" + xCell(rStart, cStart) + ":" + xCell(rEnd, cEnd) + ")";
@@ -421,6 +422,21 @@ public class ControlTower extends Screen {
         dataManager.save(sc);
         notifications.create().withDescription("Done").show();
 
+    }
+
+    @Subscribe("btnUploadActual")
+    public void onBtnUploadActualClick(Button.ClickEvent event) {
+        UploadActuals uploadActuals = screenBuilders.screen(this)
+                .withScreenClass(UploadActuals.class)
+                .withOpenMode(OpenMode.DIALOG)
+                .withAfterCloseListener(e -> {
+                    notifications.create()
+                            .withDescription("Manual Actuals Loader closed.")
+                            .withType(Notifications.NotificationType.TRAY)
+                            .show();
+                })
+                .build();
+        uploadActuals.show();
     }
 
 }

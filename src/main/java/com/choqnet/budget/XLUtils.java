@@ -113,7 +113,7 @@ public class XLUtils {
 
 
     // *** Utility Functions
-    private String readCell(Cell c) {
+    public String readCell(Cell c) {
         if (c == null) {
             return "";
         }

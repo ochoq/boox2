@@ -56,6 +56,16 @@ public class RegistrationService {
         return savedUser;
     }
 
+
+    public User getUserByUserName(String userName) {
+        User user = unconstrainedDataManager.load(User.class)
+                .query("select e from User e where e.username = :userName")
+                .parameter("userName", userName)
+                .optional()
+                .orElse(null);
+        return (user);
+    }
+
     private String getShortRole(String fullRole) {
         switch (fullRole) {
             case "Product Manager":
@@ -89,11 +99,19 @@ public class RegistrationService {
         unconstrainedDataManager.save(freshUser);
     }
 
+    public void savePwdResetToken(User user, String pwdResetToken) {
+        User freshUser = unconstrainedDataManager.load(User.class)
+                .id(user.getId())
+                .one();
+        freshUser.setPwdResetToken(pwdResetToken);
+        freshUser.setPwdResetPending(true);
+        unconstrainedDataManager.save(freshUser);
+    }
+
     public void sendActivationEmail(User user) {
         user = unconstrainedDataManager.load(User.class)
                 .id(user.getId())
                 .one();
-
         String activationLink = "https://boox.worldline-solutions.com/boox/#activate?token=" + user.getActivationToken();
         //String activationLink = "http://localhost:8080/#activate?token=" + user.getActivationToken();
         String body = String.format("Hello, %s %s.\nYour Boox activation link is: %s\nClick it to finish your registration.\nYour id is %s\n\nYou can find more information here: %s\n\n\n",
@@ -122,10 +140,51 @@ public class RegistrationService {
         }
     }
 
+    public void sendPwdResetEmail(User user) {
+        user = unconstrainedDataManager.load(User.class)
+                .id(user.getId())
+                .one();
+        log.info("Reset Password Email Emulator ");
+
+        String pwdResetLink = "https://boox.worldline-solutions.com/boox/#pwdreset?token=" + user.getPwdResetToken();
+        //String pwdResetLink = "http://localhost:8080/#pwdreset?token=" + user.getPwdResetToken();
+        String body = String.format("Hello, %s %s.\nThe link to change your password is: %s\n\n\n",
+                user.getFirstName(),
+                user.getLastName(),
+                pwdResetLink
+        );
+        try {
+            EmailInfo email = EmailInfoBuilder.create()
+                    .setSubject("<<==-- Boox Password Reset --==>>")
+                    .setBody(body)
+                    .setAddresses(user.getEmail())
+                    .build();
+
+            emailer.sendEmail(email);
+        } catch (EmailException e) {
+            //e.printStackTrace();
+            log.info("");
+            log.warn("Email problem");
+            log.info("Password Reset Information:");
+            log.info("User: " + user.getUsername());
+            log.info("Link: " + pwdResetLink);
+            log.info("");
+        }
+    }
+
     @Nullable
     public User loadUserByActivationToken(String token) {
         return unconstrainedDataManager.load(User.class)
                 .query("select u from User u where u.activationToken = :token and u.needsActivation = true")
+                .parameter("token", token)
+                .optional()
+                .orElse(null);
+    }
+
+    @Nullable
+    public User loadUserByPwdResetToken(String token) {
+        return unconstrainedDataManager.load(User.class)
+                .query("select u from User u where u.pwdResetToken = :token and u.pwdResetPending = true")
                 .parameter("token", token)
                 .optional()
                 .orElse(null);
@@ -163,6 +222,15 @@ public class RegistrationService {
         }
     }
 
+    public void recordPassword(User user, String password) {
+        user = unconstrainedDataManager.load(User.class)
+                .id(user.getId())
+                .one();
+        user.setPassword(passwordEncoder.encode(password));
+        user.setPwdResetPending(false);
+        user.setPwdResetToken(null);
+        unconstrainedDataManager.save(user);
+    }
     private RoleAssignmentEntity createRoleAssignment(User user, String roleCode, String roleType) {
         RoleAssignmentEntity roleAssignmentEntity = unconstrainedDataManager.create(RoleAssignmentEntity.class);
         roleAssignmentEntity.setRoleCode(roleCode);

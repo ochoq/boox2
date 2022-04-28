@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <createTable tableName="XL_ACTUAL">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_XL_ACTUAL"/>
+            </column>
+            <column name="QUARTER" type="VARCHAR(255)"/>
+            <column name="YEAR_" type="VARCHAR(255)"/>
+            <column name="TEAM_ID" type="UUID"/>
+            <column name="IPRB_ID" type="UUID"/>
+            <column name="EFFORT" type="DOUBLE"/>
+            <column name="BUDGET_COST" type="DOUBLE"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <createIndex indexName="IDX_XLACTUAL_IPRB_ID" tableName="XL_ACTUAL">
+            <column name="IPRB_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="IPRB_ID" baseTableName="XL_ACTUAL"
+                                 constraintName="FK_XL_ACTUAL_ON_IPRB" onDelete="CASCADE" referencedColumnNames="ID"
+                                 referencedTableName="IPRB"/>
+    </changeSet>
+    <changeSet id="3" author="boox">
+        <createIndex indexName="IDX_XLACTUAL_TEAM_ID" tableName="XL_ACTUAL">
+            <column name="TEAM_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="TEAM_ID" baseTableName="XL_ACTUAL"
+                                 constraintName="FK_XL_ACTUAL_ON_TEAM" onDelete="CASCADE" referencedColumnNames="ID"
+                                 referencedTableName="TEAM"/>
+    </changeSet>
+</databaseChangeLog>

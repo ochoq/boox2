@@ -139,7 +139,6 @@ public class BudgetScreen extends Screen {
                 clonedDetails.add(cloneDetail(detail, clonedProgress, clonedBudget));
             }
             clonedProgress.setDetails(clonedDetails);
-
             dataManager.save(clonedProgress);
         }
         // refreshes the display

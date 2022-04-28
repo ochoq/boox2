@@ -30,7 +30,9 @@
         <filter id="filter" columnsCount="3" dataLoader="worklogsDl">
             <properties include=".*"/>
         </filter>
-        <pagination itemsPerPageDefaultValue="100" itemsPerPageOptions="100, 500, 1000, 5000, 10000, 50000"
+        <pagination itemsPerPageDefaultValue="100"
+                    itemsPerPageOptions="100, 500, 1000, 5000, 10000, 50000"
+                    itemsPerPageUnlimitedOptionVisible="true"
                     itemsPerPageVisible="true" id="pagination">
             <loaderProvider loaderId="worklogsDl"/>
         </pagination>
@@ -50,17 +52,17 @@
                 <column id="date" property="date"/>
                 <column id="finMonth" property="finMonth"/>
                 <column id="key" property="key"/>
-                <column id="userRef" property="userRef"/>
+                <column id="userRef" property="userRef" caption="User JIRA"/>
                 <column id="userName" property="userName"/>
                 <column id="resType" property="resType"/>
 
                 <column id="teamRef" property="teamRef"/>
                 <column id="team.fullName" property="team.fullName"/>
                 <column id="team.inBudget" property="team.inBudget"/>
-                <column id="team.simplePlatform" property="team.simplePlatform"/>
+                <column id="team.simplePlatform" property="team.simplePlatform" caption="Platform"/>
                 <column id="team.tDomain" property="team.tDomain"/>
 
-                <column id="initRef" property="initRef"/>
+                <column id="initRef" property="initRef" caption="Init #"/>
                 <column id="initiative" property="initiative"/>
                 <column id="category" property="category"/>
                 <column id="initStatus" property="initStatus"/>
