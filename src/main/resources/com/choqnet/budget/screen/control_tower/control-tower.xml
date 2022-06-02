@@ -35,7 +35,7 @@
 
         <tabSheet id="screen" responsive="true">
             <tab caption="General Tools" id="misc" spacing="true" margin="true,false,false,false">
-                <flowBox  spacing="true" width="100%" height="100%">
+                <flowBox spacing="true" width="100%" height="100%">
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
                         <label stylename="h2" value="Send message to connected users"/>
                         <label value="Type your message here ..."/>
@@ -43,7 +43,7 @@
                         <button id="btnSendMessage" caption="Send"/>
                         <label/>
                     </vbox>
-                    <vbox stylename="card" spacing="true" margin="true" width="700px" >
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
                         <label stylename="h2" value="Home Page Message"/>
                         <richTextArea
                                 editable="true"
@@ -80,20 +80,19 @@
                         <label/>
                     </vbox>
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
-                        <label stylename="h2" value="Manual Actuals Loading" />
+                        <label stylename="h2" value="Manual SAP / Excel Actuals Loading"/>
                         <hbox spacing="true" stylename="card" margin="true" width="100%">
-<!--                            <label value="Pick a budget"/>-->
-<!--                            <comboBox id="cmbBudget" align="MIDDLE_LEFT"/>-->
-<!--                            <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>-->
+                            <!--                            <label value="Pick a budget"/>-->
+                            <!--                            <comboBox id="cmbBudget" align="MIDDLE_LEFT"/>-->
+                            <!--                            <button id="btnExportBudget" caption="Export Budget" align="BOTTOM_RIGHT"/>-->
                             <button id="btnUploadActual" caption="Upload Actuals" align="BOTTOM_RIGHT"/>
-<!--                            <button id="testExporftXL" caption="(temp) Test XL" align="BOTTOM_RIGHT"/>-->
+                            <!--                            <button id="testExporftXL" caption="(temp) Test XL" align="BOTTOM_RIGHT"/>-->
                         </hbox>
                         <label/>
                     </vbox>
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
                         <label stylename="h2" value="Technical Processes"/>
                         <hbox spacing="true" stylename="card" margin="true" width="100%">
-                            <button caption="Get JIRA teams" id="btnTeams"/>
                             <button id="cleanTeams" caption="Clean Teams Hierarchy"/>
                         </hbox>
                         <label/>
@@ -107,26 +106,20 @@
                         </hbox>
                         <label/>
                     </vbox>
+
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
-                        <label id="lblEmail" stylename="h2" value="Email in lowercase"/>
+                        <label stylename="h2" value="Finance Data Maintenance"/>
                         <hbox spacing="true" stylename="card" margin="true" width="100%">
-                            <button id="btnEmail" caption="Downsize email addresses"/>
+                            <button id="btnCosts" caption="Set Worklogs and Actuals Costs"/>
+                            <button id="btnDummy" caption="Update Capacity, Detail, Progress"/>
                         </hbox>
                         <label/>
                     </vbox>
 
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
-                        <label stylename="h2" value="Set Costs for Actuals and Worklogs (2022)"/>
+                        <label stylename="h2" value="Free ..."/>
                         <hbox spacing="true" stylename="card" margin="true" width="100%">
-                            <button id="btnCosts" caption="Initialize Cost Data"/>
-                        </hbox>
-                        <label/>
-                    </vbox>
 
-                    <vbox stylename="card" spacing="true" margin="true" width="700px">
-                        <label stylename="h2" value="Maintenance Task"/>
-                        <hbox spacing="true" stylename="card" margin="true" width="100%">
-                            <button id="btnDummy" caption="Initialize costs"/>
                         </hbox>
                         <label/>
                     </vbox>
@@ -192,7 +185,6 @@
 
             </tab>
         </tabSheet>
-
 
 
         <label stylename="h2" value="Boox by ChoqNet"/>

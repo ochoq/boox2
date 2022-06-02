@@ -6,7 +6,7 @@
             <fetchPlan extends="_base"/>
             <loader id="setupsDl">
                 <query>
-                    <![CDATA[select e from Setup e]]>
+                    <![CDATA[select e from Setup e order by e.name asc]]>
                 </query>
             </loader>
         </collection>
@@ -22,19 +22,29 @@
                 <action id="create" type="create"/>
                 <action id="remove" type="remove"/>
                 <action id="excelExport" type="excelExport"/>
+                <action id="refresh" type="refresh"/>
             </actions>
             <buttonsPanel alwaysVisible="true">
                 <button id="setupsTableBulkEditBtn" action="setupsTable.bulkEdit"/>
                 <button id="setupsTableCreateBtn" action="setupsTable.create"/>
                 <button id="setupsTableRemoveBtn" action="setupsTable.remove"/>
                 <button id="setupsTableExcelExportBtn" action="setupsTable.excelExport"/>
+                <button id="setupsTableRefreshBtn" action="setupsTable.refresh"/>
             </buttonsPanel>
             <columns>
                 <column id="name" property="name"/>
                 <column id="wd2022" property="wd2022"/>
                 <column id="wd2023" property="wd2023"/>
-                <column id="r2022" property="r2022"/>
-                <column id="r2023" property="r2023"/>
+                <column id="r2022" property="r2022" editable="false"/>
+                <column id="r2023" property="r2023" editable="false"/>
+                <column property="r2022Q1" id="r2022Q1"/>
+                <column property="r2022Q2" id="r2022Q2"/>
+                <column property="r2022Q3" id="r2022Q3"/>
+                <column property="r2022Q4" id="r2022Q4"/>
+                <column property="r2023Q1" id="r2023Q1"/>
+                <column property="r2023Q2" id="r2023Q2"/>
+                <column property="r2023Q3" id="r2023Q3"/>
+                <column property="r2023Q4" id="r2023Q4"/>
             </columns>
         </dataGrid>
     </layout>

@@ -84,10 +84,10 @@ public class CapacityScreen extends Screen {
                 .setStyleProvider(capacity -> {
                     return "ce2r";
                 });
-        capacitiesTable.getColumn("rateY")
-                .setStyleProvider(capacity -> {
-                    return "ce2r";
-                });
+//        capacitiesTable.getColumn("rateY")
+//                .setStyleProvider(capacity -> {
+//                    return "cror";
+//                });
         for (int i =1; i < 5; i++) {
             int finalI = i;
             capacitiesTable.getColumn("mdQ" + i)
@@ -95,6 +95,8 @@ public class CapacityScreen extends Screen {
                         return budget.getCloseQx(finalI) ? "cror" : "ce1r";
                     });
             capacitiesTable.getColumn("fteQ" + i)
+                    .setStyleProvider(capacity ->  "cror");
+            capacitiesTable.getColumn("rateQ" + i)
                     .setStyleProvider(capacity ->  "cror");
         }
         capacitiesTable.getHeaderRow(0).getCell("nbWorkingDays").setStyleName("h1r");
@@ -107,7 +109,11 @@ public class CapacityScreen extends Screen {
         capacitiesTable.getHeaderRow(0).getCell("mdQ2").setStyleName("h1r");
         capacitiesTable.getHeaderRow(0).getCell("mdQ3").setStyleName("h1r");
         capacitiesTable.getHeaderRow(0).getCell("mdQ4").setStyleName("h1r");
-        capacitiesTable.getHeaderRow(0).getCell("rateY").setStyleName("h1r");
+        //capacitiesTable.getHeaderRow(0).getCell("rateY").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("rateQ1").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("rateQ2").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("rateQ3").setStyleName("h1r");
+        capacitiesTable.getHeaderRow(0).getCell("rateQ4").setStyleName("h1r");
     }
 
     // *** UI functions

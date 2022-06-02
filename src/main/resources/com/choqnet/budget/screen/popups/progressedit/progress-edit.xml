@@ -33,6 +33,14 @@
                 </query>
             </loader>
         </collection>
+        <collection id="followUpsDc" class="com.choqnet.budget.entity.FollowUp">
+            <fetchPlan extends="_base"/>
+            <loader id="followUpsDl">
+                <query>
+                    <![CDATA[select e from FollowUp e]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <layout spacing="true" expand="screen">
         <label stylename="h1" id="lblTitle"/>
@@ -48,14 +56,22 @@
                     <button id="btnClone" caption="Clone selected"/>
                     <button id="btnChangeIPRB" caption="Change IPRB"
                             icon="font-icon:EXCHANGE" visible="true"/>
+                    <button id="detailsTableExcelExportBtn" action="detailsTable.excelExport"/>
+                    <checkBox id="chkCost" caption="Show Costs" align="MIDDLE_RIGHT" />
                 </hbox>
                 <dataGrid id="detailsTable"
                           width="100%"
                           editorEnabled="true"
                           editorBuffered="true"
                           dataContainer="detailsDc">
+                    <actions>
+                        <action id="excelExport" type="excelExport"/>
+                    </actions>
                     <columns>
                         <column id="team" property="team">
+                            <componentRenderer/>
+                        </column>
+                        <column id="linkToTeam" width="50px">
                             <componentRenderer/>
                         </column>
                         <column id="topic" property="topic"/>
@@ -75,6 +91,10 @@
                         <column id="jira" property="jira">
                             <componentRenderer/>
                         </column>
+                        <column id="budgetCostQ1" property="budgetCostQ1"/>
+                        <column id="budgetCostQ2" property="budgetCostQ2"/>
+                        <column id="budgetCostQ3" property="budgetCostQ3"/>
+                        <column id="budgetCostQ4" property="budgetCostQ3"/>
                     </columns>
                 </dataGrid>
             </tab>
@@ -97,6 +117,22 @@
                         <column id="amountKEuro" property="amountKEuro"/>
                         <column id="capex" property="capex"/>
                         <column id="accepted" property="accepted"/>
+                    </columns>
+                </dataGrid>
+            </tab>
+            <tab id="followup" caption="Actuals Follow-Up" spacing="true" expand="followUpsTable" >
+                <dataGrid id="followUpsTable" width="100%" dataContainer="followUpsDc">
+                    <columns>
+                        <column id="team" property="team"/>
+                        <column id="demandQ1" property="demandQ1"/>
+                        <column id="demandQ2" property="demandQ2"/>
+                        <column id="demandQ3" property="demandQ3"/>
+                        <column id="demandQ4" property="demandQ4"/>
+                        <column id="actualQ1" property="actualQ1"/>
+                        <column id="actualQ2" property="actualQ2"/>
+                        <column id="actualQ3" property="actualQ3"/>
+                        <column id="actualQ4" property="actualQ4"/>
+
                     </columns>
                 </dataGrid>
             </tab>

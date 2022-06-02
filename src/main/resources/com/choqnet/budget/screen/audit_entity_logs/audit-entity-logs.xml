@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://auditEntityLogs.caption">
+    <data>
+        <collection id="entityLogItemsDc" class="io.jmix.audit.entity.EntityLogItem">
+            <fetchPlan extends="_base">
+                <property name="entityRef" fetchPlan="_base"/>
+                <property name="attributes" fetchPlan="_base">
+                    <property name="name"/>
+                    <property name="value"/>
+                    <property name="oldValue"/>
+                </property>
+            </fetchPlan>
+            <loader id="entityLogItemsDl">
+                <query>
+                    <![CDATA[select e from audit_EntityLog e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="entityLogItemsTable" >
+        <label stylename="h1" value="Global History of Changes"/>
+        <filter id="filter" columnsCount="3" dataLoader="entityLogItemsDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="entityLogItemsTable"
+                  width="100%"
+                  dataContainer="entityLogItemsDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="entityLogItemsTableExcelExportBtn" action="entityLogItemsTable.excelExport"/>
+            </buttonsPanel>
+            <columns>
+                <column id="eventTs" property="eventTs"/>
+                <column id="username" property="username"/>
+                <column id="type" property="type"/>
+                <column id="entity" property="entity"/>
+                <column id="entityRef.entityId" property="entityRef.entityId"/>
+                <column id="entityRef.stringEntityId" property="entityRef.stringEntityId"/>
+                <column id="entityRef.intEntityId" property="entityRef.intEntityId"/>
+                <column id="entityRef.longEntityId" property="entityRef.longEntityId"/>
+                <column id="entityInstanceName" property="entityInstanceName"/>
+                <column id="changes" property="changes"/>
+                <column id="sysTenantId" property="sysTenantId"/>
+                <column id="attributes" property="attributes"/>
+            </columns>
+        </dataGrid>
+    </layout>
+</window>

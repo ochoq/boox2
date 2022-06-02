@@ -178,13 +178,6 @@ public class ControlTower extends Screen {
         }
     }
 
-    @Subscribe("btnTeams")
-    public void onBtnTeamsClick(Button.ClickEvent event) {
-        mainProcessBean.getJiraTeams();
-        notifications.create().withDescription("Teams imported.").show();
-
-    }
-
     public void createPeople() {
         String input = "amaury;kervyn;akervyn;amaury.kervyn@ingenico.comµanders;ohlander;aohlander;anders.ohlander@worldline.comµArvind;Singh;asingh;Arvind.Singh@ingenico.comµArni;Smit;asmit;Arni.Smit@epay.ingenico.comµAnne-Claude;TICHAUER;atichauer;Anne-Claude.TICHAUER@ingenico.comµbernd;hingst;bhingst;bernd.hingst@six-group.comµCedric;Donckels;cdonckels;Cedric.Donckels@ingenico.comµchrista;hediger;chediger;christa.hediger@worldline.comµcamile;telles;ctelles;camile.telles@worldline.comµchloe;tiberghien;ctiberghien;chloe.tiberghien@ingenico.comµCharam;VAZIRI;cvaziri;Charam.VAZIRI@ingenico.comµDavy;LESPAGNOL;dlespagnol;Davy.LESPAGNOL@ingenico.comµDenis;Simonet;dsimonet;Denis.Simonet@ingenico.comµeline;blomme;eblomme;eline.blomme@worldline.comµEric;PICOU;epicou;Eric.PICOU@ingenico.comµemilia;sandahl;esandahl;emilia.sandahl@bambora.comµFederico;deTogni;fdetogni;Federico.deTogni@epay.ingenico.comµFabrizio;Leonardo;fleonardo;Fabrizio.Leonardo@ingenico.comµGeoffroy;GUEULETTE;ggueulette;Geoffroy.GUEULETTE@ingenico.comµGuido;Hendrickx;ghendrickx;Guido.Hendrickx@ingenico.comµGilles;RAYMOND;graymond;Gilles.RAYMOND@ingenico.comµJagdish;Kumar;jkumar;Jagdish.Kumar@ingenico.comµJerker;lundberg;jlundberg;Jerker.lundberg@bambora.comµjens;stenvall;jstenvall;jens.stenvall@worldline.comµkhalil;kammoun;kkammoun;khalil.kammoun@six-group.comµKaivalya;Paluskar;kpaluskar;Kaivalya.Paluskar@epay.ingenico.comµkoenraad;vanmelkebeke;kvanmelkebeke;koenraad.vanmelkebeke@worldline.comµlefras;coetzee;lcoetzee;lefras.coetzee@worldline.comµLaurent;LEBOEUF;lleboeuf;Laurent.LEBOEUF@ingenico.comµMourad;BEJAR;mbejar;Mourad.BEJAR@ingenico.comµmartin;boulanger;mboulanger;martin.boulanger@equensworldline.comµMarco;Hauff;mhauff;Marco.Hauff@ingenico.comµmichael;huffman;mhuffman;michael.huffman@bambora.comµMohamed;LACHGUER;mlachguer;Mohamed.LACHGUER@ingenico.comµmariehelene;liegeois;mliegeois;mariehelene.liegeois@worldline.comµmike;ohalloran;mohalloran;mike.ohalloran@bambora.comµMinh-Tuan;Pham;mpham;Minh-Tuan.Pham@ingenico.comµmartin;sunnerstig;msunnerstig;martin.sunnerstig@worldline.comµnils;herloffpetersen;nherloffpetersen;nils.herloffpetersen.external@worldline.comµNicolas;Postal;npostal;Nicolas.Postal@ingenico.comµniklas;rosvall;nrosvall;niklas.rosvall@worldline.comµolivier;blerot;oblerot;olivier.blerot@worldline.comµOhad;SOMJEN;osomjen;Ohad.SOMJEN@ingenico.comµPierre-Olivier;CHAPLAIN;pchaplain;Pierre-Olivier.CHAPLAIN@ingenico.comµPaula;Costa;pcosta;Paula.Costa@epay.ingenico.comµpernilla;grabner;pgrabner;pernilla.grabner@bambora.comµpatrik;osterling;posterling;patrik.osterling@worldline.comµPierre;RIAT;priat;Pierre.RIAT@ingenico.comµPierre;SALIGNAT;psalignat;Pierre.SALIGNAT@ingenico.comµPetra;Steenstra;psteenstra;Petra.Steenstra@ingenico.comµPaul;Taylor;ptaylor;Paul.Taylor1@ingenico.comµpeter;tellram;ptellram;peter.tellram@bambora.comµroman;eugster;reugster;roman.eugster@worldline.comµRui;Nunes;rnunes;Rui.Nunes@epay.ingenico.comµrickard;schoultz;rschoultz;rickard.schoultz@worldline.comµRik;vantHof;rvanthof;Rik.vantHof@epay.ingenico.comµsofia;albertsson;salbertsson;sofia.albertsson@bambora.comµstefaan;degeest;sdegeest;stefaan.degeest@worldline.comµSebastien;Fantone;sfantone;Sebastien.Fantone@ingenico.comµShekhar;Kachole;skachole;Shekhar.Kachole@epay.ingenico.comµsarah;lamarque;slamarque;sarah.lamarque@ingenico.comµSebastien;LETNIOWSKI;sletniowski;Sebastien.LETNIOWSKI@ingenico.comµStanley;Macnack;smacnack;Stanley.Macnack@ingenico.comµStephan;VanGulck;svangulck;Stephan.VanGulck@ingenico.comµSimone;vanSchaik;svanschaik;Simone.vanSchaik@ingenico.comµTeun;Boer;tboer;Teun.Boer@ingenico.comµThejus;Philip;tphilip;Thejus.Philip@ingenico.comµWilly;DeReymaeker;wdereymaeker;Willy.DeReymaeker@ingenico.comµZlatko;Bralic;zbralic;Zlatko.Bralic@ingenico.comµ";
         //String input = "Ariana;delRosario;adelrosario;Ariana.delRosario@ingenico.comµAlexandre;DURET;aduret;Alexandre.DURET@ingenico.comµ";
@@ -325,20 +318,6 @@ public class ControlTower extends Screen {
         return CellReference.convertNumToColString(col + 1) + (row + 1);
     }
 
-    @Subscribe("btnEmail")
-    public void onBtnEmailClick(Button.ClickEvent event) {
-        List<User> users = dataManager.load(User.class).all().list();
-        SaveContext sc  = new SaveContext();
-        for (User user: users) {
-            if (user.getEmail()!= null) {
-                user.setEmail(user.getEmail().toLowerCase());
-                sc.saving(user);
-            }
-        }
-        dataManager.save(sc);
-        notifications.create().withDescription("Done! :-)").show();
-    }
-
     // *** communications
     // --- General Messaging
     @EventListener
@@ -392,34 +371,12 @@ public class ControlTower extends Screen {
             log.info("--> actuals done.");
         }
         log.info("Done");
-        notifications.create().withCaption("Cost Setup Done.").show();
+        notifications.create().withCaption("Actual and Worklog Cost Setup Done for " + months.toString() + ".").show();
     }
 
     @Subscribe("btnDummy")
     public void onBtnDummyClick(Button.ClickEvent event) {
-        SaveContext sc;
-        // programme de maintenance
-        List<Detail> details = dataManager.load(Detail.class).all().fetchPlan("details").list();
-        log.info(details.size() + " details to process");
-        sc = new SaveContext();
-        for (Detail detail: details) {
-            sc.saving(utilBean.setDetailData(detail));
-        }
-        dataManager.save(sc);
-        List<Capacity> capacities = dataManager.load(Capacity.class).all().fetchPlan("capacities").list();
-        log.info(capacities.size() + " capacities to process");
-        sc = new SaveContext();
-        for(Capacity capacity: capacities) {
-            sc.saving(utilBean.setCapacityData(capacity));
-        }
-        dataManager.save(sc);
-        List<Progress> progresses = dataManager.load(Progress.class).all().fetchPlan("progAll").list();
-        log.info(progresses.size() + " progress items to process");
-        sc = new SaveContext();
-        for(Progress progress: progresses) {
-            sc.saving(utilBean.setProgressData(progress));
-        }
-        dataManager.save(sc);
+        utilBean.updateDetailProgressAndCapacity();
         notifications.create().withDescription("Done").show();
 
     }
@@ -431,12 +388,14 @@ public class ControlTower extends Screen {
                 .withOpenMode(OpenMode.DIALOG)
                 .withAfterCloseListener(e -> {
                     notifications.create()
-                            .withDescription("Manual Actuals Loader closed.")
+                            .withDescription("Manual Actuals Loader closed. Please consider to launch an update of the capacities, details and progresses.")
                             .withType(Notifications.NotificationType.TRAY)
                             .show();
                 })
                 .build();
         uploadActuals.show();
     }
+
+
 
 }

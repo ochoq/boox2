@@ -4,6 +4,7 @@ import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.TShirt;
 import com.choqnet.budget.screen.changes.Changes;
+import com.choqnet.budget.screen.popups.capacity_team_details.CapacityTeamDetails;
 import com.choqnet.budget.screen.popups.iprb_chooser.IprbChooser;
 import io.jmix.audit.EntityLog;
 import io.jmix.audit.entity.EntityLogAttr;
@@ -17,6 +18,7 @@ import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.UiComponents;
 import io.jmix.ui.component.*;
 import io.jmix.ui.component.data.ValueSource;
+import io.jmix.ui.icon.JmixIcon;
 import io.jmix.ui.model.CollectionContainer;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
@@ -27,12 +29,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UiController("ProgressEdit")
 @UiDescriptor("progress-edit.xml")
-@DialogMode(width = "98%", height = "98%")
+@DialogMode(width = "100%", height = "100%")
 public class ProgressEdit extends Screen {
     private static final Logger log = LoggerFactory.getLogger(ProgressEdit.class);
     private Progress progress;
@@ -74,11 +79,46 @@ public class ProgressEdit extends Screen {
     private ScreenBuilders screenBuilders;
     @Autowired
     private Notifications notifications;
+    @Autowired
+    private CollectionContainer<FollowUp> followUpsDc;
+    @Autowired
+    private DataGrid<FollowUp> followUpsTable;
+    @Autowired
+    private CheckBox chkCost;
 
     @Subscribe
     public void onInit(InitEvent event) {
         filterDetails.setExpanded(false);
         filterExpenses.setExpanded(false);
+        chkCost.setValue(false);
+        detailsTable.getColumn("budgetCostQ1").setVisible(false);
+        detailsTable.getColumn("budgetCostQ2").setVisible(false);
+        detailsTable.getColumn("budgetCostQ3").setVisible(false);
+        detailsTable.getColumn("budgetCostQ4").setVisible(false);
+
+    }
+
+    @Subscribe
+    public void onAfterShow(AfterShowEvent event) {
+        if(progress!=null) {
+            showFollowUp();
+        }
+        followUpsTable.getColumn("demandQ1").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("demandQ2").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("demandQ3").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("demandQ4").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("actualQ1").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("actualQ2").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("actualQ3").setStyleProvider(e -> "cror");
+        followUpsTable.getColumn("actualQ4").setStyleProvider(e -> "cror");
+//        followUpsTable.getHeaderRow(0).getCell("demandQ1").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("demandQ2").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("demandQ3").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("demandQ4").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("actualQ1").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("actualQ2").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("actualQ3").setStyleName("boldCell");
+//        followUpsTable.getHeaderRow(0).getCell("actualQ4").setStyleName("boldCell");
 
     }
 
@@ -88,7 +128,9 @@ public class ProgressEdit extends Screen {
     public void setContext(Progress passProgress) {
         progress = passProgress;
         budget = progress.getBudget();
-
+        if (progress!= null) {
+            showFollowUp();
+        }
         lblTitle.setValue("Details for " + progress.getIprb().getReference() + " - " + progress.getIprb().getName());
         detailsDl.setQuery("select e from Detail e where e.progress = :progress");
         detailsDl.setParameter("progress", progress);
@@ -137,6 +179,33 @@ public class ProgressEdit extends Screen {
         cb.setOptionsList(dataManager.load(Team.class).query("select e from Team e where e.selectable = true").list());
         return cb;
     }
+
+    @Install(to = "detailsTable.linkToTeam", subject = "columnGenerator")
+    private Component linkTeam(DataGrid.ColumnGeneratorEvent<Detail> cge) {
+        LinkButton linkButton = uiComponents.create(LinkButton.NAME);
+        linkButton.setIconFromSet(JmixIcon.VIEW_ACTION);
+        linkButton.addClickListener(e -> {
+            CapacityTeamDetails capacityTeamDetails = screenBuilders.screen(this)
+                    .withScreenClass(CapacityTeamDetails.class)
+                    .withOpenMode(OpenMode.DIALOG)
+                    .build();
+            capacityTeamDetails.show();
+            Progress prog = cge.getItem().getProgress();
+            capacityTeamDetails.setDirectContext(cge.getItem().getTeam(), budget);
+            closeWithDefaultAction();
+        });
+        return linkButton;
+    }
+
+    @Subscribe("chkCost")
+    public void onChkCostValueChange(HasValue.ValueChangeEvent<Boolean> event) {
+        detailsTable.getColumn("budgetCostQ1").setVisible(event.getValue());
+        detailsTable.getColumn("budgetCostQ2").setVisible(event.getValue());
+        detailsTable.getColumn("budgetCostQ3").setVisible(event.getValue());
+        detailsTable.getColumn("budgetCostQ4").setVisible(event.getValue());
+    }
+
+
 
     // TEAMS - read mode
     @Install(to = "detailsTable.team", subject = "columnGenerator")
@@ -427,5 +496,45 @@ public class ProgressEdit extends Screen {
                 .build();
         changes.show();
         changes.setData(changeHistoryList);
+    }
+
+    public void showFollowUp() {
+        // create the FollowUp records and show them in a table
+        String year = DateTimeFormatter.ofPattern("yyyy").format(LocalDate.now());
+        List<Detail> dets = detailsDc.getItems().stream().filter(e -> e.getPriority().isLessOrEqual(budget.getPrioThreshold())).collect(Collectors.toList());
+        List<Actual> actuals = dataManager.load(Actual.class)
+                .query("select e from Actual e where e.finMonth like 'fin" + year +"%' and e.iprb = :iprb")
+                .parameter("iprb", progress.getIprb())
+                .list();
+        List<XLActual> xlActuals = dataManager.load(XLActual.class)
+                .query("select e from XLActual e where e.iprb = :iprb")
+                .parameter("iprb", progress.getIprb())
+                .list();
+        // get the list of iprb
+        List<FollowUp> followUps = new ArrayList<>();
+        List<Team> teams = Stream.concat(dets.stream().map(e -> e.getTeam()), actuals.stream().map(e -> e.getTeam()).distinct()).collect(Collectors.toList());
+        teams = Stream.concat(teams.stream(), xlActuals.stream().map(e -> e.getTeam())).distinct().collect(Collectors.toList());
+        for (Team team: teams) {
+            if (team!=null) {
+                FollowUp followUp = dataManager.create(FollowUp.class);
+                followUp.setTeam(team);
+                followUp.setTeam(team);
+                followUp.setDemandQ1(dets.stream().filter(e -> team.equals(e.getTeam())).map(e -> e.getMdQ1()).reduce(0.0, Double::sum));
+                followUp.setDemandQ2(dets.stream().filter(e -> team.equals(e.getTeam())).map(e -> e.getMdQ2()).reduce(0.0, Double::sum));
+                followUp.setDemandQ3(dets.stream().filter(e -> team.equals(e.getTeam())).map(e -> e.getMdQ3()).reduce(0.0, Double::sum));
+                followUp.setDemandQ4(dets.stream().filter(e -> team.equals(e.getTeam())).map(e -> e.getMdQ4()).reduce(0.0, Double::sum));
+                followUp.setActualQ1(actuals.stream().filter(e -> team.equals(e.getTeam())).map(e-> e.getValue(year, "Q1")).reduce(0.0,Double::sum) +
+                        xlActuals.stream().filter(e -> team.equals(e.getTeam()) && year.equals(e.getYear()) && "Q1".equals(e.getQuarter())).map(e -> e.getEffort()).reduce(0.0, Double::sum));
+                followUp.setActualQ2(actuals.stream().filter(e -> team.equals(e.getTeam())).map(e-> e.getValue(year, "Q2")).reduce(0.0,Double::sum) +
+                        xlActuals.stream().filter(e -> team.equals(e.getTeam()) && year.equals(e.getYear()) && "Q2".equals(e.getQuarter())).map(e -> e.getEffort()).reduce(0.0, Double::sum));
+                followUp.setActualQ3(actuals.stream().filter(e -> team.equals(e.getTeam())).map(e-> e.getValue(year, "Q3")).reduce(0.0,Double::sum) +
+                        xlActuals.stream().filter(e -> team.equals(e.getTeam()) && year.equals(e.getYear()) && "Q3".equals(e.getQuarter())).map(e -> e.getEffort()).reduce(0.0, Double::sum));
+                followUp.setActualQ4(actuals.stream().filter(e -> team.equals(e.getTeam())).map(e-> e.getValue(year, "Q4")).reduce(0.0,Double::sum) +
+                        xlActuals.stream().filter(e -> team.equals(e.getTeam()) && year.equals(e.getYear()) && "Q4".equals(e.getQuarter())).map(e -> e.getEffort()).reduce(0.0, Double::sum));
+                followUps.add(followUp);
+            }
+        }
+        followUpsDc.setItems(followUps);
+        followUpsTable.repaint();
     }
 }

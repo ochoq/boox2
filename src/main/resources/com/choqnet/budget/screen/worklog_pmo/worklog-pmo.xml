@@ -38,7 +38,7 @@
                 <column id="userRef" property="userRef"/>
                 <column id="userName" property="userName"/>
                 <column id="resType" property="resType"/>
-
+                <column id="costCenterRef" property="costCenterRef"/>
                 <column id="teamRef" property="teamRef"/>
                 <column id="team.fullName" property="team.fullName"/>
                 <column id="team.inBudget" property="team.inBudget"/>

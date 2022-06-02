@@ -64,7 +64,7 @@
                 <column id="parent" property="parent"/>
                 <column id="source" property="source" />
 <!--                <column id="inBudget" property="inBudget"/>-->
-                <column id="sourceName" property="sourceName"/>
+
                 <column id="sourceID" property="sourceID"/>
                 <column id="mainGTM" property="mainGTM"/>
                 <column id="icTarget" property="icTarget"/>
@@ -78,6 +78,7 @@
                 <column id="tDiv" property="tDiv" editable="false"/>
                 <column id="tDomain" property="tDomain" editable="false"/>-->
                 <column id="level" property="level" editable="false"/>
+                <column id="sourceName" property="sourceName"/>
 
                 <!--
                 <column id="fullName" property="fullName" editable="false"/>

@@ -57,11 +57,11 @@ public class Actual {
     @Column(name = "COST_CENTER")
     private String costCenter;
 
-    @NumberFormat(pattern = "#,##0.0")
+    @NumberFormat(pattern = "#,##0.00")
     @Column(name = "EFFORT")
     private Double effort;
 
-    @NumberFormat(pattern = "#,##0.0")
+    @NumberFormat(pattern = "#,##0.000")
     @Column(name = "BUDGET_COST")
     private Double budgetCost;
 
@@ -69,13 +69,13 @@ public class Actual {
         if (team == null || team.getSetup()==null) {
             return 0.0;
         } else {
-            return team.getSetup().getRate(finMonth) * effort / 1000;
+            return team.getSetup().getRateQx(finMonth) * effort / 1000;
         }
         //return budgetCost==null ? 0.0 : budgetCost;
     }
 
     public void setBudgetCost(Double budgetCost) {
-        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRate(finMonth) * effort / 1000;
+        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRateQx(finMonth) * effort / 1000;
     }
     // version w/o value
     public void setBudgetCost() {
@@ -182,7 +182,6 @@ public class Actual {
 
     public String getFinMonth() {
         return finMonth;
-
     }
 
     public void setFinMonth(String finMonth) {
@@ -196,5 +195,29 @@ public class Actual {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public double getValue(String year, String quarter) {
+        if ("Q1".equals(quarter) && (
+                finMonth.equals("fin" + year + "01") || finMonth.equals("fin" + year + "02") || finMonth.equals("fin" + year + "03")
+                )) {
+            return effort;
+        }
+        if ("Q2".equals(quarter) && (
+                finMonth.equals("fin" + year + "04") || finMonth.equals("fin" + year + "05") || finMonth.equals("fin" + year + "06")
+        )) {
+            return effort;
+        }
+        if ("Q3".equals(quarter) && (
+                finMonth.equals("fin" + year + "07") || finMonth.equals("fin" + year + "08") || finMonth.equals("fin" + year + "09")
+        )) {
+            return effort;
+        }
+        if ("Q4".equals(quarter) && (
+                finMonth.equals("fin" + year + "10") || finMonth.equals("fin" + year + "11") || finMonth.equals("fin" + year + "12")
+        )) {
+            return effort;
+        }
+        return 0.0;
     }
 }

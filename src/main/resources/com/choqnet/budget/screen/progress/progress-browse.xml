@@ -66,6 +66,10 @@
                         <column id="demandQ4" property="demandQ4"/>
                         <column id="expense" property="expense"/>
                         <column id="budgetCost" property="budgetCost"/>
+                        <column id="budgetCostQ1" property="budgetCostQ1"/>
+                        <column id="budgetCostQ2" property="budgetCostQ2"/>
+                        <column id="budgetCostQ3" property="budgetCostQ3"/>
+                        <column id="budgetCostQ4" property="budgetCostQ4"/>
 
                     </columns>
                     <simplePagination/>

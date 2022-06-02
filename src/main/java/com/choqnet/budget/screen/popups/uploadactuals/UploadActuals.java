@@ -116,13 +116,19 @@ public class UploadActuals extends Screen {
             return;
         }
         // purge and create XLActuals
-        List<XLActual> xlActuals = dataManager.load(XLActual.class).all().list();
+        List<XLActual> xlActuals = dataManager.load(XLActual.class)
+                .query("select e from XLActuals e where e.year = :year and e.quarter = :quarter")
+                .parameter("year", cmbYear.getValue())
+                .parameter("quarter", cmbQuarter.getValue())
+                .list();
         dataManager.remove(xlActuals);
         SaveContext sc = new SaveContext();
         for (Row row: rows) {
             String tmpTeam = xLUtils.readCell(row.getCell(14)).replace("\n", "").replace("\r", "");
+
             Optional<Team> teamTarget = teams.stream().filter(e -> tmpTeam.equals(e.getName())).findFirst();
             String tmpIPRB = xLUtils.readCell(row.getCell(2)).replace(" ","");
+
             Optional<IPRB> iprbTarget = iprbs.stream().filter(e -> tmpIPRB.equals(e.getReference())).findFirst();
             if (teamTarget.isPresent() && iprbTarget.isPresent()) {
                 XLActual xlActual = dataManager.create(XLActual.class);
@@ -199,6 +205,7 @@ public class UploadActuals extends Screen {
         for (Row row: sht) {
             if (!first) rows.add(row);
             first= false;
+
         }
     }
 }

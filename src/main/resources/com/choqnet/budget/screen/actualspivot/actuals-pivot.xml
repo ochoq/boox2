@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window" xmlns:pivot="http://jmix.io/schema/ui/pivot-table"
+        caption="msg://actualsPivot.caption">
+    <data>
+        <collection id="actualsDc" class="com.choqnet.budget.entity.Actual">
+            <fetchPlan extends="_base">
+                <property name="iprb" fetchPlan="_base"/>
+                <property name="team" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="actualsDl">
+                <query>
+                    <![CDATA[select e from Actual e where e.finMonth like '%2022%']]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="pivot">
+        <label id="label" stylename="h1" value="Actuals Splitter"/>
+        <pivot:pivotTable
+                id="pivot"
+                dataContainer="actualsDc"
+                editable="true"
+                width="100%">
+
+            <pivot:properties>
+<!--                <pivot:property name="finMonth"/>-->
+<!--                <pivot:property name="iprbRef"/>-->
+<!--                <pivot:property name="iprb.name"/>-->
+<!--                <pivot:property name="iprb.groupOffering"/>-->
+<!--                <pivot:property name="iprb.legalEntity"/>-->
+<!--                <pivot:property name="team.fullName"/>-->
+<!--                <pivot:property name="team.name"/>-->
+<!--                <pivot:property name="team.simplePlatform"/>-->
+<!--                <pivot:property name="team.simpleDomain"/>-->
+<!--                <pivot:property name="team.inBudget"/>-->
+<!--                <pivot:property name="initName"/>-->
+<!--                <pivot:property name="initCategory"/>-->
+<!--                <pivot:property name="costCenter"/>-->
+<!--                <pivot:property name="jiraProject"/>-->
+<!--                <pivot:property name="jiraProjectDomain"/>-->
+<!--                <pivot:property name="jiraProjectPlatform"/>-->
+
+                <pivot:property name="effort"/>
+            </pivot:properties>
+
+            <pivot:aggregations default="SUM"/>
+
+            <pivot:hiddenFromAggregations>
+                <pivot:property name="finMonth"/>
+                <pivot:property name="iprbRef"/>
+                <pivot:property name="iprb.name"/>
+                <pivot:property name="iprb.groupOffering"/>
+                <pivot:property name="iprb.legalEntity"/>
+                <pivot:property name="team.fullName"/>
+                <pivot:property name="team.name"/>
+                <pivot:property name="team.simplePlatform"/>
+                <pivot:property name="team.simpleDomain"/>
+                <pivot:property name="team.inBudget"/>
+                <pivot:property name="initName"/>
+                <pivot:property name="initCategory"/>
+                <pivot:property name="costCenter"/>
+                <pivot:property name="jiraProject"/>
+                <pivot:property name="jiraProjectDomain"/>
+                <pivot:property name="jiraProjectPlatform"/>
+
+            </pivot:hiddenFromAggregations>
+
+            <pivot:hiddenFromDragDrop>
+                <pivot:property name="effort"/>
+            </pivot:hiddenFromDragDrop>
+
+            <pivot:aggregationProperties>
+                <pivot:property name="effort"/>
+            </pivot:aggregationProperties>
+
+        </pivot:pivotTable>
+
+    </layout>
+</window>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="boox">
+        <addColumn tableName="SETUP">
+            <column name="R2022Q1" type="INT"/>
+            <column name="R2022Q2" type="INT"/>
+            <column name="R2022Q3" type="INT"/>
+            <column name="R2022Q4" type="INT"/>
+            <column name="R2023Q1" type="INT"/>
+            <column name="R2023Q2" type="INT"/>
+            <column name="R2023Q3" type="INT"/>
+            <column name="R2023Q4" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="boox">
+        <addColumn tableName="CAPACITY">
+            <column name="RATE_Q1" type="DOUBLE"/>
+            <column name="RATE_Q2" type="DOUBLE"/>
+            <column name="RATE_Q3" type="DOUBLE"/>
+            <column name="RATE_Q4" type="DOUBLE"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

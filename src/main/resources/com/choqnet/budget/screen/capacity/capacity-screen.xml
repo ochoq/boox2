@@ -20,7 +20,8 @@
     </data>
     <layout spacing="true" expand="capacitiesTable">
         <hbox spacing="true" width="100%">
-            <label stylename="h1" value="Capacity Management (Average MD per quarter for DEV &amp; QA)" align="MIDDLE_LEFT"/>
+            <label stylename="h1" value="Capacity Management (Average MD per quarter for DEV &amp; QA)"
+                   align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
         </hbox>
         <filter id="filter" columnsCount="3" dataLoader="capacitiesDl">
@@ -65,7 +66,11 @@
                 <column id="fteQ2" property="fteQ2" editable="false"/>
                 <column id="fteQ3" property="fteQ3" editable="false"/>
                 <column id="fteQ4" property="fteQ4" editable="false"/>
-                <column id="rateY" property="rateY" editable="false"/>
+<!--                <column id="rateY" property="rateY" editable="false"/>-->
+                <column property="rateQ1" id="rateQ1" editable="false"/>
+                <column property="rateQ2" id="rateQ2" editable="false"/>
+                <column property="rateQ3" id="rateQ3" editable="false"/>
+                <column property="rateQ4" id="rateQ4" editable="false"/>
             </columns>
         </dataGrid>
     </layout>

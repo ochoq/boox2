@@ -6,6 +6,7 @@
             <item screen="Worklogs" caption="msg://com.choqnet.budget/menu_config.Worklogs"/>
             <item screen="WorklogSummary"
                   caption="msg://com.choqnet.budget.screen.worklog_summary/worklogSummary.caption"/>
+            <item screen="ActualsPivot" caption="msg://com.choqnet.budget.screen.actualspivot/actualsPivot.caption"/>
             <item screen="WorklogPmo" caption="msg://com.choqnet.budget.screen.worklog_pmo/worklogPmo.caption"/>
             <item screen="XLActual.browse" caption="msg://com.choqnet.budget.screen.xlactual/XLActualBrowse.menu"/>
         </menu>
@@ -32,14 +33,14 @@
         <item screen="Template.browse" caption="msg://com.choqnet.budget.screen.template/templateBrowse.menu"/>
         <item screen="ChangePassword" caption="msg://com.choqnet.budget.screen.change_password/changePassword.caption"/>
         <menu id="data-management" caption="msg://com.choqnet.budget/menu_config.data-management">
-            <item screen="DetailSystem"
-                  caption="msg://com.choqnet.budget.screen.detail.detailsystem/detailSystem.caption"/>
             <item screen="ExpenseSystem"
                   caption="msg://com.choqnet.budget.screen.expense.expensesystem/expenseSystem.caption"/>
             <item screen="SetupManagement"
                   caption="msg://com.choqnet.budget.screen.setup_management/setupManagement.caption"/>
             <item screen="Detail.browse2" caption="msg://com.choqnet.budget.screen.detail/detailBrowse2.menu"/>
             <item screen="Progress.browse" caption="msg://com.choqnet.budget.screen.progress/progressBrowse.menu"/>
+            <item screen="AuditEntityLogs"
+                  caption="msg://com.choqnet.budget.screen.audit_entity_logs/auditEntityLogs.caption"/>
         </menu>
     </menu>
 

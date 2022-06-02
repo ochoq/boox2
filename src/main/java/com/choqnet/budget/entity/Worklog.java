@@ -20,6 +20,9 @@ public class Worklog {
     @Id
     private UUID id;
 
+    @Column(name = "COST_CENTER_REF")
+    private String costCenterRef;
+
     @Column(name = "INITIATIVE")
     private String initiative;
 
@@ -40,7 +43,7 @@ public class Worklog {
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
-    @NumberFormat(pattern = "#,##0.00", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0.00")
     @Column(name = "EFFORT")
     private Double effort;
 
@@ -81,21 +84,29 @@ public class Worklog {
     private String originIPRB;
 
     // this number is in k€
-    @NumberFormat(pattern = "#,##0.000", groupingSeparator = " ")
+    @NumberFormat(pattern = "#,##0.000")
     @Column(name = "BUDGET_COST")
     private Double budgetCost;
+
+    public String getCostCenterRef() {
+        return costCenterRef;
+    }
+
+    public void setCostCenterRef(String costCenterRef) {
+        this.costCenterRef = costCenterRef;
+    }
 
     public Double getBudgetCost() {
         if (team == null || team.getSetup()==null) {
             return 0.0;
         } else {
-            return team.getSetup().getRate(finMonth) * effort / 1000;
+            return team.getSetup().getRateQx(finMonth) * effort / 1000;
         }
         //return budgetCost==null ? 0.0 : budgetCost;
     }
 
     public void setBudgetCost(Double dummy) {
-        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRate(finMonth) * effort / 1000;
+        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRateQx(finMonth) * effort / 1000;
     }
     // version w/o value
     public void setBudgetCost() {
@@ -105,7 +116,6 @@ public class Worklog {
     public String getOriginIPRB() {
         return originIPRB;
     }
-
 
 
     public void setOriginIPRB(String originIPRB) {

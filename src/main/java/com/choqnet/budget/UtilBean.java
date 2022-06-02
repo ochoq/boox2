@@ -4,6 +4,7 @@ import com.choqnet.budget.entity.*;
 import io.jmix.audit.entity.EntityLogItem;
 import io.jmix.core.DataManager;
 import io.jmix.core.SaveContext;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UtilBean {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(UtilBean.class);
     @Autowired
     private DataManager dataManager;
 
@@ -318,9 +320,17 @@ public class UtilBean {
         if (capacity.getBudget()==null || capacity.getTeam()==null || capacity.getTeam().getSetup()==null) {
             capacity.setNbWorkingDays(0);
             capacity.setRateY(0.0);
+            capacity.setRateQ1(0.0);
+            capacity.setRateQ2(0.0);
+            capacity.setRateQ3(0.0);
+            capacity.setRateQ4(0.0);
         } else {
             capacity.setNbWorkingDays(capacity.getTeam().getSetup().getWorkDays("xxx" + capacity.getBudget().getYear()));
             capacity.setRateY(1.0 * capacity.getTeam().getSetup().getRate("xxx" + capacity.getBudget().getYear()));
+            capacity.setRateQ1(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q1"));
+            capacity.setRateQ2(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q2"));
+            capacity.setRateQ3(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q3"));
+            capacity.setRateQ4(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q4"));
         }
         if (capacity.getNbWorkingDays()==0) {
             capacity.setFteQ1(0.0);
@@ -338,13 +348,18 @@ public class UtilBean {
 
     public Detail setDetailData(Detail detail) {
         if (detail.getBudget()== null || detail.getTeam() == null || detail.getTeam().getSetup()==null ) {
+            detail.setBudgetCostQ1(0.0);
+            detail.setBudgetCostQ2(0.0);
+            detail.setBudgetCostQ3(0.0);
+            detail.setBudgetCostQ4(0.0);
             detail.setBudgetCost(0.0);
         } else {
-            detail.setBudgetCost(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdY() / 1000);
-            detail.setBudgetCostQ1(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdQ1() / 1000);
-            detail.setBudgetCostQ2(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdQ2() / 1000);
-            detail.setBudgetCostQ3(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdQ3() / 1000);
-            detail.setBudgetCostQ4(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdQ4() / 1000);
+            //detail.setBudgetCost(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdY() / 1000);
+            detail.setBudgetCostQ1(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q1") * detail.getMdQ1() / 1000);
+            detail.setBudgetCostQ2(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q2") * detail.getMdQ2() / 1000);
+            detail.setBudgetCostQ3(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q3") * detail.getMdQ3() / 1000);
+            detail.setBudgetCostQ4(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q4") * detail.getMdQ4() / 1000);
+            detail.setBudgetCost(detail.getBudgetCostQ1()+detail.getBudgetCostQ2()+ detail.getBudgetCostQ3()+detail.getBudgetCostQ4());
         }
         return detail;
     }
@@ -360,11 +375,15 @@ public class UtilBean {
                 .list();
         for (EntityLogItem entityLogItem: entityLogItemList) {
             //System.out.println(entityLogItem.getUsername() + " - " + entityLogItem.getCreateTs() + " --> " + entityLogItem.getType());
-            ChangeHistory changeHistory = dataManager.create(ChangeHistory.class);
-            changeHistory.setWho(entityLogItem.getUsername());
-            changeHistory.setWhen(dateFormat.format(entityLogItem.getCreateTs().getTime()));
+            //ChangeHistory changeHistory = dataManager.create(ChangeHistory.class);
+            //changeHistory.setWho(entityLogItem.getUsername());
+            //changeHistory.setWhen(dateFormat.format(entityLogItem.getCreateTs().getTime()));
             if (entityLogItem.getType()== EntityLogItem.Type.CREATE) {
+                ChangeHistory changeHistory = dataManager.create(ChangeHistory.class);
+                changeHistory.setWho(entityLogItem.getUsername());
+                changeHistory.setWhen(dateFormat.format(entityLogItem.getCreateTs().getTime()));
                 changeHistory.setAttribute("CREATION");
+                changeHistoryList.add(changeHistory);
 
             } else {
                 // process the changes one by one
@@ -372,14 +391,18 @@ public class UtilBean {
                 // fetch the changes to process all new values
                 for (String change: changes) {
                     if (!change.contains("-oldVl")) {
+                        ChangeHistory changeHistory = dataManager.create(ChangeHistory.class);
+                        changeHistory.setWho(entityLogItem.getUsername());
+                        changeHistory.setWhen(dateFormat.format(entityLogItem.getCreateTs().getTime()));
                         String changed = getOldInstance(getName(change), changes);
                         changeHistory.setAttribute(getName(change));
                         changeHistory.setOldValue(getValue(changed));
                         changeHistory.setNewValue(getValue(change));
+                        changeHistoryList.add(changeHistory);
                     }
                 }
             }
-            changeHistoryList.add(changeHistory);
+
             //System.out.println("");
         }
         changeHistoryList = changeHistoryList.stream().sorted((ChangeHistory c1, ChangeHistory c2) -> c1.getWhen().compareTo(c2.getWhen())).collect(Collectors.toList());
@@ -410,6 +433,35 @@ public class UtilBean {
             }
         }
         return null;
+    }
+
+    // *** MAINTENANCE TASK
+    public void updateDetailProgressAndCapacity() {
+        SaveContext sc;
+        log.info("Maintenance: update Detail, Progress and Capacity items");
+        // programme de maintenance
+        List<Detail> details = dataManager.load(Detail.class).all().fetchPlan("details").list();
+        log.info(details.size() + " details to process");
+        sc = new SaveContext();
+        for (Detail detail: details) {
+            sc.saving(setDetailData(detail));
+        }
+        dataManager.save(sc);
+        List<Capacity> capacities = dataManager.load(Capacity.class).all().fetchPlan("capacities").list();
+        log.info(capacities.size() + " capacities to process");
+        sc = new SaveContext();
+        for(Capacity capacity: capacities) {
+            sc.saving(setCapacityData(capacity));
+        }
+        dataManager.save(sc);
+        List<Progress> progresses = dataManager.load(Progress.class).all().fetchPlan("progAll").list();
+        log.info(progresses.size() + " progress items to process");
+        sc = new SaveContext();
+        for(Progress progress: progresses) {
+            sc.saving(setProgressData(progress));
+        }
+        dataManager.save(sc);
+        log.info("Maintenance task done");
     }
 
 

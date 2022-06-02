@@ -32,6 +32,14 @@
                 <textField id="wd2023Field" property="wd2023"/>
                 <textField id="r2022Field" property="r2022"/>
                 <textField id="r2023Field" property="r2023"/>
+                <textField id="r2022Q1Field" property="r2022Q1"/>
+                <textField id="r2022Q2Field" property="r2022Q2"/>
+                <textField id="r2022Q3Field" property="r2022Q3"/>
+                <textField id="r2022Q4Field" property="r2022Q4"/>
+                <textField id="r2023Q1Field" property="r2023Q1"/>
+                <textField id="r2023Q2Field" property="r2023Q2"/>
+                <textField id="r2023Q3Field" property="r2023Q3"/>
+                <textField id="r2023Q4Field" property="r2023Q4"/>
             </column>
         </form>
         <hbox id="editActions" spacing="true">

@@ -33,6 +33,16 @@ public class DumboWorklog {
 
     private String account;
 
+    private String costCenterRef;
+
+    public String getCostCenterRef() {
+        return costCenterRef;
+    }
+
+    public void setCostCenterRef(String costCenterRef) {
+        this.costCenterRef = costCenterRef;
+    }
+
     public String getAccount() {
         return account;
     }

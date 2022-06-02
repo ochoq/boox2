@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EntitiesEventListener {
@@ -72,8 +73,15 @@ public class EntitiesEventListener {
     @TransactionalEventListener
     public void onSetupChangedAfterCommit(EntityChangedEvent<Setup> event) {
         if (event.getType()!= EntityChangedEvent.Type.DELETED) {
-            if (event.getChanges().isChanged("r2022") ||
-                    event.getChanges().isChanged("r2023") ||
+
+            if (event.getChanges().isChanged("r2022Q1") ||
+                    event.getChanges().isChanged("r2022Q2") ||
+                    event.getChanges().isChanged("r2022Q3") ||
+                    event.getChanges().isChanged("r2022Q4") ||
+                    event.getChanges().isChanged("r2023Q1") ||
+                    event.getChanges().isChanged("r2023Q2") ||
+                    event.getChanges().isChanged("r2023Q3") ||
+                    event.getChanges().isChanged("r2023Q4") ||
                     event.getChanges().isChanged("wd2022") ||
                     event.getChanges().isChanged("wd2023")) {
                 // propagate the change of Setup.rxxxx
@@ -106,6 +114,11 @@ public class EntitiesEventListener {
                 for (Detail detail: details) {
                     detail = utilBean.setDetailData(detail);
                     dataManager.save(new SaveContext().saving(detail).setJoinTransaction(false));
+                }
+                List<Progress> progresses = details.stream().map(Detail::getProgress).distinct().collect(Collectors.toList());
+                for (Progress progress: progresses) {
+                    progress = utilBean.setProgressData(progress);
+                    dataManager.save(new SaveContext().saving(progress).setJoinTransaction(false));
                 }
             }
         }
@@ -140,31 +153,30 @@ public class EntitiesEventListener {
                     detail = utilBean.setDetailData(detail);
                     dataManager.save(new SaveContext().saving(detail).setJoinTransaction(false));
                 }
+                List<Progress> progresses = details.stream().map(e -> e.getProgress()).distinct().collect(Collectors.toList());
+                for (Progress progress: progresses) {
+                    progress = utilBean.setProgressData(progress);
+                    dataManager.save(new SaveContext().saving(progress).setJoinTransaction(false));
+                }
             }
         }
     }
-    /*
-     if (budget.getYear()!= null && team!=null && team.getSetup()!=null) {
-            return team.getSetup().getWorkDays("xxx" + budget.getYear());
-        } else {
-            return 0;
-        }
-     */
 
     @TransactionalEventListener
     public void onCapacityChangedAfterCommit(EntityChangedEvent<Capacity> event) {
         if (event.getType()!= EntityChangedEvent.Type.DELETED) {
+            Capacity capacity = dataManager.load(event.getEntityId()).fetchPlan("capacities").joinTransaction(false).one();
+
             if (event.getChanges().isChanged("team") ||
                     event.getChanges().isChanged("mdQ1") ||
                     event.getChanges().isChanged("mdQ2") ||
                     event.getChanges().isChanged("mdQ3") ||
                     event.getChanges().isChanged("mdQ4")) {
-                Capacity capacity = dataManager.load(event.getEntityId()).fetchPlan("capacities").joinTransaction(false).one();
                 // propagate the change of capacity.team
                 log.info("Capacity updated");
                 capacity = utilBean.setCapacityData(capacity);
-                dataManager.save(new SaveContext().saving(capacity).setJoinTransaction(false));
             }
+            dataManager.save(new SaveContext().saving(capacity).setJoinTransaction(false));
         }
 
     }

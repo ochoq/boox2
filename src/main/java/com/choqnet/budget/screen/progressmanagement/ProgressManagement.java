@@ -6,6 +6,7 @@ import com.choqnet.budget.entity.*;
 import com.choqnet.budget.screen.popups.iprb_selector.IprbSelector;
 import com.choqnet.budget.screen.popups.progressedit.ProgressEdit;
 import io.jmix.core.DataManager;
+import io.jmix.core.metamodel.annotation.DateTimeFormat;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.component.*;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -113,10 +116,11 @@ public class ProgressManagement extends Screen {
         progTable.getColumn("actualQ3").setStyleProvider(e ->  "cror");
         progTable.getColumn("actualQ4").setStyleProvider(e ->  "cror");
         String quarter = getCurrentQuarter();
-        progTable.getColumn("actualQ1").setVisible(quarter.compareTo("Q1")>=0);
-        progTable.getColumn("actualQ2").setVisible(quarter.compareTo("Q2")>=0);
-        progTable.getColumn("actualQ3").setVisible(quarter.compareTo("Q3")>=0);
-        progTable.getColumn("actualQ4").setVisible(quarter.compareTo("Q4")>=0);
+        String year = getCurrentYear();
+        progTable.getColumn("actualQ1").setVisible(quarter.compareTo("Q1")>=0 || budget.getYear().compareTo(year)<0);
+        progTable.getColumn("actualQ2").setVisible(quarter.compareTo("Q2")>=0 || budget.getYear().compareTo(year)<0);
+        progTable.getColumn("actualQ3").setVisible(quarter.compareTo("Q3")>=0 || budget.getYear().compareTo(year)<0);
+        progTable.getColumn("actualQ4").setVisible(quarter.compareTo("Q4")>=0 || budget.getYear().compareTo(year)<0);
         progTable.getColumn("expectedLanding").setStyleProvider(e -> "cror");
     }
 
@@ -165,6 +169,10 @@ public class ProgressManagement extends Screen {
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.DATE, 1);
         return cal.getTime();
+    }
+    private String getCurrentYear() {
+        DateTimeFormatter dft = DateTimeFormatter.ofPattern("yyyy");
+        return dft.format(LocalDateTime.now());
     }
     private String getCurrentQuarter() {
         String month = getFinancialMonth(new Date()).substring(7);

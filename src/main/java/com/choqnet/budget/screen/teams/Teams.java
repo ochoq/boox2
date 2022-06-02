@@ -194,10 +194,10 @@ public class Teams extends Screen {
     public void onTableEditorPostCommit(DataGrid.EditorPostCommitEvent<Team> event) {
         // saves actually the changes in the DB
         if (!wasInBudget && event.getItem().getInBudget()) {
-            event.getItem().setEnabled(true);
+            event.getItem().setSelectable(true);
         }
-        if (wasEnabled && !event.getItem().getEnabled()) {
-            event.getItem().setInBudget(false);
+        if (!wasEnabled && event.getItem().getEnabled()) {
+            event.getItem().setSelectable(true);
         }
 
         Team target = dataManager.save(event.getItem());
