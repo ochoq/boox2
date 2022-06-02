@@ -35,7 +35,7 @@ public class UtilBean {
     public void HierarchicalData(Team team) {
         int level;
         String fullName;
-        String line, div, domain=null;
+        String line, div, domain;
         if (team.getParent()==null) {
             level = 0;
             fullName = team.getName();
@@ -47,10 +47,10 @@ public class UtilBean {
             level = team.getParent().getLevel() + 1;
             fullName = team.getParent().getFullName() + "-" + team.getName();
             Team parent = dataManager.load(Team.class).query("select e from Team e where e.name = :parent").parameter("parent", team.getParent().getName()).one();
-            switch(level) {
+            switch (level) {
                 case 1:
                     line = parent.getTLine();
-                    div =  "";
+                    div = "";
                     domain = "";
                     break;
                 case 2:
@@ -93,7 +93,7 @@ public class UtilBean {
             System.out.println(i + " starting with " + teams.size() + " items");
             for (Team team: teams) {
 
-                switch(i) {
+                switch (i) {
                     case 0:
                         team.setTLine(team.getName());
                         team.setTDiv("");
@@ -131,26 +131,17 @@ public class UtilBean {
         if (rootName==null) {
             return "";
         }
-        switch(rootName) {
-            case "BO BB":
-                return "Back-Office Bambora";
-            case "BO MCH":
-                return "Back-Office Multi Channel";
-            case "BOL":
-                return "Bambora OnLine";
-            case "BB Samport":
-                return "Bambora In-Store";
-            case "Cnx":
-                return "Conexflow";
-            case "ARM":
-                return "Armenia";
-            case "CMA":
-                return "Operations";
+        switch (rootName) {
+            case "BO BB": return "Back-Office Bambora";
+            case "BO MCH": return "Back-Office Multi Channel";
+            case "BOL": return "Bambora OnLine";
+            case "BB Samport": return "Bambora In-Store";
+            case "Cnx": return "Conexflow";
+            case "ARM": return "Armenia";
+            case "CMA": return "Operations";
             case "BELCCSWL":
-            case "CHECCSSPS":
-                return "COO CS";
-            default:
-                return rootName;
+            case"CHECCSSPS": return "COO CS";
+            default: return rootName;
         }
     }
     public void deleteProgress(Progress progress) {
@@ -302,11 +293,11 @@ public class UtilBean {
                     .filter(o -> o.getPriority() != null && o.getPriority().isLessOrEqual(progress.getBudget().getPrioThreshold()))
                     .map(Detail::getMdNY)
                     .reduce(0.0, Double::sum));
-            progress.setBudgetCost(progress.getDetails().stream().filter(e -> e.getBudgetCost()!=null).map(Detail::getBudgetCost).reduce(0.0, Double::sum));
-            progress.setBudgetCostQ1(progress.getDetails().stream().filter(e -> e.getBudgetCostQ1()!=null).map(Detail::getBudgetCostQ1).reduce(0.0, Double::sum));
-            progress.setBudgetCostQ2(progress.getDetails().stream().filter(e -> e.getBudgetCostQ2()!=null).map(Detail::getBudgetCostQ2).reduce(0.0, Double::sum));
-            progress.setBudgetCostQ3(progress.getDetails().stream().filter(e -> e.getBudgetCostQ3()!=null).map(Detail::getBudgetCostQ3).reduce(0.0, Double::sum));
-            progress.setBudgetCostQ4(progress.getDetails().stream().filter(e -> e.getBudgetCostQ4()!=null).map(Detail::getBudgetCostQ4).reduce(0.0, Double::sum));
+            progress.setBudgetCost(progress.getDetails().stream().map(Detail::getBudgetCost).filter(Objects::nonNull).reduce(0.0, Double::sum));
+            progress.setBudgetCostQ1(progress.getDetails().stream().map(Detail::getBudgetCostQ1).filter(Objects::nonNull).reduce(0.0, Double::sum));
+            progress.setBudgetCostQ2(progress.getDetails().stream().map(Detail::getBudgetCostQ2).filter(Objects::nonNull).reduce(0.0, Double::sum));
+            progress.setBudgetCostQ3(progress.getDetails().stream().map(Detail::getBudgetCostQ3).filter(Objects::nonNull).reduce(0.0, Double::sum));
+            progress.setBudgetCostQ4(progress.getDetails().stream().map(Detail::getBudgetCostQ4).filter(Objects::nonNull).reduce(0.0, Double::sum));
         }
         if (progress.getExpenses()==null) {
             progress.setExpense(0.0);
@@ -317,31 +308,28 @@ public class UtilBean {
     }
 
     public Capacity setCapacityData(Capacity capacity) {
-        if (capacity.getBudget()==null || capacity.getTeam()==null || capacity.getTeam().getSetup()==null) {
+        if (capacity.getBudget()==null || capacity.getTeam()==null) {
             capacity.setNbWorkingDays(0);
-            capacity.setRateY(0.0);
+            //capacity.setRateY(0.0);
             capacity.setRateQ1(0.0);
             capacity.setRateQ2(0.0);
             capacity.setRateQ3(0.0);
             capacity.setRateQ4(0.0);
-        } else {
-            capacity.setNbWorkingDays(capacity.getTeam().getSetup().getWorkDays("xxx" + capacity.getBudget().getYear()));
-            capacity.setRateY(1.0 * capacity.getTeam().getSetup().getRate("xxx" + capacity.getBudget().getYear()));
-            capacity.setRateQ1(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q1"));
-            capacity.setRateQ2(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q2"));
-            capacity.setRateQ3(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q3"));
-            capacity.setRateQ4(1.0 * capacity.getTeam().getSetup().getRateQx("xxx" + capacity.getBudget().getYear()+"Q4"));
-        }
-        if (capacity.getNbWorkingDays()==0) {
             capacity.setFteQ1(0.0);
             capacity.setFteQ2(0.0);
             capacity.setFteQ3(0.0);
             capacity.setFteQ4(0.0);
         } else {
-            capacity.setFteQ1(capacity.getMdQ1() * 4 / capacity.getNbWorkingDays());
-            capacity.setFteQ2(capacity.getMdQ2() * 4 / capacity.getNbWorkingDays());
-            capacity.setFteQ3(capacity.getMdQ3() * 4 / capacity.getNbWorkingDays());
-            capacity.setFteQ4(capacity.getMdQ4() * 4 / capacity.getNbWorkingDays());
+            capacity.setNbWorkingDays(capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
+            //capacity.setRateY(1.0 * capacity.getTeam().getRate("xxx" + capacity.getBudget().getYear()));
+            capacity.setRateQ1(1.0 * capacity.getTeam().getRateQx("xxx" + capacity.getBudget().getYear()+"01"));
+            capacity.setRateQ2(1.0 * capacity.getTeam().getRateQx("xxx" + capacity.getBudget().getYear()+"04"));
+            capacity.setRateQ3(1.0 * capacity.getTeam().getRateQx("xxx" + capacity.getBudget().getYear()+"07"));
+            capacity.setRateQ4(1.0 * capacity.getTeam().getRateQx("xxx" + capacity.getBudget().getYear()+"10"));
+            capacity.setFteQ1(capacity.getMdQ1() * 4 / capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
+            capacity.setFteQ2(capacity.getMdQ2() * 4 / capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
+            capacity.setFteQ3(capacity.getMdQ3() * 4 / capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
+            capacity.setFteQ4(capacity.getMdQ4() * 4 / capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
         }
         return capacity;
     }
@@ -355,10 +343,10 @@ public class UtilBean {
             detail.setBudgetCost(0.0);
         } else {
             //detail.setBudgetCost(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdY() / 1000);
-            detail.setBudgetCostQ1(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q1") * detail.getMdQ1() / 1000);
-            detail.setBudgetCostQ2(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q2") * detail.getMdQ2() / 1000);
-            detail.setBudgetCostQ3(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q3") * detail.getMdQ3() / 1000);
-            detail.setBudgetCostQ4(detail.getTeam().getSetup().getRateQx("xxx" + detail.getBudget().getYear() + "Q4") * detail.getMdQ4() / 1000);
+            detail.setBudgetCostQ1(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "01") * detail.getMdQ1() / 1000);
+            detail.setBudgetCostQ2(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "02") * detail.getMdQ2() / 1000);
+            detail.setBudgetCostQ3(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "03") * detail.getMdQ3() / 1000);
+            detail.setBudgetCostQ4(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "04") * detail.getMdQ4() / 1000);
             detail.setBudgetCost(detail.getBudgetCostQ1()+detail.getBudgetCostQ2()+ detail.getBudgetCostQ3()+detail.getBudgetCostQ4());
         }
         return detail;
@@ -427,7 +415,6 @@ public class UtilBean {
 
     private String getOldInstance(String attribute, String[] changes) {
         for (String change: changes) {
-            String temp = attribute + "-oldVl";
             if (change.contains(attribute + "-oldVl")) {
                 return change;
             }

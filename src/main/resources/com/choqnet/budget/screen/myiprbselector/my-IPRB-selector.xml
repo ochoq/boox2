@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://myIprbSelector.caption">
+    <data>
+
+        <collection id="iPRBsDc" class="com.choqnet.budget.entity.IPRB">
+            <fetchPlan extends="_base"/>
+            <loader id="iPRBsDl">
+                <query>
+                    <![CDATA[select e from IPRB e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="iPRBsTable">
+        <hbox spacing="true" stylename="card" width="100%" margin="true">
+            <textField id="fltName" caption="Name contains"/>
+            <textField id="fltReference" caption="Reference contains"/>
+            <textField id="fltOwner" caption="Owner contains"/>
+        </hbox>
+        <dataGrid id="iPRBsTable" selectionMode="MULTI_CHECK" width="100%" dataContainer="iPRBsDc">
+            <columns>
+                <column id="name" property="name"/>
+                <column id="reference" property="reference"/>
+                <column id="owner" property="owner"/>
+            </columns>
+        </dataGrid>
+        <button align="BOTTOM_RIGHT" caption="Close" id="btnClose"/>
+    </layout>
+</window>

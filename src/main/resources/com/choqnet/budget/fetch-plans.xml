@@ -121,4 +121,8 @@
             <property name="details" fetchPlan="_base"/>
         </property>
     </fetchPlan>
+    <fetchPlan entity="Setup" name="setups" extends="_base">
+        <property name="rates" fetchPlan="_base"/>
+        <property name="workDays" fetchPlan="_base"/>
+    </fetchPlan>
 </fetchPlans>

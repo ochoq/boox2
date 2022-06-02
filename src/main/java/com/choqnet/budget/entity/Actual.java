@@ -69,13 +69,13 @@ public class Actual {
         if (team == null || team.getSetup()==null) {
             return 0.0;
         } else {
-            return team.getSetup().getRateQx(finMonth) * effort / 1000;
+            return team.getRateQx(finMonth) * effort / 1000;
         }
         //return budgetCost==null ? 0.0 : budgetCost;
     }
 
     public void setBudgetCost(Double budgetCost) {
-        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRateQx(finMonth) * effort / 1000;
+        budgetCost = team==null ? 0.0 : team.getRateQx(finMonth) * effort / 1000;
     }
     // version w/o value
     public void setBudgetCost() {
@@ -219,5 +219,20 @@ public class Actual {
             return effort;
         }
         return 0.0;
+    }
+
+    public boolean isQx(String quarter) {
+        switch(quarter) {
+            case "01":
+                return (finMonth.endsWith("01") || finMonth.endsWith("02") || finMonth.endsWith("03"));
+            case "02":
+                return (finMonth.endsWith("04") || finMonth.endsWith("05") || finMonth.endsWith("06"));
+            case "03":
+                return (finMonth.endsWith("07") || finMonth.endsWith("08") || finMonth.endsWith("09"));
+            case "04":
+                return (finMonth.endsWith("10") || finMonth.endsWith("11") || finMonth.endsWith("12"));
+            default:
+                return false;
+        }
     }
 }

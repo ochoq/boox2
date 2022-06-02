@@ -220,6 +220,28 @@ public class CapacityTeamDetails extends Screen {
         return cb;
     }
 
+    // JIRA link management - Edit mode
+    @Install(to = "detailsTable.jira", subject = "editFieldGenerator")
+    private Field<String> editJIRA(DataGrid.EditorFieldGenerationContext<String> efc) {
+        TextField<String> txtJira = uiComponents.create(TextField.NAME);
+        txtJira.setValueSource((ValueSource<String>) efc.getValueSourceProvider().getValueSource("jira"));
+        return txtJira;
+    }
+
+    // JIRA link management - Read mode
+    @Install(to = "detailsTable.jira", subject = "columnGenerator")
+    private Component reachURL(DataGrid.ColumnGeneratorEvent<Detail> cDetail) {
+        Link lnk = uiComponents.create(Link.NAME);
+        lnk.setUrl(cDetail.getItem().getJira());
+        // cut the key of the Initiative
+        String[] heap = cDetail.getItem().getJira().split("/");
+        lnk.setCaption(heap.length == 0 ? cDetail.getItem().getJira() : heap[heap.length - 1]);
+        lnk.setHeightFull();
+        lnk.setAlignment(Component.Alignment.MIDDLE_CENTER);
+        lnk.setTarget("_blank");
+        return lnk;
+    }
+
     // *** UI functions
     @Subscribe("detailsTable")
     public void onDetailsTableSelection(DataGrid.SelectionEvent<Detail> event) {

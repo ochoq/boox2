@@ -32,8 +32,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -395,6 +397,60 @@ public class ControlTower extends Screen {
                 .build();
         uploadActuals.show();
     }
+
+//    @Subscribe("btnInitSetup")
+//    public void onBtnInitSetupClick(Button.ClickEvent event) {
+//        List<IntRange> intRanges = dataManager.load(IntRange.class).all().list();
+//        dataManager.remove(intRanges);
+//        List<NbRange> nbRanges = dataManager.load(NbRange.class).all().list();
+//        dataManager.remove(nbRanges);
+//
+//        // temporary function that initializes the setups' distributions from the current hard-coded data
+//        SaveContext sc = new SaveContext();
+//        IntRange intRange;
+//        NbRange nbRange;
+//        //List<Setup> setups = dataManager.load(Setup.class).query("select e from Setup e").fetchPlan("setups").list();
+//        List<Setup> setups = dataManager.load(Setup.class).all().list();
+//        List<IntRange> newRates;
+//        List<NbRange> newWorkDays;
+//        for (Setup setup: setups) {
+//            newRates = new ArrayList<>();
+//            newWorkDays = new ArrayList<>();
+//
+//            int value1 = setup.getR2022Q1();
+//            intRange = dataManager.create(IntRange.class);
+//            intRange.setSetup(setup);
+//            intRange.setDate(LocalDate.of(2022,1,1));
+//            intRange.setValue(value1);
+//            dataManager.save(intRange);
+//            newRates.add(intRange);
+//
+//            int value2 = setup.getR2022Q2();
+//            if (value2!=value1) {
+//                intRange = dataManager.create(IntRange.class);
+//                intRange.setSetup(setup);
+//                intRange.setDate(LocalDate.of(2022,4,1));
+//                intRange.setValue(value2);
+//                dataManager.save(intRange);
+//                newRates.add(intRange);
+//            }
+//
+//
+//            int value3 = setup.getWd2022();
+//            nbRange = dataManager.create(NbRange.class);
+//            nbRange.setSetupNB(setup);
+//            nbRange.setDate(LocalDate.of(2022,1,1));
+//            nbRange.setValue(value3);
+//            dataManager.save(nbRange);
+//            newWorkDays.add(nbRange);
+//
+//            setup.setRates(newRates);
+//            setup.setWorkDays(newWorkDays);
+//            sc.saving(setup);
+//        }
+//        dataManager.save(sc);
+//        notifications.create().withDescription("Setups initialized").show();
+//    }
 
 
 

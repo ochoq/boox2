@@ -1,14 +1,15 @@
 package com.choqnet.budget.entity;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import org.slf4j.Logger;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @JmixEntity
@@ -26,136 +27,46 @@ public class Setup {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "WD2022")
-    private Integer wd2022 = 0;
+    @Composition
+    @OrderBy("date Desc")
+    @OneToMany(mappedBy = "setup")
+    private List<IntRange> rates;
 
-    @Column(name = "WD2023")
-    private Integer wd2023 = 0;
+    @Composition
+    @OrderBy("date DESC")
+    @OneToMany(mappedBy = "setupNB")
+    private List<NbRange> workDays;
 
-    @Column(name = "R2022")
-    private Integer r2022 = 0;
+    @Column(name = "RATE_NOW")
+    private Integer rateNow;
 
-    @Column(name = "R2022Q1")
-    private Integer r2022Q1 = 0;
+    @Column(name = "WORK_DAYS_NOW")
+    private Integer workDaysNow;
 
-    @Column(name = "R2022Q2")
-    private Integer r2022Q2 = 0;
-
-    @Column(name = "R2022Q3")
-    private Integer r2022Q3 = 0;
-
-    @Column(name = "R2022Q4")
-    private Integer r2022Q4 = 0;
-
-    @Column(name = "R2023")
-    private Integer r2023 = 0;
-
-    @Column(name = "R2023Q1")
-    private Integer r2023Q1 = 0;
-
-    @Column(name = "R2023Q2")
-    private Integer r2023Q2 = 0;
-
-    @Column(name = "R2023Q3")
-    private Integer r2023Q3 = 0;
-
-    @Column(name = "R2023Q4")
-    private Integer r2023Q4 = 0;
-
-    public void setR2022Q1(Integer r2022Q1) {
-        this.r2022Q1 = r2022Q1;
+    public Integer getWorkDaysNow() {
+        // value of today
+        return getRateAtDate(LocalDate.now());
     }
 
-    public Integer getR2022Q1() {
-        return r2022Q1 == null ? 0 : r2022Q1;
+    public Integer getRateNow() {
+        // value of today
+        return getWorkDaysAtDate(LocalDate.now());
     }
 
-    public void setR2022Q2(Integer r2022Q2) {
-        this.r2022Q2 = r2022Q2;
+    public void setWorkDays(List<NbRange> workDays) {
+        this.workDays = workDays;
     }
 
-    public Integer getR2022Q2() {
-        return r2022Q2 == null ? 0 : r2022Q2;
+    public List<NbRange> getWorkDays() {
+        return workDays;
     }
 
-    public void setR2023Q1(Integer r2023Q1) {
-        this.r2023Q1 = r2023Q1;
+    public List<IntRange> getRates() {
+        return rates;
     }
 
-    public Integer getR2023Q1() {
-        return r2023Q1 == null ? 0 : r2023Q1;
-    }
-
-    public Integer getR2023Q4() {
-        return r2023Q4 == null ? 0 : r2023Q4;
-    }
-
-    public void setR2023Q4(Integer r2023Q4) {
-        this.r2023Q4 = r2023Q4;
-    }
-
-    public Integer getR2023Q3() {
-        return r2023Q3 == null ? 0 : r2023Q3;
-    }
-
-    public void setR2023Q3(Integer r2023Q3) {
-        this.r2023Q3 = r2023Q3;
-    }
-
-    public Integer getR2023Q2() {
-        return r2023Q2 == null ? 0 : r2023Q2;
-    }
-
-    public void setR2023Q2(Integer r2023Q2) {
-        this.r2023Q2 = r2023Q2;
-    }
-
-    public Integer getR2022Q4() {
-        return r2022Q4 == null ? 0 : r2022Q4;
-    }
-
-    public void setR2022Q4(Integer r2022Q4) {
-        this.r2022Q4 = r2022Q4;
-    }
-
-    public Integer getR2022Q3() {
-        return r2022Q3 == null ? 0 : r2022Q3;
-    }
-
-    public void setR2022Q3(Integer r2022Q3) {
-        this.r2022Q3 = r2022Q3;
-    }
-
-    public Integer getR2023() {
-        return r2023 == null ? 0 : r2023;
-    }
-
-    public void setR2023(Integer r2023) {
-        this.r2023 = r2023;
-    }
-
-    public Integer getR2022() {
-        return r2022 == null ? 0 : r2022;
-    }
-
-    public void setR2022(Integer r2022) {
-        this.r2022 = r2022;
-    }
-
-    public Integer getWd2023() {
-        return wd2023;
-    }
-
-    public void setWd2023(Integer wd2023) {
-        this.wd2023 = wd2023;
-    }
-
-    public Integer getWd2022() {
-        return wd2022;
-    }
-
-    public void setWd2022(Integer wd2022) {
-        this.wd2022 = wd2022;
+    public void setRates(List<IntRange> rates) {
+        this.rates = rates;
     }
 
     public String getName() {
@@ -174,6 +85,34 @@ public class Setup {
         this.id = id;
     }
 
+    // *** NEW DATA FUNCTIONS
+    public int getRateAtDate(LocalDate date) {
+        // for Debug -> DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        Optional<IntRange> target = rates.stream().filter(e -> date.compareTo(e.getDate())>=0).findFirst();
+        if (target.isPresent()) {
+            // for Debug -> log.info(dtf.format(date) + " is found in range starting @ " + dtf.format(target.get().getDate()));
+            return target.get().getValue();
+        } else {
+            // for Debug -> log.info(dtf.format(date) + " is not found");
+            return 0;
+        }
+    }
+
+    public int getWorkDaysAtDate(LocalDate date) {
+        // for Debug -> DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        Optional<NbRange> target = workDays.stream().filter(e -> date.compareTo(e.getDate())>=0).findFirst();
+        if (target.isPresent()) {
+            // for Debug -> log.info(dtf.format(date) + " is found in range starting @ " + dtf.format(target.get().getDate()));
+            return target.get().getValue();
+        } else {
+            // for Debug -> log.info(dtf.format(date) + " is not found");
+            return 0;
+        }
+    }
+
+    // *** DEPRECATED FUNCTIONS
+
+    /*
     public int getWorkDays(String month) {
         String year = month.substring(3, 7);
         switch (year) {
@@ -254,4 +193,7 @@ public class Setup {
     private void alert(String year) {
         log.error("No Setup data for year " + year);
     }
+    */
+
+
 }

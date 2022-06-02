@@ -100,13 +100,13 @@ public class Worklog {
         if (team == null || team.getSetup()==null) {
             return 0.0;
         } else {
-            return team.getSetup().getRateQx(finMonth) * effort / 1000;
+            return team.getRateQx(finMonth) * effort / 1000;
         }
         //return budgetCost==null ? 0.0 : budgetCost;
     }
 
     public void setBudgetCost(Double dummy) {
-        budgetCost = (team==null || team.getSetup()==null) ? 0.0 : team.getSetup().getRateQx(finMonth) * effort / 1000;
+        budgetCost = (team==null) ? 0.0 : team.getRateQx(finMonth) * effort / 1000;
     }
     // version w/o value
     public void setBudgetCost() {

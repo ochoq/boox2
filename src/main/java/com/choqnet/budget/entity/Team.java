@@ -9,6 +9,7 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -263,5 +264,34 @@ public class Team {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    // *** Functions to get data from Setup
+    public int getRateAt(LocalDate date) {
+        return setup==null ? 0 : setup.getRateAtDate(date);
+    }
+
+    public int getWorkDaysAt(LocalDate date) {
+        return setup==null ? 0 : setup.getWorkDaysAtDate(date);
+    }
+
+    public int getWorkDays(String year) {
+        try {
+            int intYear = Integer.parseInt(year);
+            return getWorkDaysAt(LocalDate.of(intYear, 1, 1));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public int getRateQx(String month) {
+        try {
+            int intYear = Integer.parseInt(month.substring(3, 7));
+            int intMonth = Integer.parseInt(month.substring(7));
+            return getRateAt(LocalDate.of(intYear, intMonth, 1));
+        } catch (Exception e) {
+            return 0;
+        }
+
     }
 }

@@ -184,6 +184,9 @@
                         <column id="mdQ4" property="mdQ4"/>
                         <column id="mdNY" property="mdNY"/>
                         <column id="priority" property="priority"/>
+                        <column id="jira" property="jira">
+                            <componentRenderer/>
+                        </column>
 
                     </columns>
                 </dataGrid>

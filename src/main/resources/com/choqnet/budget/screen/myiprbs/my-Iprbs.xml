@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://myIprbs.caption">
+    <data>
+        <collection id="myIPRBsDc" class="com.choqnet.budget.entity.MyIPRB">
+            <fetchPlan extends="_base">
+                <property name="reference"/>
+                <property name="team"/>
+                <property name="teamShort"/>
+                <property name="actSAPMDQ1"/>
+                <property name="actSAPMDQ2"/>
+                <property name="actSAPMDQ3"/>
+                <property name="actSAPMDQ4"/>
+                <property name="actJIRAMDQ1"/>
+                <property name="actJIRAMDQ2"/>
+                <property name="actJIRAMDQ3"/>
+                <property name="actJIRAMDQ4"/>
+                <property name="demMDQ1"/>
+                <property name="demMDQ2"/>
+                <property name="demMDQ3"/>
+                <property name="demMDQ4"/>
+                <property name="actSAPKEQ1"/>
+                <property name="actSAPKEQ2"/>
+                <property name="actSAPKEQ3"/>
+                <property name="actSAPKEQ4"/>
+                <property name="actJIRAKEQ1"/>
+                <property name="actJIRAKEQ2"/>
+                <property name="actJIRAKEQ3"/>
+                <property name="actJIRAKEQ4"/>
+                <property name="demKEQ1"/>
+                <property name="demKEQ2"/>
+                <property name="demKEQ3"/>
+                <property name="demKEQ4"/>
+            </fetchPlan>
+            <loader id="myIPRBsDl">
+                <query>
+                    <![CDATA[select e from MyIPRB e where e is null]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="myTable">
+        <hbox spacing="true" width="100%">
+            <label stylename="h1" value="My own IPRB Collection" align="MIDDLE_LEFT"/>
+            <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+        </hbox>
+        <hbox spacing="true" stylename="card" margin="true">
+            <button id="btnAdd" caption="Add IPRB to my Collection"/>
+            <button id="btnRemove" caption="Remove Selected"/>
+        </hbox>
+
+
+        <groupTable id="myTable" width="100%"
+                    aggregatable="true"
+                    showTotalAggregation="true"
+                    dataContainer="myIPRBsDc">
+            <columns>
+                <group>
+                    <column id="fullName"/>
+                </group>
+
+                <column id="team"/>
+                <column id="teamShort" />
+                <column id="actSAPMDQ1">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actSAPMDQ2">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actSAPMDQ3">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actSAPMDQ4">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actJIRAMDQ1">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actJIRAMDQ2">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actJIRAMDQ3">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="actJIRAMDQ4">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="demMDQ1">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="demMDQ2">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="demMDQ3">
+                    <aggregation type="SUM"/>
+                </column>
+                <column id="demMDQ4">
+                    <aggregation type="SUM"/>
+                </column>
+            </columns>
+        </groupTable>
+    </layout>
+</window>
