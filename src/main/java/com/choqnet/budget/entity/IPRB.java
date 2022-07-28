@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
@@ -21,34 +20,18 @@ public class IPRB {
     @Id
     private UUID id;
 
-    @InstanceName
-    @NotNull
-    @Column(name = "REFERENCE", nullable = false, unique = true)
-    private String reference;
-
-    @Column(name = "NAME", unique = true)
-    private String name;
-
-    @Column(name = "PORTFOLIO_CLASSIFICATION")
-    private String portfolioClassification;
-
-    @Column(name = "LEGAL_ENTITY")
-    private String legalEntity;
-
-    @Column(name = "STRATEGIC_PROGRAM")
-    private String strategicProgram;
-
     @Column(name = "ACTIVITY_TYPE")
     private String activityType;
 
-    @Column(name = "NEW_PRODUCT_INDICATOR")
-    private String newProductIndicator;
+    @Column(name = "CATEGORY")
+    private String category;
 
-    @Column(name = "GROUP_OFFERING")
-    private String groupOffering;
+    @Column(name = "COMMENT_")
+    @Lob
+    private String comment;
 
-    @Column(name = "OWNER")
-    private String owner;
+    @Column(name = "END_DATE")
+    private LocalDate endDate;
 
     @Column(name = "EST_CAPI")
     private String estCAPI;
@@ -56,40 +39,89 @@ public class IPRB {
     @Column(name = "EST_OOI")
     private String estOOI;
 
-    @Column(name = "START_DATE")
-    private LocalDate startDate;
+    @Column(name = "FIRST_MONTH_OFF")
+    private String firstMonthOff;
 
-    @Column(name = "END_DATE")
-    private LocalDate endDate;
+    @Column(name = "GROUP_OFFERING")
+    private String groupOffering;
 
-    @Column(name = "COMMENT_")
-    @Lob
-    private String comment;
+    @Column(name = "LEGAL_ENTITY")
+    private String legalEntity;
 
-    @Column(name = "UPDATED")
-    private LocalDateTime updated = LocalDateTime.now();
+    @Column(name = "NAME", unique = true)
+    private String name;
+
+    @Column(name = "NEW_PRODUCT_INDICATOR")
+    private String newProductIndicator;
+
+    @Column(name = "OUT_BUDGET")
+    private Boolean outBudget = false;
+
+    @Column(name = "OWNER")
+    private String owner;
+
+    @Column(name = "PORTFOLIO_CLASSIFICATION")
+    private String portfolioClassification;
+
+    @Column(name = "PROGRAM")
+    private String program;
 
     @Column(name = "PROJECT_TYPE")
     private String projectType;
 
-    @Column(name = "FIRST_MONTH_OFF")
-    private String firstMonthOff;
+    @InstanceName
+    @NotNull
+    @Column(name = "REFERENCE", nullable = false, unique = true)
+    private String reference;
 
-    @Column(name = "OUT_BUDGET")
-    private Boolean outBudget = false;
-    @JoinTable(name = "USER_IPRB_LINK",
-            joinColumns = @JoinColumn(name = "I_P_R_B_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
-    @ManyToMany
-    private List<User> users;
+    @Column(name = "REVENUE_CATEGORY")
+    private String revenueCategory;
 
-    public List<User> getUsers() {
-        return users;
+    @Column(name = "START_DATE")
+    private LocalDate startDate;
+
+    @Column(name = "STRATEGIC_PROGRAM")
+    private String strategicProgram;
+
+    @Column(name = "STRATEGY_CATEGORY")
+    private String strategyCategory;
+
+    @Column(name = "UPDATED")
+    private LocalDateTime updated = LocalDateTime.now();
+
+
+    public IPRBProgram getProgram() {
+        return program == null ? null : IPRBProgram.fromId(program);
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setProgram(IPRBProgram program) {
+        this.program = program == null ? null : program.getId();
     }
+
+    public IPRBRevenueCategory getRevenueCategory() {
+        return revenueCategory == null ? null : IPRBRevenueCategory.fromId(revenueCategory);
+    }
+
+    public void setRevenueCategory(IPRBRevenueCategory revenueCategory) {
+        this.revenueCategory = revenueCategory == null ? null : revenueCategory.getId();
+    }
+
+    public IPRBStrategyCategory getStrategyCategory() {
+        return strategyCategory == null ? null : IPRBStrategyCategory.fromId(strategyCategory);
+    }
+
+    public void setStrategyCategory(IPRBStrategyCategory strategyCategory) {
+        this.strategyCategory = strategyCategory == null ? null : strategyCategory.getId();
+    }
+
+    public IPRBCategory getCategory() {
+        return category == null ? null : IPRBCategory.fromId(category);
+    }
+
+    public void setCategory(IPRBCategory category) {
+        this.category = category == null ? null : category.getId();
+    }
+
 
     public Boolean getOutBudget() {
         return outBudget==null ? false : outBudget;

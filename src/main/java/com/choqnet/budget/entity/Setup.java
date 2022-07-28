@@ -28,7 +28,7 @@ public class Setup {
     private String name;
 
     @Composition
-    @OrderBy("date Desc")
+    @OrderBy("date DESC")
     @OneToMany(mappedBy = "setup")
     private List<IntRange> rates;
 
@@ -45,12 +45,13 @@ public class Setup {
 
     public Integer getWorkDaysNow() {
         // value of today
-        return getRateAtDate(LocalDate.now());
+        return getWorkDaysAtDate(LocalDate.now());
     }
 
     public Integer getRateNow() {
         // value of today
-        return getWorkDaysAtDate(LocalDate.now());
+        return getRateAtDate(LocalDate.now());
+
     }
 
     public void setWorkDays(List<NbRange> workDays) {

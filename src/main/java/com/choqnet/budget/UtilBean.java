@@ -308,6 +308,8 @@ public class UtilBean {
     }
 
     public Capacity setCapacityData(Capacity capacity) {
+        // useless, as the quarterly values of Rate and FTE are directly calculated in the entity Capacity
+        /*
         if (capacity.getBudget()==null || capacity.getTeam()==null) {
             capacity.setNbWorkingDays(0);
             //capacity.setRateY(0.0);
@@ -331,6 +333,7 @@ public class UtilBean {
             capacity.setFteQ3(capacity.getMdQ3() * 4 / capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
             capacity.setFteQ4(capacity.getMdQ4() * 4 / capacity.getTeam().getWorkDays(capacity.getBudget().getYear()));
         }
+        */
         return capacity;
     }
 
@@ -344,9 +347,9 @@ public class UtilBean {
         } else {
             //detail.setBudgetCost(detail.getTeam().getSetup().getRate("xxx" + detail.getBudget().getYear()) * detail.getMdY() / 1000);
             detail.setBudgetCostQ1(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "01") * detail.getMdQ1() / 1000);
-            detail.setBudgetCostQ2(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "02") * detail.getMdQ2() / 1000);
-            detail.setBudgetCostQ3(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "03") * detail.getMdQ3() / 1000);
-            detail.setBudgetCostQ4(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "04") * detail.getMdQ4() / 1000);
+            detail.setBudgetCostQ2(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "04") * detail.getMdQ2() / 1000);
+            detail.setBudgetCostQ3(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "07") * detail.getMdQ3() / 1000);
+            detail.setBudgetCostQ4(detail.getTeam().getRateQx("xxx" + detail.getBudget().getYear() + "10") * detail.getMdQ4() / 1000);
             detail.setBudgetCost(detail.getBudgetCostQ1()+detail.getBudgetCostQ2()+ detail.getBudgetCostQ3()+detail.getBudgetCostQ4());
         }
         return detail;
@@ -449,6 +452,17 @@ public class UtilBean {
         }
         dataManager.save(sc);
         log.info("Maintenance task done");
+    }
+
+    // *** AUTO NUMBERING for IPRB
+    public String giveIPRBID() {
+        Token token = dataManager.load(Token.class).all().one();
+
+        String newId ="0000" + token.getCounter().toString();
+        newId = newId.substring(newId.length()-4);
+        token.setCounter(token.getCounter() + 1);
+        dataManager.save(token);
+        return "ACC" + newId;
     }
 
 

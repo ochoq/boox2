@@ -2,25 +2,23 @@ package com.choqnet.budget;
 
 import com.choqnet.budget.entity.*;
 import com.choqnet.budget.entity.datalists.ProjectType;
+import com.choqnet.budget.entity.datalists.Source;
 import io.jmix.core.DataManager;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.SchemaOutputResolver;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class XLUtils {
@@ -33,6 +31,7 @@ public class XLUtils {
     private Budget currentBudget;
     private List<Detail> details;
     private FormulaEvaluator evaluator;
+    private List<ErrorMessage> errorLog = new ArrayList<>();
     private int iNP, iOGP, iRUN;
     XSSFFont font;
     private final List<XSSFSheet> sheets = new ArrayList<>();
@@ -55,6 +54,165 @@ public class XLUtils {
         writeEffortSums();
         return wb;
     }
+
+    public List<ErrorMessage> giveErrorLog() {
+        return errorLog;
+    }
+
+    // debug *** test writing in Excel file
+    private static <K, V> V getValue(Map<K, V> map, K key) {
+
+        return map.entrySet().stream()
+                .filter(e -> key.equals(e.getKey()))
+                .findFirst().map(Map.Entry::getValue)
+                .orElse(null);
+    }
+
+    public XSSFWorkbook processFileDebug(XSSFWorkbook workbook, Budget budget) {
+        // clean the existing error messages
+        errorLog = new ArrayList<>();
+
+        wb = workbook;
+        // processing : write few values in the template
+        List<IPRB> expected, selection;
+
+        List<Detail> details, range;
+        List<String> feedback = new ArrayList<>();
+        int nbRows;
+        final int START_ROW = 15;
+        final int START_BUDGET = 594; // col VW
+
+        details = dataManager.load(Detail.class).query("select e from Detail e where e.included = TRUE AND e.budget = :budget").parameter("budget", budget).fetchPlan("details").list();
+
+        XSSFSheet sheet = wb.getSheet("MS Roadmap");
+        // step 1 : get the list of IPRB supplied in the Current Plan
+        Map<String, Integer> supplied = new HashMap<>();
+        String temp;
+        int counter=START_ROW;
+        do {
+            temp = getXCell(counter,2, sheet).getStringCellValue();
+            if (!temp.equals("")) {supplied.put(temp, counter);}
+            counter+=1;
+        } while (!temp.equals(""));
+        nbRows = counter-1;
+
+        // step 2 : get the list of the expected IPRB: having demand, actual or xlactual
+        expected = dataManager.load(Detail.class).query("select e from Detail e where e.budget = :budget").parameter("budget", budget).list()
+                .stream().filter(e -> e.getIncluded()).map(Detail::getIprb).distinct().collect(Collectors.toList());
+        // this part allows including projects having actuals for the year of the budget
+        // while building the budget 2023, no projects will have 2023's actuals
+        /*
+        List<IPRB> started = dataManager.load(Actual.class).query("select e from Actual e where e.finMonth like 'fin" +  budget.getYear() + "%'").list()
+                .stream().map(e -> e.getIprb()).distinct().collect(Collectors.toList());
+        expected = Stream.concat(expected.stream(), started.stream()).distinct().collect(Collectors.toList());
+        started = dataManager.load(XLActual.class).query("select e from XLActual e where e.year = :year").parameter("year", budget.getYear()).list()
+                .stream().map(e -> e.getIprb()).distinct().collect(Collectors.toList());
+        expected = Stream.concat(expected.stream(), started.stream()).distinct().collect(Collectors.toList());
+
+        */
+        expected.remove(null);
+        expected = expected.stream().filter(e -> !e.getOutBudget()).collect(Collectors.toList());
+
+        // step 3 : check missing IPRB in the host Excel file
+        for (IPRB iprb: expected) {
+            if (getValue(supplied, iprb.getReference())==null) {
+                ErrorMessage errorMessage = dataManager.create(ErrorMessage.class);
+                errorMessage.setItemID(iprb.getReference());
+                errorMessage.setErrorMessage("Missing: " + iprb.getName());
+                errorLog.add(errorMessage);
+                // feedback.add(iprb.getReference() + " is missing in the Excel file");
+            }
+        }
+
+        // step 4 : copy of metadata
+        for (int i = START_ROW; i<nbRows; i++) {
+            String iprb_reference = getXCell(i,2,sheet).getStringCellValue();
+            if (iprb_reference!=null) {
+                IPRB target = expected.stream().filter(e -> iprb_reference.equals(e.getReference())).findFirst().orElse(null);
+                if (target!=null) {
+                    cellText(i, 3, target.getName(), sheet);
+                    cellText(i, 4, target.getActivityType()==null ? "???" : target.getActivityType().getId(), sheet);
+                    cellText(i, 5, target.getCategory()==null ? "" : target.getCategory().getId(), sheet);
+                    cellText(i, 6, target.getStrategyCategory()==null ? "" : target.getStrategyCategory().getId(), sheet);
+                    cellText(i, 7, target.getRevenueCategory()==null ? "" : target.getRevenueCategory().getId(), sheet);
+                    cellText(i, 8, target.getLegalEntity()==null ? "" : target.getLegalEntity().getId(), sheet);
+                    cellText(i, 12, target.getProgram()==null ? "" : target.getProgram().getId(), sheet);
+
+                    cellText(i, 13, target.getOwner(), sheet);
+                    cellText(i,16, target.getEstCAPI()==null ? "" : target.getEstCAPI().getId(), sheet);
+                    cellText(i,17, target.getEstOOI()==null ? "" : target.getEstOOI().getId(), sheet);
+                }
+            }
+        }
+
+        // step 5 - get the Platform names
+        counter = START_BUDGET;
+        boolean finished = false;
+        String readValue;
+        do {
+            readValue = getXCell(0, counter, sheet).getStringCellValue();
+            finished = "END".equals(readValue.toUpperCase());
+            if (!"".equals(readValue)) {
+
+                // get the involved IPRBs
+                String finalReadValue = readValue;
+                selection = details.stream().filter(e -> finalReadValue.equals(e.getTeam().getIcTarget())).map(Detail::getIprb).distinct().collect(Collectors.toList());
+                for (IPRB iprb: selection) {
+
+                    if (supplied.containsKey(iprb.getReference())) {
+                        int row = getValue(supplied, iprb.getReference());
+                        range = details.stream().filter(e -> iprb.equals(e.getIprb()) && finalReadValue.equals(e.getTeam().getIcTarget())).collect(Collectors.toList());
+
+                        cellNum(row,counter+1, range.stream().map(Detail::getMdQ1).reduce(0.0, Double::sum), sheet);
+                        cellNum(row,counter+2, range.stream().map(Detail::getMdQ2).reduce(0.0, Double::sum), sheet);
+                        cellNum(row,counter+3, range.stream().map(Detail::getMdQ3).reduce(0.0, Double::sum), sheet);
+                        cellNum(row,counter+4, range.stream().map(Detail::getMdQ4).reduce(0.0, Double::sum), sheet);
+                    }
+                }
+            }
+            counter ++;
+        } while(counter<5000 && !finished );
+
+
+
+        xriteNUM(15,602, 12.0,sheet);
+        xriteNUM(15,603, 37.5,sheet);
+        xriteNUM(1,1,11.0, sheet);
+        wb.setForceFormulaRecalculation(true);
+        return wb;
+    }
+
+    private void cellText(int iRow, int iCol, String value, XSSFSheet sheet) {
+        sheet.getRow(iRow);
+        Cell cell = getXCell(iRow, iCol, sheet);
+        cell.setCellValue(value);
+    }
+
+    private void cellNum(int iRow, int iCol, double value, XSSFSheet sheet) {
+        sheet.getRow(iRow);
+        Cell cell = getXCell(iRow, iCol, sheet);
+        cell.setCellValue(value);
+    }
+
+    private void xriteNUM(int iRow, int iCol, Double value, XSSFSheet sheet) {
+        sheet.getRow(iRow);
+        Cell cell = getXCell(iRow, iCol, sheet);
+        CellStyle style = wb.createCellStyle();
+        DataFormat format = wb.createDataFormat();
+        style.setDataFormat(format.getFormat("0"));
+        cell.setCellValue(value);
+//        cell.setCellStyle(style);
+//        cell.removeFormula();
+//        cellStyle = wb.createCellStyle();
+//        cellStyle.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat("#"));
+//        cellStyle.setFont(font);
+//        cell.setCellValue(value);
+//        cell.setCellType(CellType.NUMERIC);
+        //cell.setCellStyle(cellStyle);
+        //evaluator.evaluate(cell);
+    }
+
+    // end debug
 
     private void getContext() {
         iprbs = dataManager.load(IPRB.class)
@@ -220,6 +378,7 @@ public class XLUtils {
     }
 
     private Cell getXCell(int iRow, int iCol, XSSFSheet sheet) {
+        // root reference is (0, 0)
         XSSFRow row = sheet.getRow(iRow);
         if (row == null) {
             row = sheet.createRow(iRow);
@@ -254,11 +413,11 @@ public class XLUtils {
         Cell cell = getXCell(iRow, iCol, sheet);
         cell.removeFormula();
         cellStyle = wb.createCellStyle();
-        cellStyle.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat("#"));
-        cellStyle.setFont(font);
+        //cellStyle.setDataFormat(wb.getCreationHelper().createDataFormat().getFormat("#"));
+        //cellStyle.setFont(font);
         cell.setCellValue(value);
         //cell.setCellType(CellType.NUMERIC);
-        cell.setCellStyle(cellStyle);
+        //cell.setCellStyle(cellStyle);
         evaluator.evaluate(cell);
     }
 

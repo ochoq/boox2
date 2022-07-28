@@ -17,9 +17,16 @@
         </collection>
     </data>
     <layout spacing="true" expand="progTable">
-        <hbox spacing="true" width="100%">
-            <label stylename="h1" value="Demand Review" align="MIDDLE_LEFT"/>
+        <hbox spacing="true" width="100%" expand="mainComponent">
+            <label stylename="h1" value="Demand Review" align="MIDDLE_LEFT" id="mainComponent"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+            <link caption="Demand Management"
+                  align="MIDDLE_CENTER"
+                  stylename="red_button_like"
+                  icon="FILE_TEXT"
+                  target="_blank"
+                  url="https://choqnet.notion.site/Demands-1d96b63cf1334c759433b4723f10b9ba"/>
+
         </hbox>
         <filter id="filter" columnsCount="3" dataLoader="progressesDl">
             <properties include=".*"

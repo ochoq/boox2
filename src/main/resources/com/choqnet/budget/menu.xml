@@ -18,9 +18,9 @@
               caption="msg://com.choqnet.budget.screen.capacity_planning_teams/capacityPlanningTeams.caption"/>
         <item screen="ProgressManagement"
               caption="msg://com.choqnet.budget.screen.progressmanagement/progressManagement.caption"/>
-        <item screen="IprbScreen" caption="msg://com.choqnet.budget.screen.iprb/iprbScreen.caption"/>
+        <item screen="IprbManager" caption="msg://com.choqnet.budget.screen.iprbmanager/iprbManager.caption"/>
+        <item screen="MyIprb" caption="msg://com.choqnet.budget.screen.myiprb/myIprb.caption"/>
         <item screen="Teams" caption="msg://com.choqnet.budget.screen.teams/teams.caption"/>
-        <item screen="MyIprbs" caption="msg://com.choqnet.budget.screen.myiprbs/myIprbs.caption"/>
 
 
     </menu>

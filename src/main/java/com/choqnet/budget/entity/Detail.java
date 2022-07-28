@@ -114,15 +114,19 @@ public class Detail {
     @Column(name = "BUDGET_COST")
     private Double budgetCost;
 
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
     @Column(name = "BUDGET_COST_Q1")
     private Double budgetCostQ1;
 
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
     @Column(name = "BUDGET_COST_Q2")
     private Double budgetCostQ2;
 
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
     @Column(name = "BUDGET_COST_Q3")
     private Double budgetCostQ3;
 
+    @NumberFormat(pattern = "#,##0.0", groupingSeparator = " ")
     @Column(name = "BUDGET_COST_Q4")
     private Double budgetCostQ4;
 

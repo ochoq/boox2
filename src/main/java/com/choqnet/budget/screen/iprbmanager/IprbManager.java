@@ -1,7 +1,7 @@
-package com.choqnet.budget.screen.iprb;
+package com.choqnet.budget.screen.iprbmanager;
 
+import com.choqnet.budget.UtilBean;
 import com.choqnet.budget.communications.UserNotification;
-import com.choqnet.budget.entity.Expense;
 import com.choqnet.budget.entity.IPRB;
 import com.choqnet.budget.screen.popups.upload_iprb.UploadIprb;
 import io.jmix.core.DataManager;
@@ -15,8 +15,6 @@ import io.jmix.ui.component.DataGrid;
 import io.jmix.ui.component.Filter;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,30 +27,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@UiController("IprbScreen")
-@UiDescriptor("iprb-screen.xml")
-public class IprbScreen extends Screen {
-    private static final Logger log = LoggerFactory.getLogger(IprbScreen.class);
-    @Autowired
-    private Filter filter;
-    @Autowired
-    private DataManager dataManager;
+@UiController("IprbManager")
+@UiDescriptor("iprb-manager.xml")
+public class IprbManager extends Screen {
     @Autowired
     private CollectionLoader<IPRB> iPRBsDl;
     @Autowired
-    private ScreenBuilders screenBuilders;
+    private Filter filter;
     @Autowired
-    private Notifications notifications;
+    private Button btnClose;
     @Autowired
-    private Dialogs dialogs;
+    private Button btnUpload;
+    @Autowired
+    private DataManager dataManager;
+    @Autowired
+    private UtilBean utilBean;
     @Autowired
     private DataGrid<IPRB> iPRBsTable;
     @Autowired
-    private Button btnClose;
+    private Notifications notifications;
+    @Autowired
+    private ScreenBuilders screenBuilders;
+    @Autowired
+    private Dialogs dialogs;
     @Named("iPRBsTable.refresh")
     private RefreshAction iPRBsTableRefresh;
-    @Autowired
-    private Button btnUpload;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -60,7 +59,7 @@ public class IprbScreen extends Screen {
         iPRBsDl.load();
         btnClose.setEnabled(false);
         // upload feature only visible from admin
-        boolean allowed = "admin".equals(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        boolean allowed = "admin".equals(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         btnUpload.setVisible("admin".equals(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
     }
 
@@ -68,13 +67,20 @@ public class IprbScreen extends Screen {
     @Subscribe("btnCreate")
     public void onBtnCreateClick(Button.ClickEvent event) {
         // creates an IPRB and sets its reference (logged_user + date)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssa");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssa");
         IPRB iprb= dataManager.create(IPRB.class);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        iprb.setReference(" "+ ((UserDetails)principal).getUsername() + LocalDateTime.now().format(formatter));
+        //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //iprb.setReference(" "+ ((UserDetails)principal).getUsername() + LocalDateTime.now().format(formatter));
+        iprb.setReference(utilBean.giveIPRBID());
         dataManager.save(iprb);
         iPRBsDl.load();
         iPRBsTable.sort("reference", DataGrid.SortDirection.ASCENDING);
+        notifications.create()
+                .withCaption("New IPRB")
+                .withDescription("IPRB with the reference : " + iprb.getReference() + " was created and is now in the list")
+                .withType(Notifications.NotificationType.HUMANIZED)
+                .show();
+        iPRBsTable.sort("updated", DataGrid.SortDirection.DESCENDING);
     }
 
     @Subscribe("btnUpload")
@@ -134,12 +140,16 @@ public class IprbScreen extends Screen {
         IPRB iprb = event.getItem();
         // Warning if missing items
         List<String> missings = new ArrayList<>();
-        if (iprb.getPortfolioClassification()==null) missings.add("Portfolio Classification");
-        if (iprb.getLegalEntity()==null) missings.add("Legal Entity");
-        if (iprb.getStrategicProgram()==null) missings.add("Strategic Program");
+//        if (iprb.getPortfolioClassification()==null) missings.add("Portfolio Classification");
+        if (iprb.getCategory()==null) missings.add("Category");
+        if (iprb.getLegalEntity()==null) missings.add("PS Platform");
+//        if (iprb.getStrategicProgram()==null) missings.add("Strategic Program");
+        if (iprb.getStrategyCategory()==null) missings.add("Strategy Category");
+        if (iprb.getProgram()==null) missings.add("Program");
+        if (iprb.getRevenueCategory()==null) missings.add("Revenue Category");
         if (iprb.getActivityType()==null) missings.add("Activity Type");
-        if (iprb.getNewProductIndicator()==null) missings.add("NPI");
-        if (iprb.getGroupOffering()==null) missings.add("Group Offering");
+//        if (iprb.getNewProductIndicator()==null) missings.add("NPI");
+//        if (iprb.getGroupOffering()==null) missings.add("Group Offering");
         if (missings.size()!=0) {
             String missMessage = "";
             for (String missing: missings) {

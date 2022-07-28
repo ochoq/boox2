@@ -99,7 +99,6 @@ public class CapacityPlanningTeams extends Screen {
         editCPTeam(event.getItem());
     }
 
-
     private void editCPTeam(CPTeam item) {
         CapacityTeamDetails ctd = screenBuilders.screen(this)
                 .withScreenClass(CapacityTeamDetails.class)
@@ -156,7 +155,7 @@ public class CapacityPlanningTeams extends Screen {
                 .query("select e from Detail e where e.budget = :budget")
                 .parameter("budget", budget)
                 .list();
-        String query = "select e from Capacity e where e.budget = :budget";
+        String query = "select e from Capacity e where e.budget = :budget and e.team.enabled = TRUE";
         capacities = dataManager.load(Capacity.class)
                 .query(query)
                 .parameter("budget", budget)

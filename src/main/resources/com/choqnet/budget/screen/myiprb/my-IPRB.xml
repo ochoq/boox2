@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://jmix.io/schema/ui/window"
-        caption="msg://myIprbs.caption">
+        caption="msg://myIprb.caption">
     <data>
         <collection id="myIPRBsDc" class="com.choqnet.budget.entity.MyIPRB">
             <fetchPlan extends="_base">
-                <property name="reference"/>
-                <property name="team"/>
                 <property name="teamShort"/>
+                <property name="reference"/>
+                <property name="fullName"/>
+                <property name="team"/>
                 <property name="actSAPMDQ1"/>
                 <property name="actSAPMDQ2"/>
                 <property name="actSAPMDQ3"/>
@@ -39,7 +40,7 @@
             </loader>
         </collection>
     </data>
-    <layout spacing="true" expand="myTable">
+    <layout expand="myTable" spacing="true">
         <hbox spacing="true" width="100%">
             <label stylename="h1" value="My own IPRB Collection" align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
@@ -47,19 +48,21 @@
         <hbox spacing="true" stylename="card" margin="true">
             <button id="btnAdd" caption="Add IPRB to my Collection"/>
             <button id="btnRemove" caption="Remove Selected"/>
+            <button id="myTableExcelExportBtn" action="myTable.excelExport"/>
         </hbox>
-
-
         <groupTable id="myTable" width="100%"
                     aggregatable="true"
                     showTotalAggregation="true"
                     dataContainer="myIPRBsDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
             <columns>
                 <group>
                     <column id="fullName"/>
                 </group>
 
-                <column id="team"/>
+                <!--                <column id="team"/>-->
                 <column id="teamShort" />
                 <column id="actSAPMDQ1">
                     <aggregation type="SUM"/>

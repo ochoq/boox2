@@ -4,8 +4,8 @@
     <data>
         <collection id="actualsDc" class="com.choqnet.budget.entity.Actual">
             <fetchPlan extends="_base">
-                <property name="iprb" fetchPlan="_base"/>
-                <property name="team" fetchPlan="_base"/>
+                <property fetchPlan="_base" name="iprb"/>
+                <property fetchPlan="_base" name="team"/>
             </fetchPlan>
             <loader id="actualsDl">
                 <query>
@@ -16,6 +16,7 @@
     </data>
     <layout spacing="true" expand="pivot">
         <label id="label" stylename="h1" value="Actuals Splitter"/>
+        <button id="btnExport" icon="EXCEL_ACTION"/>
         <pivot:pivotTable
                 id="pivot"
                 dataContainer="actualsDc"
@@ -49,7 +50,10 @@
                 <pivot:property name="finMonth"/>
                 <pivot:property name="iprbRef"/>
                 <pivot:property name="iprb.name"/>
-                <pivot:property name="iprb.groupOffering"/>
+                <pivot:property name="iprb.program"/>
+                <pivot:property name="iprb.revenueCategory"/>
+                <pivot:property name="iprb.category"/>
+                <pivot:property name="iprb.strategyCategory"/>
                 <pivot:property name="iprb.legalEntity"/>
                 <pivot:property name="team.fullName"/>
                 <pivot:property name="team.name"/>

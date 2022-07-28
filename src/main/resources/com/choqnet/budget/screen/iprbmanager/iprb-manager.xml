@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://jmix.io/schema/ui/window"
-        caption="msg://iprbScreen.caption">
+        caption="msg://iprbManager.caption">
     <data>
         <collection id="iPRBsDc" class="com.choqnet.budget.entity.IPRB">
             <fetchPlan extends="_base"/>
@@ -11,22 +11,28 @@
             </loader>
         </collection>
     </data>
-    <layout expand="iPRBsTable" spacing="true">
-        <label stylename="h1" value="List of existing IPRB"/>
+    <layout spacing="true" expand="iPRBsTable">
+        <hbox spacing="true" width="100%" expand="mainComponent">
+            <label stylename="h1" value="List of existing IPRB" id="mainComponent"/>
+            <link align="MIDDLE_LEFT"
+                  caption="IPRB Management"
+                  icon="CUBES"
+                  stylename="red_button_like"
+                  url="https://choqnet.notion.site/IPRBs-b3d99bad9eb64a97aa4468b1df8c69dd"
+                  target="_blank"/>
+            <link align="MIDDLE_RIGHT"
+                  caption="Editor's Guidelines"
+                  icon="BOOK"
+                  stylename="red_button_like"
+                  url="https://choqnet.notion.site/Check-here-how-to-choose-data-81daf59d2cfc42b08dd915657079d8b2"
+                  target="_blank"/>
+        </hbox>
         <hbox spacing="true"
               expand="filter"
               width="100%">
             <filter id="filter" columnsCount="3" dataLoader="iPRBsDl">
                 <properties include=".*"/>
             </filter>
-            <!--<pagination
-                    itemsPerPageVisible="true"
-                    itemsPerPageUnlimitedOptionVisible="true"
-                    itemsPerPageOptions="10,20,50,100"
-                    align="MIDDLE_RIGHT"
-                    itemsPerPageDefaultValue="20">
-                <loaderProvider loaderId="iPRBsDl"/>
-            </pagination>-->
         </hbox>
         <dataGrid id="iPRBsTable"
                   width="100%"
@@ -43,27 +49,24 @@
             <buttonsPanel alwaysVisible="true"
                           width="100%"
                           spacing="true">
-
                 <button id="iPRBsTableRefreshBtn" action="iPRBsTable.refresh"/>
                 <button id="btnCreate" caption="Create" icon="CREATE_ACTION"/>
                 <button id="iPRBsTableBulkEditBtn" action="iPRBsTable.bulkEdit"/>
                 <button id="btnUpload" caption="Upload Excel" icon="CLOUD_UPLOAD"/>
                 <button id="btnClose" caption="Close" icon="CLOSE"/>
                 <button id="iPRBsTableExcelExportBtn" action="iPRBsTable.excelExport"/>
-
-
             </buttonsPanel>
             <columns>
                 <column id="outBudget" property="outBudget" width="75"/>
                 <column id="reference" property="reference"/>
                 <column id="name" property="name"/>
                 <column id="firstMonthOff" property="firstMonthOff"/>
-                <column id="portfolioClassification" property="portfolioClassification"/>
-                <column id="legalEntity" property="legalEntity"/>
-                <column id="strategicProgram" property="strategicProgram"/>
+                <column id="legalEntity" property="legalEntity" caption="PS Platform"/>
+                <column id="category" property="category"/>
+                <column id="strategyCategory" property="strategyCategory"/>
+                <column id="revenueCategory" property="revenueCategory"/>
+                <column id="program" property="program"/>
                 <column id="activityType" property="activityType"/>
-                <column id="newProductIndicator" property="newProductIndicator"/>
-                <column id="groupOffering" property="groupOffering"/>
                 <column id="owner" property="owner"/>
                 <column id="estCAPI" property="estCAPI"/>
                 <column id="estOOI" property="estOOI"/>
@@ -71,7 +74,6 @@
                 <column id="endDate" property="endDate"/>
                 <column id="comment" property="comment"/>
                 <column id="updated" property="updated" editable="false"/>
-                <column id="projectType" property="projectType"/>
             </columns>
         </dataGrid>
     </layout>

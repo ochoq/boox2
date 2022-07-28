@@ -17,7 +17,15 @@
         </collection>
     </data>
     <layout spacing="true" responsive="true" expand="table">
-        <label stylename="h1" value="Teams Management"/>
+        <hbox spacing="true" expand="mainComponenet" width="100%">
+            <label stylename="h1" value="Teams Management" id="mainComponenet"/>
+            <link caption="Teams Management"
+                  align="MIDDLE_CENTER"
+                  stylename="red_button_like"
+                  icon="USERS"
+                  target="_blank"
+                  url="https://choqnet.notion.site/Teams-c189ac93235d45e49eeb60c8c21e9197"/>
+        </hbox>
 
         <filter id="filter" columnsCount="3" dataLoader="teamsDl">
             <properties include=".*"/>

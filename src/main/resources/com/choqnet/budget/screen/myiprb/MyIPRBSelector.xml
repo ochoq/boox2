@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://jmix.io/schema/ui/window"
-        caption="msg://myIprbSelector.caption">
+        caption="msg://myiprbselector.caption">
     <data>
 
         <collection id="iPRBsDc" class="com.choqnet.budget.entity.IPRB">
@@ -25,6 +25,6 @@
                 <column id="owner" property="owner"/>
             </columns>
         </dataGrid>
-        <button align="BOTTOM_RIGHT" caption="Close" id="btnClose"/>
+        <button align="BOTTOM_RIGHT" caption="Add Selected" id="btnClose"/>
     </layout>
 </window>

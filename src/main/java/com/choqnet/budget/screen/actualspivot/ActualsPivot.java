@@ -2,11 +2,16 @@ package com.choqnet.budget.screen.actualspivot;
 
 import com.choqnet.budget.entity.Actual;
 import io.jmix.pivottable.component.PivotTable;
+import io.jmix.pivottable.component.PivotTableExtension;
+import io.jmix.pivottable.component.impl.PivotExcelExporter;
+import io.jmix.pivottable.component.impl.PivotTableExtensionImpl;
+import io.jmix.ui.component.Button;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.screen.Screen;
 import io.jmix.ui.screen.Subscribe;
 import io.jmix.ui.screen.UiController;
 import io.jmix.ui.screen.UiDescriptor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -19,15 +24,23 @@ public class ActualsPivot extends Screen {
     private CollectionLoader<Actual> actualsDl;
     @Autowired
     private PivotTable pivot;
+    @Autowired
+    protected ObjectProvider<PivotExcelExporter> excelExporterObjectProvider;
+
+    private PivotTableExtension extension;
 
     @Subscribe
     public void onInit(InitEvent event) {
+        extension = new PivotTableExtensionImpl(pivot, excelExporterObjectProvider.getObject());
         actualsDl.load();
         Map<String, String> props = new HashMap<String, String>();
         props.put("finMonth", "Finance Month");
         props.put("iprbRef", "IPRB #");
         props.put("iprb.name", "IPRB Name");
-        props.put("iprb.groupOffering", "IPRB Group Offering");
+        props.put("iprb.program", "IPRB Program");
+        props.put("iprb.category", "IPRB Category");
+        props.put("iprb.strategyCategory", "IPRB Strategy");
+        props.put("iprb.revenueCategory", "IPRB Revenue");
         props.put("iprb.legalEntity", "IPRB Platform");
         props.put("team.fullName", "Team full Name");
         props.put("team.name", "Team Name");
@@ -51,6 +64,12 @@ public class ActualsPivot extends Screen {
 
 
 
+    }
+
+    @Subscribe("btnExport")
+    public void onBtnExportClick(Button.ClickEvent event) {
+        extension.exportTableToXls();
+        
     }
 
 }

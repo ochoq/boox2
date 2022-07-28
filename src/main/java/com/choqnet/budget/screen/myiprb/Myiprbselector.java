@@ -1,20 +1,25 @@
-package com.choqnet.budget.screen.myiprbselector;
+package com.choqnet.budget.screen.myiprb;
 
 import com.choqnet.budget.entity.IPRB;
+import com.choqnet.budget.entity.IPRBRegistration;
 import com.choqnet.budget.entity.User;
 import io.jmix.core.DataManager;
-import io.jmix.ui.component.*;
+import io.jmix.ui.component.Button;
+import io.jmix.ui.component.DataGrid;
+import io.jmix.ui.component.HasValue;
+import io.jmix.ui.component.TextField;
 import io.jmix.ui.model.CollectionContainer;
 import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@UiController("MyIprbSelector")
-@UiDescriptor("my-IPRB-selector.xml")
+@UiController("Myiprbselector")
+@UiDescriptor("MyIPRBSelector.xml")
 @DialogMode(width = "1000px", height = "900px")
-public class MyIprbSelector extends Screen {
+public class Myiprbselector extends Screen {
 
     List<String> filters = new ArrayList<>();
     List<IPRB> iprbList;
@@ -22,25 +27,31 @@ public class MyIprbSelector extends Screen {
     @Autowired
     private DataManager dataManager;
     @Autowired
-    private CollectionContainer<IPRB> iPRBsDc;
-    @Autowired
     private TextField<String> fltName;
     @Autowired
     private TextField<String> fltReference;
     @Autowired
     private TextField<String> fltOwner;
+    @Autowired
+    private CollectionContainer<IPRB> iPRBsDc;
 
     public void setContext(User user) {
-        //iPRBsDl.load();
         _user = user;
         getIPRBToDisplay();
     }
 
     private void getIPRBToDisplay() {
-        List<IPRB> linkedIPRB = _user.getMyIprbs();
+        List<IPRB> linkedIPRB = dataManager.load(IPRBRegistration.class)
+                .query("select e from IPRBRegistration e where e.user = :user")
+                .parameter("user", _user)
+                .list()
+                .stream()
+                .map(IPRBRegistration::getIprb)
+                .collect(Collectors.toList());
+
         List<IPRB> iprbAll = dataManager.load(IPRB.class)
                 .query("select e from IPRB e" + getFilterValue()).list();
-        System.out.println("select e from IPRB e" + getFilterValue());
+
         List<IPRB> proposed = new ArrayList<>();
         for(IPRB iprb: iprbAll) {
             if (!linkedIPRB.contains(iprb)) {
@@ -78,37 +89,33 @@ public class MyIprbSelector extends Screen {
         if (fltOwner.getValue()!=null) {
             filters.add("UPPER(e.owner) like '%" + fltOwner.getValue().toUpperCase() + "%'");
         }
-        String filter = "";
+        StringBuilder filter = new StringBuilder();
         int idx = 0;
         for (String query: filters) {
             if (idx==0) {
-                filter = " where " + query;
+                filter = new StringBuilder(" where " + query);
             } else {
-                filter += " and " + query;
+                filter.append(" and ").append(query);
             }
             idx++;
         }
-        return filter;
+        return filter.toString();
     }
 
     @Subscribe("fltName")
-    public void onFltNameValueChange(HasValue.ValueChangeEvent event) {
+    public void onFltNameValueChange(HasValue.ValueChangeEvent<String> event) {
         getIPRBToDisplay();
     }
 
     @Subscribe("fltOwner")
-    public void onFltOwnerValueChange(HasValue.ValueChangeEvent event) {
+    public void onFltOwnerValueChange(HasValue.ValueChangeEvent<String> event) {
         getIPRBToDisplay();
     }
 
     @Subscribe("fltReference")
-    public void onFltReferenceValueChange(HasValue.ValueChangeEvent event) {
+    public void onFltReferenceValueChange(HasValue.ValueChangeEvent<String> event) {
         getIPRBToDisplay();
     }
-
-
-
-
 
 
 }

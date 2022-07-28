@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://showErrorMessage.caption">
+    <data>
+        <collection id="errorMessagesDc" class="com.choqnet.budget.entity.ErrorMessage">
+            <fetchPlan extends="_base">
+                <property name="itemID"/>
+                <property name="errorMessage"/>
+            </fetchPlan>
+            <loader id="errorMessagesDl">
+                <query>
+                    <![CDATA[select e from ErrorMessage e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout spacing="true" expand="errorMessagesTable">
+        <label stylename="h1" value="Execution Report"/>
+        <hbox stylename="card" spacing="true" margin="true">
+            <button id="errorMessagesTableExcelExportBtn" action="errorMessagesTable.excelExport"/>
+        </hbox>
+        <dataGrid id="errorMessagesTable" width="100%" dataContainer="errorMessagesDc">
+            <actions>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <columns>
+                <column id="itemID" property="itemID"/>
+                <column id="errorMessage" property="errorMessage"/>
+            </columns>
+        </dataGrid>
+
+    </layout>
+</window>

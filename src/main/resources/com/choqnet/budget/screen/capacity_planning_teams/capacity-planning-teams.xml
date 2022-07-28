@@ -23,6 +23,12 @@
                    align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
             <comboBox id="cmbPriority" caption="Keep demand up to (included)" align="MIDDLE_RIGHT"/>
+            <link caption="Capacity Planning"
+                  align="MIDDLE_CENTER"
+                  stylename="red_button_like"
+                  target="_blank"
+                  icon="HANDSHAKE_O"
+                  url="https://choqnet.notion.site/Capacity-Planning-95aac09b87f8406dac632c6e6ad5fafc"/>
         </hbox>
         <hbox spacing="true" width="100%" expand="spacer">
             <label value="Name contains: " align="MIDDLE_LEFT"/>

@@ -14,7 +14,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
@@ -72,22 +71,8 @@ public class User implements JmixUserDetails, HasTimeZone {
     @Column(name = "PWD_RESET_PENDING")
     private Boolean pwdResetPending;
 
-    @JoinTable(name = "USER_IPRB_LINK",
-            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "I_P_R_B_ID", referencedColumnName = "ID"))
-    @ManyToMany
-    private List<IPRB> myIprbs;
-
     @Transient
     protected Collection<? extends GrantedAuthority> authorities;
-
-    public List<IPRB> getMyIprbs() {
-        return myIprbs;
-    }
-
-    public void setMyIprbs(List<IPRB> myIprbs) {
-        this.myIprbs = myIprbs;
-    }
 
     public Boolean getPwdResetPending() {
         return pwdResetPending;

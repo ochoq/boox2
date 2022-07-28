@@ -19,10 +19,18 @@
         </collection>
     </data>
     <layout spacing="true" expand="capacitiesTable">
-        <hbox spacing="true" width="100%">
-            <label stylename="h1" value="Capacity Management (Average MD per quarter for DEV &amp; QA)"
+        <hbox spacing="true" width="100%" expand="mainComponeneyt">
+            <label stylename="h1"
+                   id="mainComponeneyt"
+                   value="Capacity Management (Average MD per quarter for DEV &amp; QA)"
                    align="MIDDLE_LEFT"/>
             <comboBox id="cmbBudget" caption="Pick a budget" align="MIDDLE_RIGHT"/>
+            <link caption="Capacity Management"
+                  align="MIDDLE_CENTER"
+                  stylename="red_button_like"
+                  icon="BAR_CHART"
+                  target="_blank"
+                  url="https://choqnet.notion.site/Capacity-38aa5852c23b4d1ebd8ccb1e07513aaf"/>
         </hbox>
         <filter id="filter" columnsCount="3" dataLoader="capacitiesDl">
             <properties include=".*"/>

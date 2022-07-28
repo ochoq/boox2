@@ -35,7 +35,7 @@
 
         <tabSheet id="screen" responsive="true">
             <tab caption="General Tools" id="misc" spacing="true" margin="true,false,false,false">
-                <flowBox spacing="true" width="100%" height="100%">
+                <flowBox spacing="true" width="100%" height="100%" >
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
                         <label stylename="h2" value="Send message to connected users"/>
                         <label value="Type your message here ..."/>
@@ -66,17 +66,32 @@
                         <label/>
                     </vbox>
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
-                        <label stylename="h2" value="Email recipients"/>
-                        <dataGrid
-                                editorEnabled="true"
-                                editorBuffered="true"
-                                width="100%" height="100px"
-                                dataContainer="tokensDc"
-                                id="mailTable">
-                            <columns>
-                                <column id="recipients" property="recipients" editable="true"/>
-                            </columns>
-                        </dataGrid>
+
+                                <label stylename="h2" value="Email recipients"/>
+                                <dataGrid
+                                        editorEnabled="true"
+                                        editorBuffered="true"
+                                        width="100%" height="100px"
+                                        dataContainer="tokensDc"
+                                        id="mailTable">
+                                    <columns>
+                                        <column id="recipients" property="recipients" editable="true"/>
+                                    </columns>
+                                </dataGrid>
+                        <label/>
+                    </vbox>
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                                <label stylename="h2" value="IPRB Counter"/>
+                                <dataGrid
+                                        editorEnabled="true"
+                                        editorBuffered="true"
+                                        width="100%" height="100px"
+                                        dataContainer="tokensDc"
+                                        id="counterTable">
+                                    <columns>
+                                        <column id="counter" property="counter" editable="true"/>
+                                    </columns>
+                                </dataGrid>
                         <label/>
                     </vbox>
                     <vbox stylename="card" spacing="true" margin="true" width="700px">
@@ -116,6 +131,18 @@
                         <label/>
                     </vbox>
 
+<!--                    DEBUG Bouton pour test d'export Excel-->
+                    <vbox stylename="card" spacing="true" margin="true" width="700px">
+                        <label stylename="h2" value="Test Export Current Plan Excel"/>
+                        <hbox spacing="true" expand="cmbBudget" stylename="card" margin="true" width="100%">*
+                            <label value="Budget to Export" align="MIDDLE_LEFT"/>
+                            <comboBox id="cmbBudget"/>
+                            <button stylename="danger" caption="Test" id="btnTextExportExcel"/>
+                        </hbox>
+
+                    </vbox>
+<!--                    FIN DEBUG-->
+
 <!--                    <vbox stylename="card" spacing="true" margin="true" width="700px">-->
 <!--                        <label stylename="h2" value="(Temp) Initialize Setup's Values"/>-->
 <!--                        <hbox spacing="true" stylename="card" margin="true" width="100%">-->
@@ -123,7 +150,12 @@
 <!--                        </hbox>-->
 <!--                        <label/>-->
 <!--                    </vbox>-->
-
+<!--                    <vbox stylename="card" spacing="true" margin="true" width="700px">-->
+<!--                        <label stylename="h2" value = "Cleans all 'myIPRBs'"/>-->
+<!--                        <hbox stylename="card" spacing="true" margin="true" width="100%">-->
+<!--                            <button stylename="danger" caption="&lt;!&gt; Delete all" id="btnCutMyIPRB"/>-->
+<!--                        </hbox>-->
+<!--                    </vbox>-->
                 </flowBox>
             </tab>
             <tab caption="Message Board" id="logApp"

@@ -3,6 +3,10 @@
         <property name="parent" fetchPlan="_base">
             <property name="setup" fetchPlan="_base"/>
         </property>
+        <property name="setup" fetchPlan="_base">
+            <property name="rates" fetchPlan="_base"/>
+            <property name="workDays" fetchPlan="_base"/>
+        </property>
     </fetchPlan>
     <fetchPlan entity="Detail" name="details" extends="_base">
         <property name="team" fetchPlan="_instance_name">
@@ -11,7 +15,10 @@
             <property name="tDiv"/>
             <property name="tDomain"/>
             <property name="icTarget"/>
-            <property name="setup" fetchPlan="_base"/>
+            <property name="setup" fetchPlan="_base">
+                <property name="rates" fetchPlan="_base"/>
+                <property name="workDays" fetchPlan="_base"/>
+            </property>
         </property>
         <property name="budget" fetchPlan="_base"/>
         <property name="progress" fetchPlan="_base">

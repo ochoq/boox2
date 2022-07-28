@@ -103,6 +103,7 @@ public class CreateBudget extends Screen {
         if (chkCapacity.isChecked()) {
             List<Team> teams = dataManager.load(Team.class)
                     .condition(PropertyCondition.equal("enabled",true))
+                    .fetchPlan("teams")
                     .list();
             for (Team team: teams) {
                 Capacity capacity = dataManager.create(Capacity.class);

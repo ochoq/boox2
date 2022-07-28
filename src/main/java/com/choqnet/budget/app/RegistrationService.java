@@ -114,12 +114,11 @@ public class RegistrationService {
                 .one();
         String activationLink = "https://boox.worldline-solutions.com/boox/#activate?token=" + user.getActivationToken();
         //String activationLink = "http://localhost:8080/#activate?token=" + user.getActivationToken();
-        String body = String.format("Hello, %s %s.\nYour Boox activation link is: %s\nClick it to finish your registration.\nYour id is %s\n\nYou can find more information here: %s\n\n\n",
+        String body = String.format("Hello, %s %s.\nYour Boox activation link is: %s\nClick it to finish your registration.\nYour id is %s\n\n\n",
                 user.getFirstName(),
                 user.getLastName(),
                 activationLink,
-                user.getUsername(),
-                "http://e.pc.cd/4w9otalK"
+                user.getUsername()
         );
         try {
             EmailInfo email = EmailInfoBuilder.create()

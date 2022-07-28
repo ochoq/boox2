@@ -21,76 +21,76 @@ public class MyIPRB {
     private String teamShort;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPMDQ1;
+    private Double actSAPMDQ1 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPMDQ2;
+    private Double actSAPMDQ2 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPMDQ3;
+    private Double actSAPMDQ3 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPMDQ4;
+    private Double actSAPMDQ4 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAMDQ1;
+    private Double actJIRAMDQ1 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAMDQ2;
+    private Double actJIRAMDQ2 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAMDQ3;
+    private Double actJIRAMDQ3 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAMDQ4;
+    private Double actJIRAMDQ4 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demMDQ1;
+    private Double demMDQ1 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demMDQ2;
+    private Double demMDQ2 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demMDQ3;
+    private Double demMDQ3 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demMDQ4;
+    private Double demMDQ4 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPKEQ1;
+    private Double actSAPKEQ1 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPKEQ2;
+    private Double actSAPKEQ2 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPKEQ3;
+    private Double actSAPKEQ3 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actSAPKEQ4;
+    private Double actSAPKEQ4 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAKEQ1;
+    private Double actJIRAKEQ1 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAKEQ2;
+    private Double actJIRAKEQ2 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAKEQ3;
+    private Double actJIRAKEQ3 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double actJIRAKEQ4;
+    private Double actJIRAKEQ4 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demKEQ1;
+    private Double demKEQ1 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demKEQ2;
+    private Double demKEQ2 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demKEQ3;
+    private Double demKEQ3 = 0.0;
 
     @NumberFormat(pattern = "#,##0", groupingSeparator = " ")
-    private Double demKEQ4;
+    private Double demKEQ4 = 0.0;
 
     public String getFullName() {
         return reference + " : " + name;

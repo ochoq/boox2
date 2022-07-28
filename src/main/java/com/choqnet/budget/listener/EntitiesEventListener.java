@@ -173,7 +173,6 @@ public class EntitiesEventListener {
                     event.getChanges().isChanged("mdQ3") ||
                     event.getChanges().isChanged("mdQ4")) {
                 // propagate the change of capacity.team
-                log.info("Capacity updated");
                 capacity = utilBean.setCapacityData(capacity);
             }
             dataManager.save(new SaveContext().saving(capacity).setJoinTransaction(false));

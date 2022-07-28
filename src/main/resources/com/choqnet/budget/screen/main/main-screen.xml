@@ -52,13 +52,15 @@
                     </vbox>
 
                     <hbox spacing="true" width="100%" height="100px">
+                        <link caption="Boox Overview"
+                              align="MIDDLE_CENTER"
+                              stylename="red_button_like"
+                              icon="BOOK"
+                              url="https://choqnet.notion.site/General-Concepts-how-to-54275d8a0e7543c1b05a843c9fe893c8"/>
 
-                        <link caption="Development tracking"
+                       <link caption="Online Documentation"
                               align="MIDDLE_CENTER"
-                              icon="EXCLAMATION_TRIANGLE"
-                              url="https://jira.techno.ingenico.com/secure/RapidBoard.jspa?rapidView=9839"/>
-                        <link caption="Online Documentation"
-                              align="MIDDLE_CENTER"
+                                stylename="red_button_like"
                               icon="QUESTION_CIRCLE"
                               url="https://www.notion.so/choqnet/User-Documentation-14361ceea9d643caa421a9655bbf2b60"/>
                     </hbox>

@@ -73,17 +73,26 @@
                 <column id="iprbRef" property="iprbRef"/>
                 <column id="iprb.name" property="iprb.name"/>
                 <column id="iprb.legalEntity" property="iprb.legalEntity"/>
-                <column id="iprb.strategicProgram" property="iprb.strategicProgram"/>
                 <column id="iprb.activityType" property="iprb.activityType"/>
-                <column id="iprb.groupOffering" property="iprb.groupOffering"/>
-                <column id="iprb.portfolioClassification" property="iprb.portfolioClassification"/>
+
+<!-- NEW FIELDS-->
+                <column id="iprb.program" property="iprb.program"/>
+                <column id="iprb.category" property="iprb.category"/>
+                <column id="iprb.strategyCategory" property="iprb.strategyCategory"/>
+                <column id="iprb.revenueCategory" property="iprb.revenueCategory"/>
+
                 <column id="iprb.owner" property="iprb.owner"/>
                 <column id="iprb.firstMonthOff" property="iprb.firstMonthOff"/>
-                <column id="iprb.newProductIndicator" property="iprb.newProductIndicator"/>
                 <column id="team.tLine" property="team.tLine"/>
                 <column id="team.tDiv" property="team.tDiv"/>
                 <column id="effort" property="effort"/>
                 <column id="budgetCost" property="budgetCost" editable="false"/>
+
+                <!--                OLD FIELDS-->
+                <column id="iprb.strategicProgram" property="iprb.strategicProgram"/>
+                <column id="iprb.groupOffering" property="iprb.groupOffering"/>
+                <column id="iprb.portfolioClassification" property="iprb.portfolioClassification"/>
+                <column id="iprb.newProductIndicator" property="iprb.newProductIndicator"/>
 
 
 
